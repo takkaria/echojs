@@ -1,0 +1,22 @@
+{
+  "name": "echo",
+  "version": "0.0.0",
+  "description": "Event and news aggregator",
+  "main": "app.ks",
+  "authors": [
+    "Andi Sidwell <andi@takkaria.org>"
+  ],
+  "license": "AGPL v3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.0",
+    "jquery": "~2.1.1"
+  }
+}
