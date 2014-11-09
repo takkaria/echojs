@@ -14,7 +14,8 @@
 
 {% for post in posts %}
 	{% if loop.first %}<ul>{% endif %}
-	<li>{{ post.title }}
+	<li><b>{{ post.feed.title }}</b><br>
+	<a href="{{ post.link }}">{{ post.title }}</a>
 	{% if loop.last %}</ul>{% endif %}
 {% endfor %}
 
