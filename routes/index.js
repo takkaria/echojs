@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	var models = req.app.get('models')
+	var models = req.app.get('models');
 	var sequelize = models.sequelize;
 
 	models.Event.findAll({

@@ -19,7 +19,7 @@ module.exports = function(debug) {
 		id: { type: sequelize.INTEGER, primaryKey: true },
 
 		title: { type: sequelize.TEXT },
-		startdt: { type:  sequelize.DATE },
+		startdt: { type: sequelize.DATE },
 		enddt: { type: sequelize.DATE },
 		location: { type: sequelize.TEXT },
 		blurb: { type: sequelize.TEXT },
