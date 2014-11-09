@@ -10,4 +10,12 @@
 	{% if loop.last %}</ul>{% endif %}
 {% endfor %}
 
+<h2>Posts</h2>
+
+{% for post in posts %}
+	{% if loop.first %}<ul>{% endif %}
+	<li>{{ post.title }}
+	{% if loop.last %}</ul>{% endif %}
+{% endfor %}
+
 {% endblock %}

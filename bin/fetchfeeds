@@ -83,7 +83,7 @@ if (action.type == "ical") {
 	Feed.findAll().success(function (e) {
 		e.forEach(function(feed) {
 			fetch.feed({
-				url: feed.feed_url,
+				url: feed.id,
 				error: feedError.bind(feed),
 			});
 		});
