@@ -1,6 +1,13 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h1>Echo v2</h1>
-<p>Welcome to {{ title }}!</p>
+<h1>Events</h1>
+<p>Welcome to Echo!</p>
+
+{% for event in events %}
+	{% if loop.first %}<ul>{% endif %}
+	<li>{{ event.title }}
+	{% if loop.last %}</ul>{% endif %}
+{% endfor %}
+
 {% endblock %}

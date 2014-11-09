@@ -6,6 +6,8 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
 
+var models = require('./models')(false);
+
 var routes = require('./routes/index');
 var api = require('./routes/api');
 
@@ -27,6 +29,8 @@ app.use(express.static(path.join(__dirname, 'bower_components')));
 
 app.use('/', routes);
 app.use('/api', api);
+
+app.set('models', models);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
