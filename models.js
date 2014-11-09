@@ -36,6 +36,19 @@ module.exports = function(debug) {
 		importid: { type: sequelize.TEXT },
 	}, global_options);
 
+	exports.User = db.define('user', {
+		email: { type: sequelize.TEXT, primaryKey: true },
+		salt: { type: sequelize.TEXT },
+		digest: { type: sequelize.TEXT },
+
+		pwreset: { type: sequelize.TEXT },
+		notify: { type: sequelize.BOOLEAN },
+		rights: {
+			type: sequelize.ENUM,
+			values: [ "admin", "editor" ]
+		}
+	}, global_options);
+
 	exports.Post = db.define('post', {
 		id: { type: sequelize.TEXT, primaryKey: true },
 		link: { type: sequelize.TEXT },
