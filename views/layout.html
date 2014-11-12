@@ -1,5 +1,58 @@
 <!DOCTYPE html>
 <title>{{ title }}</title>
-<link rel='stylesheet' href='/stylesheets/style.css'>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+ 
+<style>
+nav { background-color: #eee; border-bottom-width: 2px; }
+ul.news { clear: both; margin-left: 0; padding-left: 1em; }
+h3 small { margin-left: 10px; }
+ 
+.event-expanded { border: 2px solid black; border-radius: 4px; padding: 0 10px; }
+</style>
+ 
+<nav class="navbar">
+<div class="container">
+	<div class="navbar-header">
+		<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+		<span class="sr-only">Toggle navigation</span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		<span class="icon-bar"></span>
+		</button>
+		<a class="navbar-brand" href="#"><img src="https://echomanchester.net/img/header.png" height="40" style="margin-top: -10px;"></a>
+	</div>
+	<div id="navbar" class="navbar-collapse collapse">
+		<ul class="nav navbar-nav">
+			<li><a href="">About</a>
+			<li><a href="">Calendar</a>
+			<li><a href="">Add event</a>
+		</ul>
+	</div><!--/.navbar-collapse -->
+</div>
+</nav>
+ 
+<div class="container">
+<div class="row">
+<div class="col-lg-7 col-md-8 col-sm-6">
 
-{% block content %}{% endblock %}
+{% block leftcontent %}{% endblock %}
+
+</div>
+ 
+<div class="col-lg-5 col-md-4 col-sm-6">
+
+{% block rightcontent %}{% endblock %}
+
+</div>
+</div>
+ 
+<footer>
+<p>&copy; Echo Manchester, 2014.  Licenced under the GNU AGPL v3, source code on <a href="//github.com/takkaria/echo">GitHub</a>.<br>
+Found a bug? <a href="https://echomanchester.net/about#contact">Let us know</a>.
+</footer>
+</div>
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>

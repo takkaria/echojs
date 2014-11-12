@@ -1,19 +1,55 @@
 {% extends "layout.html" %}
 
-{% block content %}
-<h1>Events</h1>
-<p>Welcome to Echo!</p>
+
+{% block leftcontent %}
+
+<h2>About Echo</h2>
+ 
+<p>Echo is a non-profit political events and news site. Echo hopes to provide opportunities for struggle against oppression to grow by increasing participation in demonstrations, events, organised groups, and fundraisers.  <a href="">read more...</a>
+
+<h2>Events</h2>
+
+<h3>Today <small>Wednesday 12th November</small></h3>
 
 {% for event in events %}
-	{% if loop.first %}<ul>{% endif %}
-	<li>{{ event.title }}
-	{% if loop.last %}</ul>{% endif %}
+	{% if loop.first %}
+
+	<div class="event event-expanded">
+		<h4><b>{{ event.startdt.format("ha") }}</b>, {{ event.title }}</h4>
+		<p><i class="fa fa-map-marker"></i> {{ event.location }}
+		<p>{{ event.blurb }}
+		<p>more info at <i class="fa fa-external-link"></i>
+			<a href="{{ event.url.href }}" target="_blank">{{ event.url.hostname }}</a>
+	</div>
+
+
+	{% else %}
+
+	<div class="event">
+	<h4><b>{{ event.startdt.format("ha") }}</b>, {{ event.title }}</h4>
+	</div>
+
+	{% endif %}
 {% endfor %}
+
+{% endblock %}
+
+
+{% block rightcontent %}
+
+<h2>Subscribe</h2>
+ 
+<p>We now have an email newsletter we send monthly:
+ 
+<form class="form-inline" action="https://docs.google.com/forms/d/114oUUpYGh0vox28-_wuEh7asoXyHa9zr8yb2B_zqJLE/formResponse" method="POST" target="_new">
+	<input type="email" name="entry.557563294" placeholder="Enter email address" style="width: 13em; margin: 0 0.5em">
+	<button type="submit">Subscribe</button>
+</form>
 
 <h2>Posts</h2>
 
 {% for post in posts %}
-	{% if loop.first %}<ul>{% endif %}
+	{% if loop.first %}<ul class="news">{% endif %}
 	<li><b>{{ post.feed.title }}</b><br>
 	<a href="{{ post.link }}">{{ post.title }}</a>
 	{% if loop.last %}</ul>{% endif %}

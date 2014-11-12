@@ -1,4 +1,6 @@
 var sequelize = require('sequelize');
+var moment = require('moment');
+var url = require('url');
 
 module.exports = function(debug) {
 	var exports = {};
@@ -19,13 +21,23 @@ module.exports = function(debug) {
 		id: { type: sequelize.INTEGER, primaryKey: true },
 
 		title: { type: sequelize.TEXT },
-		startdt: { type: sequelize.DATE },
-		enddt: { type: sequelize.DATE },
 		location: { type: sequelize.TEXT },
 		blurb: { type: sequelize.TEXT },
-		url: { type: sequelize.TEXT },
 		type: { type: sequelize.TEXT },
 		cost: { type: sequelize.TEXT },
+		url: {
+			type: sequelize.TEXT,
+			get: function() { return url.parse(this.getDataValue('url')); }
+		},
+
+		startdt: {
+			type: sequelize.DATE,
+			get: function() { return moment(this.getDataValue('startdt')); }
+		},
+		enddt: {
+			type: sequelize.DATE,
+			get: function() { return moment(this.getDataValue('enddt')); }
+		},
 
 		state: {
 			type: sequelize.ENUM,
