@@ -1,0 +1,32 @@
+/* Universal */
+
+h1, h2, h3, h4, h5, h6, nav { font-family: "Raleway"; }
+nav { background-color: #ddd; border-bottom-width: 2px; }
+footer { text-align: center; background-color: #eee; padding: 5px 0; margin: 1em 0; }
+
+/* Front page */
+
+ul.news { clear: both; margin-left: 0; padding-left: 1em; }
+h3 small { margin-left: 10px; }
+.event-expanded { border: 2px solid black; border-radius: 4px; padding: 0 10px; }
+
+/* Event page */
+
+/*body.event {*/
+	h4.date {
+	  padding: 5px 0 2px;
+	  margin-top: 0
+	}
+
+	body.event h2 { margin-top: 0; }
+
+	div.img { 
+	  background: url("http://api.ning.com/files/a8yFieGq6xqi92JtUXmbI7z6w59H2RKgNzMtZtvq2MaNfpzVwuExGqJ4iZ1lvscEZ8jebnC8V5wMpK*6yLPJWzMyvMR1oCVC/223470_1031354102634_1188814802_30087004_1015_n2.jpg")
+	    #eee no-repeat;
+	  background-size: cover;
+	  height: 150px;
+	}
+
+	#map-canvas { width: 100%; height: 300px; }
+/*}*/
+
