@@ -27,7 +27,11 @@ module.exports = function(debug) {
 		cost: { type: sequelize.TEXT },
 		url: {
 			type: sequelize.TEXT,
-			get: function() { return url.parse(this.getDataValue('url')); }
+			get: function() {
+				var urlObj = url.parse(this.getDataValue('url'));
+				urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, "");
+				return urlObj;
+			}
 		},
 
 		startdt: {
