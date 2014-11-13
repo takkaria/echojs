@@ -28,9 +28,12 @@ module.exports = function(debug) {
 		url: {
 			type: sequelize.TEXT,
 			get: function() {
-				var urlObj = url.parse(this.getDataValue('url'));
-				urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, "");
-				return urlObj;
+				var urlValue = this.getDataValue('url');
+				if (urlValue) {
+					var urlObj = url.parse(urlValue);
+					urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, "");
+					return urlObj;
+				}
 			}
 		},
 

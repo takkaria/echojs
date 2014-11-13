@@ -19,12 +19,14 @@
 <p>Hosted by the <b>Working Class Movement Library</b></p>
 
 <p>{{ event.blurb }}
- 
-<p><b>Cost:</b> {{ event.cost }}</p>
+
+<p><b>Cost:</b> {{ event.cost|default("Free") }}</p>
+{% if event.url %}
 <p><b>More information:</b>
-	<i class="fa fa-fw fa-external-link"></i> <a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a> or
-	<i class="fa fa-fw fa-facebook"></i> <a href="">Facebook event</a>
- 
+	<i class="fa fa-fw fa-external-link"></i> <a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a>
+	{# or <i class="fa fa-fw fa-facebook"></i> <a href="">Facebook event</a> #}
+ {% endif %}
+
 <h3>Location</h3>
 <p><i class="fa fa-fw fa-map-marker"></i> {{ event.location }}<p>
 <div id="map-canvas"></div>
