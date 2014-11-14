@@ -54,7 +54,7 @@ router.get('/json', function(req, res) {
 		where: clauses.join(" AND "),
 		attributes: [ "id", "title", "startdt", "enddt", "location", "blurb", "url", "cost" ],
 		order: "startdt ASC",
-	}, { raw: true }).success(function(events) {
+	}, { raw: true }).then(function(events) {
 		req.header("Content-Type", "application/json");
 		res.send(JSON.stringify(events, null, " "));
 	});
@@ -70,7 +70,7 @@ router.get('/ical', function(req, res) {
 		where: clauses.join(" AND "),
 		attributes: [ "id", "title", "startdt", "enddt", "location", "blurb", "url", "cost" ],
 		order: "startdt ASC",
-	}, { raw: true }).success(function(events) {
+	}, { raw: true }).then(function(events) {
 
 		var cal = icalGenerator();
 

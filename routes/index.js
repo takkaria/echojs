@@ -12,7 +12,7 @@ router.get('/', function(req, res) {
 			"(startdt >= date('now', 'start of day') OR date('now') <= enddt)"
 		],
 		limit: 10
-	}).success(function(events) {
+	}).then(function(events) {
 
 		models.Post.findAll({
 			include: [ models.Feed ],
@@ -20,7 +20,7 @@ router.get('/', function(req, res) {
 				"SELECT COUNT(p2.feed_id) FROM post_info AS p2 " +
 				"WHERE p2.feed_id = post.feed_id AND p2.date > post.date) == 0",
 			order: "date DESC"
-		}).success(function(posts) {
+		}).then(function(posts) {
 			res.render('index', { events: events, posts: posts });
 		});
 	});
