@@ -1,0 +1,109 @@
+#!/usr/bin/env node
+
+var debug = require('debug')('y');
+var app = require('../app');
+
+app.set('port', 3001);
+
+/* 
+XXX
+copy database
+start new echo instance with copy of database
+*/
+
+var server = app.listen(app.get('port'), function() {
+  debug('Express server listening on port ' + server.address().port);
+});
+
+
+/////////////////////////////// Utility functions
+
+var request = require('request');
+
+function GET(url, cb) {
+	url = "http://localhost:" + app.get('port') + url;
+	return request(url, cb);
+}
+
+function POST(url, form, cb) {
+	return request.post({
+		url: url,
+		form: form
+	}, cb);
+}
+
+function checkStatus(code) {
+	return function(error, response, body) {
+		if (response.statusCode != code) {
+			throw new Error("Status code should have been " + code + " but was " + response.statusCode)			
+		}
+	}
+}
+
+/////////////////////////////// Simple "this page loads" type checks
+
+function simple() {
+	GET('/', checkStatus(200));
+	GET('/assdfsd', checkStatus(404));
+
+	GET('/api/ical', function(error, response, body) {
+		checkStatus(200)(error, response, body);
+
+		if (body.substr(0, 15) != "BEGIN:VCALENDAR")
+			throw new Error("BEGIN:VCALENDAR header not present, instead is " + body.substr(0, 15));
+	});
+
+	GET('/api/json', function(error, response, body) {
+		checkStatus(200)(error, response, body);
+
+		// Check it parses
+		JSON.parse(body);
+	});	
+}
+
+simple();
+
+/////////////////////////////// Event page checks
+
+function events() {
+	var models = require('../models')(true);
+
+	GET('/event/add', checkStatus(200));
+/*	POST('/event/add', {
+		title: "Test",
+		location: "Test",
+		blurb: "Test",
+		// etc
+	}, checkStatus(200)); */
+
+	/*
+	POST /event/:id/approve
+	POST /event/:id/unapprove
+	POST /event/:id/reject
+	POST /event/:id/delete
+	*/
+
+	models.Event.find({ raw: "title IS NOT NULL" }).success(function (event) {
+		var id = event.id;
+		var newtitle = "Renamed quizshuikop"; // Randomise
+
+		// Get this event
+		GET('/event/' + id, checkStatus(200));
+
+		// Try editing an event
+		POST('/event/' + id, {
+			title: newtitle
+		}, function(error, response, body) {
+			checkStatus(200)(error, response, body);
+
+			// Check it's changed
+			models.Event.find(id).success(function(event) {
+				if (event.title != newtitle)
+					throw new Error("Renaming failed");
+			});
+		});
+	});
+
+}
+
+events();
