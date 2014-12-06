@@ -42,7 +42,7 @@ function checkStatus(code) {
 
 /////////////////////////////// Simple "this page loads" type checks
 
-function simple() {
+(function() {
 	GET('/', checkStatus(200));
 	GET('/assdfsd', checkStatus(404));
 
@@ -59,13 +59,11 @@ function simple() {
 		// Check it parses
 		JSON.parse(body);
 	});	
-}
-
-simple();
+})();
 
 /////////////////////////////// Event page checks
 
-function events() {
+(function() {
 	var models = require('../models')(true);
 
 	GET('/event/add', checkStatus(200));
@@ -83,7 +81,7 @@ function events() {
 	POST /event/:id/delete
 	*/
 
-	models.Event.find({ raw: "title IS NOT NULL" }).success(function (event) {
+	models.Event.find({ raw: "title IS NOT NULL" }).then(function (event) {
 		var id = event.id;
 		var newtitle = "Renamed quizshuikop"; // Randomise
 
@@ -104,6 +102,4 @@ function events() {
 		});
 	});
 
-}
-
-events();
+})();
