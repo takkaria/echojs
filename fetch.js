@@ -23,11 +23,12 @@ function fetchICal(params) {
 			console.log("Adding new event: " + item.summary);
 
 		Event.build({
-			title: item.summary,
+			title: item.summary.trim(),
 			startdt: item.start,
 			enddt: item.end,
 			location: item.location,
-			blurb: item.description,
+			blurb: item.description.trim(),
+			url: item.url,
 			state: 'imported',
 			importid: item.uid
 		}).save();
