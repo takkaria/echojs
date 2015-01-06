@@ -4,6 +4,16 @@
   <div class="input-group-addon"><i class="fa fa-fw {{ type }}"></i></div>
 {% endmacro %}
 
+{% block script %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.datetime').datetimepicker()
+    $('.datetime').on('dp.change', function(e){
+      $(e.target).find('input[type=hidden]').val(e.date.unix());
+    });
+  });
+</script>
+{% endblock %}
 
 {% block pageclass %}event_add{% endblock %}
 
@@ -19,17 +29,28 @@
 
 <div class="form-group">
 <label for="title">Event name:</label>
-<input class="form-control required" type="text" name="title" id="title">
+<input class="form-control required" 
+	type="text" name="title" id="title">
 </div>
 
-<div class="form-group">
-<label class="title" for="date1">Starts:</label>
-<input class="required time" type="text" name="time1" id="time1"}} placeholder="time"> on <input class="required" type="text" id="date1" name="date1" placeholder="date">
+<div class="form-group datetime">
+  <label class="title" for="startdt">Starts:</label>
+  <div class='input-group date' id='datetimepicker1'>
+      <input class="required form-control" type="text" id="startdt"
+        placeholder="click to pick">
+				<input type="hidden" name="startdt">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+  </div>
 </div>
 
-<div class="form-group">
-<label class="title" for="date1">Ends:</label>
-<input class="required time" type="text" name="time2" id="time2" placeholder="time"> on <input class="required" type="text" id="date2" name="date2" placeholder="date">
+<div class="form-group datetime">
+  <label class="title" for="enddt">Ends:</label>
+  <div class='input-group date' id='datetimepicker1'>
+      <input class="required form-control" type="text" id="enddt"
+        placeholder="click to pick">
+				<input type="hidden" name="enddt">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+  </div>
 </div>
 
 <div class="form-group">
@@ -42,7 +63,7 @@
 </div>
 
 <div class="form-group">
-<label class="title" for="blurb">What group or organisation is putting on the event?</label>
+<label class="title" for="host">What group or organisation is putting on the event?</label>
 
 <div class="input-group">
   {{ inputIcon("fa-group") }}
@@ -88,7 +109,4 @@ Maximum 150 words.  Currently <span id="wordcount">0</span> / 150.</p>
 
 <input type="submit" value="Submit your event!">
 </form>
-
-
-
 {% endblock %}
