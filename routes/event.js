@@ -16,6 +16,11 @@ router.param('id', function(req, res, next, id) {
 	});
 })
 
+/* GET event add */
+router.get('/add', function(req, res) {
+	res.render('event_add', { event: req.event });
+});
+
 /* GET home page. */
 router.get('/:id', function(req, res) {
 	res.render('event_page', { event: req.event });

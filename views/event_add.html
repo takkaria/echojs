@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% macro inputIcon(type) %}
+  <div class="input-group-addon"><i class="fa fa-fw {{ type }}"></i></div>
+{% endmacro %}
+
+
+{% block pageclass %}event_add{% endblock %}
+
+{% block leftcontent %}
+
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/events">Events</a></li>
+  <li><a href="/events/add">Add Event</a></li>
+</ol>
+
+<form method="POST" action="/event/add">
+
+<div class="form-group">
+<label for="title">Event name:</label>
+<input class="form-control required" type="text" name="title" id="title">
+</div>
+
+<div class="form-group">
+<label class="title" for="date1">Starts:</label>
+<input class="required time" type="text" name="time1" id="time1"}} placeholder="time"> on <input class="required" type="text" id="date1" name="date1" placeholder="date">
+</div>
+
+<div class="form-group">
+<label class="title" for="date1">Ends:</label>
+<input class="required time" type="text" name="time2" id="time2" placeholder="time"> on <input class="required" type="text" id="date2" name="date2" placeholder="date">
+</div>
+
+<div class="form-group">
+<label class="title" for="location">Location:</label>
+
+<div class="input-group">
+  {{ inputIcon("fa-map-marker") }}
+  <input class="form-control required" type="text" name="location" id="location">
+</div>
+</div>
+
+<div class="form-group">
+<label class="title" for="blurb">What group or organisation is putting on the event?</label>
+
+<div class="input-group">
+  {{ inputIcon("fa-group") }}
+  <input class="form-control long" type="text" name="host">
+</div>
+</div>
+
+<div class="form-group">
+<label class="title" for="blurb">Event description:</label>
+<textarea class="form-control required" name="blurb" id="blurb" rows="8" aria-describedby="blurbHelp"></textarea>
+<p id="blurbHelp" class="help-block">Please include information about booking if you have to book.<br>
+Maximum 150 words.  Currently <span id="wordcount">0</span> / 150.</p>
+</div>
+
+<div class="form-group">
+<label>Price:</label>
+
+<div class="radio">
+<label for="free"> <input type="radio" name="free" id="free" value="free"> Free</label><br>
+</div>
+
+<div class="radio">
+<label for="costbutton"> <input type="radio" name="free" id="costbutton"> It costs</label> <input type="text" name="cost" id="cost" style="width: 220px;">
+</div>
+</div>
+
+<div class="form-group">
+<label class="title" for="url">URL for more info:</label>
+<div class="input-group">
+  {{ inputIcon("fa-link") }}
+  <input class="form-control permissive_url" type="url" name="url" id="url">
+</div>
+</div>
+
+<div class="form-group">
+<label class="title" for="email">Your email:</label>
+<div class="input-group">
+  {{ inputIcon("fa-envelope") }}
+  <input class="form-control required email" type="email" name="email" id="email" aria-describedBy="emailHelp">
+</div>
+<p class="helpText" id="emailHelp">This is not made public, but we will send you an email so we know you're not a spammer.</p>
+</div>
+
+<input type="submit" value="Submit your event!">
+</form>
+
+
+
+{% endblock %}
