@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block pageclass %}event_calendar{% endblock %}
+
+{% block leftcontent %}
+
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/events">Events</a></li>
+</ol>
+
+<div id='calendar'></div>
+
+{% endblock %}
+
+{% block script %}
+<script src="/bower_components/moment/min/moment.min.js"></script>
+<script src="/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<style>@import "/bower_components/fullcalendar/dist/fullcalendar.min.css";</style>
+
+<script>
+$(document).ready(function() {
+
+  // page is now ready, initialize the calendar...
+
+  $('#calendar').fullCalendar({
+    events: '/api/json'
+  })
+
+});
+</script>
+
+{% endblock %}

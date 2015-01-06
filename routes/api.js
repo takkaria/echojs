@@ -29,13 +29,13 @@ function inMonths(n) {
 function parseOpts(req) {
 	var clauses = [ "state='approved'" ];
 
-	var start = req.query.startts || today();
+	var start = req.query.start || today();
 	if (start) {
 		if (isNumber(start))
 			clauses.push("startdt >= datetime(" + start + ", 'unixepoch')");
 	}
 
-	var end = req.query.endts || inMonths(3);
+	var end = req.query.end || inMonths(3);
 	if (end) {
 		if (isNumber(end))
 			clauses.push("startdt <= datetime(" + end + ", 'unixepoch')");
@@ -50,12 +50,24 @@ router.get('/json', function(req, res) {
 
 	var clauses = parseOpts(req);
 
+	// This particular kind of JSON output is designed to be suitable input
+	// to FullCalendar.
+
 	models.Event.findAll({
 		where: clauses.join(" AND "),
+		// XXX could we SELECT enddt AS end here instead of rewriting it later?
 		attributes: [ "id", "title", "startdt", "enddt", "location", "blurb", "url", "cost" ],
 		order: "startdt ASC",
 	}, { raw: true }).then(function(events) {
 		req.header("Content-Type", "application/json");
+
+		events.forEach(function(event) {
+			event.start = event.startdt;
+			event.end = event.enddt;
+			event.startdt = undefined;
+			event.enddt = undefined;
+		});
+
 		res.send(JSON.stringify(events, null, " "));
 	});
 });

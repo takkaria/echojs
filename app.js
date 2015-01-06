@@ -9,7 +9,8 @@ var swig = require('swig');
 var models = require('./models');
 
 var routes = require('./routes/index');
-var events = require('./routes/event');
+var events = require('./routes/events');
+var event = require('./routes/event');
 var api = require('./routes/api');
 
 var app = express();
@@ -26,10 +27,11 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'bower_components')));
+app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
 app.use('/', routes);
-app.use('/event', events);
+app.use('/event', event);
+app.use('/events', events);
 app.use('/api', api);
 
 app.set('models', models(false));
