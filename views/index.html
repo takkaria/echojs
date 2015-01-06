@@ -9,26 +9,33 @@
 
 <h2>Events</h2>
 
-<h3>Today <small>Wednesday 12th November</small></h3>
+{% for chunk in events %}
 
-{% for event in events %}
-	{% if loop.first %}
-
-	<div class="event event-expanded">
-		<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="/event/{{ event.id }}">{{ event.title }}</a></h4>
-		<p><i class="fa fa-map-marker"></i> {{ event.location }}
-		<p>{{ event.blurb }}
-		<p>more info at <i class="fa fa-external-link"></i>
-			<a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a>
-	</div>
-
+	{% if chunk.shortDate %}
+		<h3>{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small></h3>
 	{% else %}
-
-	<div class="event">
-	<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="/event/{{ event.id }}">{{ event.title }}</a></h4>
-	</div>
-
+		<h3>{{ chunk.longDate }}</h3>
 	{% endif %}
+
+	{% for event in chunk.events %}
+		{% if loop.first %}
+
+		<div class="event event-expanded">
+			<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="/event/{{ event.id }}">{{ event.title }}</a></h4>
+			<p><i class="fa fa-map-marker"></i> {{ event.location }}
+			<p>{{ event.blurb }}
+			<p>more info at <i class="fa fa-external-link"></i>
+				<a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a>
+		</div>
+
+		{% else %}
+
+		<div class="event">
+		<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="/event/{{ event.id }}">{{ event.title }}</a></h4>
+		</div>
+
+		{% endif %}
+	{% endfor %}
 {% endfor %}
 
 {% endblock %}
