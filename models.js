@@ -19,6 +19,7 @@ module.exports = function(debug) {
 
 	exports.Event = db.define('event', {
 		id: { type: sequelize.INTEGER, primaryKey: true },
+		slug: { type: sequelize.TEXT },
 
 		title: { type: sequelize.TEXT },
 		location: { type: sequelize.TEXT },
@@ -36,6 +37,7 @@ module.exports = function(debug) {
 				}
 			}
 		},
+		host: { type: sequelize.TEXT },
 
 		startdt: {
 			type: sequelize.DATE,

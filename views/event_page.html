@@ -16,16 +16,23 @@
 <h4 class="date">{{ event.startdt.format("dddd, Do MMMM, h:mma") }}</h4>
  
 <h2>{{ event.title }}</h2>
-<p>Hosted by the <b>Working Class Movement Library</b></p>
+
+{% if event.host %}
+<p>Hosted by the <b>{{ event.host }}</b></p>
+{% endif %}
 
 <p>{{ event.blurb }}
 
 <p><b>Cost:</b> {{ event.cost|default("Free") }}</p>
+
 {% if event.url %}
 <p><b>More information:</b>
-	<i class="fa fa-fw fa-external-link"></i> <a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a>
-	{# or <i class="fa fa-fw fa-facebook"></i> <a href="">Facebook event</a> #}
- {% endif %}
+  {% if event.url.hostNoWww == "facebook.com" %}
+    <i class="fa fa-fw fa-facebook"></i> <a href="{{ event.url.href }}" target="_blank">Facebook</a>
+  {% else %}
+    <i class="fa fa-fw fa-external-link"></i> <a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a>
+  {% endif %}
+{% endif %}
 
 <h3>Location</h3>
 <p><i class="fa fa-fw fa-map-marker"></i> {{ event.location }}<p>
