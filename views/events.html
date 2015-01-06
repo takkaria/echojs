@@ -21,11 +21,27 @@
 <script>
 $(document).ready(function() {
 
-  // page is now ready, initialize the calendar...
+	// Get the start date from the URL
+	var start = moment(location.pathname, "YYYY/MMM");
 
-  $('#calendar').fullCalendar({
-    events: '/api/json'
-  })
+	function urlise(moment) {
+		return "/events/" + moment.format("YYYY/MMM").toLowerCase();
+	}
+
+	$('#calendar').fullCalendar({
+		events: '/api/json',
+		defaultDate: start,
+		loading: function(isLoading, view) {
+			if (!isLoading) return;
+			history.pushState(view.intervalStart.toISOString(),
+				null,
+				urlise(view.intervalStart));
+		}
+	})
+
+	window.addEventListener('popstate', function(e) {
+		$('#calendar').fullCalendar('gotoDate', history.state);
+	});
 
 });
 </script>
