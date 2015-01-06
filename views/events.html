@@ -21,22 +21,32 @@
 <script>
 $(document).ready(function() {
 
-	// Get the start date from the URL
-	var start = moment(location.pathname, "YYYY/MMM");
-
-	function urlise(moment) {
-		return "/events/" + moment.format("YYYY/MMM").toLowerCase();
-	}
+	// If the URL is just '/events' then we start at today's date
+	var start = moment();
+	if (location.pathname != "/events")
+		start = moment(location.pathname, "YYYY/MMM");
 
 	$('#calendar').fullCalendar({
 		events: '/api/json',
 		defaultDate: start,
+		fixedWeekCount: false,
+		timeFormat: 'h(:mm)a',
+
+		eventBackgroundColor: "#eee",
+		eventBorderColor: "#ccc",
+		eventTextColor: "black",
+
 		loading: function(isLoading, view) {
 			if (!isLoading) return;
 			history.pushState(view.intervalStart.toISOString(),
 				null,
-				urlise(view.intervalStart));
-		}
+				"/events/" + view.intervalStart.format("YYYY/MMM").toLowerCase());
+		},
+		eventClick: function(event, jsEvent, view) {
+			// XXX use the slug instead when supported
+			location.href ="/event/" + event.id;
+			return false;
+		},
 	})
 
 	window.addEventListener('popstate', function(e) {
