@@ -56,7 +56,7 @@
 
 {% for post in posts %}
 	{% if loop.first %}<ul class="news">{% endif %}
-	<li><b>{{ post.feed.title }}</b><br>
+	<li><b>{{ post.feed.title }}</b> <small>({{ post.date.fromNow() }})</small><br>
 	<a href="{{ post.link }}">{{ post.title }}</a>
 	{% if loop.last %}</ul>{% endif %}
 {% endfor %}
