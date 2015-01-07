@@ -21,7 +21,7 @@
 <p>Hosted by the <b>{{ event.host }}</b></p>
 {% endif %}
 
-<p>{{ event.blurb }}
+<p>{{ event.blurbAsHTML() }}
 
 <p><b>Cost:</b> {{ event.cost|default("Free") }}</p>
 

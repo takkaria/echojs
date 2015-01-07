@@ -1,6 +1,7 @@
 var sequelize = require('sequelize');
 var moment = require('moment');
 var url = require('url');
+var marked = require('marked');
 
 module.exports = function(debug) {
 	var exports = {};
@@ -97,7 +98,17 @@ module.exports = function(debug) {
 		},
 		key: { type: sequelize.TEXT },
 		importid: { type: sequelize.TEXT },
-	}, global_options);
+
+	}, {
+		timestamps: false,
+		createdAt: false,
+		underscored: true,
+		instanceMethods: {
+			blurbAsHTML: function() {
+				return marked(this.blurb);
+			}
+		}
+	});
 
 	exports.User = db.define('user', {
 		email: { type: sequelize.TEXT, primaryKey: true },
