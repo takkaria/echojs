@@ -18,14 +18,40 @@ module.exports = function(debug) {
 	});
 
 	exports.Event = db.define('event', {
-		id: { type: sequelize.INTEGER, primaryKey: true },
+		id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		slug: { type: sequelize.TEXT },
 
-		title: { type: sequelize.TEXT },
-		location: { type: sequelize.TEXT },
-		blurb: { type: sequelize.TEXT },
-		type: { type: sequelize.TEXT },
-		cost: { type: sequelize.TEXT },
+		title: {
+			type: sequelize.TEXT,
+			allowNull: false,
+			validate:  {
+				notEmpty: true
+			}
+		},
+		location: {
+			type: sequelize.TEXT,
+			allowNull: false,
+			validate: {
+				notEmpty: true
+			}
+		},
+		blurb: {
+			type: sequelize.TEXT,
+			allowNull: false,
+			validate: {
+				notEmpty: true
+			}
+		},
+		type: {
+			type: sequelize.TEXT
+		},
+		cost: {
+			type: sequelize.TEXT,
+			allowNull: false,
+			validate: {
+				notEmpty: true
+			}
+		},
 		url: {
 			type: sequelize.TEXT,
 			get: function() {
@@ -37,11 +63,21 @@ module.exports = function(debug) {
 				}
 			}
 		},
-		host: { type: sequelize.TEXT },
+		host: {
+			type: sequelize.TEXT,
+			allowNull: false,
+			validate: {
+				notEmpty: true
+			}
+		},
 
 		startdt: {
 			type: sequelize.DATE,
-			get: function() { return moment(this.getDataValue('startdt')); }
+			get: function() { return moment(this.getDataValue('startdt')); },
+			allowNull: false,
+			validate: {
+				notEmpty: true
+			}
 		},
 		enddt: {
 			type: sequelize.DATE,
@@ -52,7 +88,13 @@ module.exports = function(debug) {
 			type: sequelize.ENUM,
 			values: [ 'submitted', 'approved', 'imported' ]
 		},
-		email: { type: sequelize.TEXT },
+		email: {
+			type: sequelize.TEXT,
+			allowNull: false,
+			validate:  {
+				isEmail: true
+			}
+		},
 		key: { type: sequelize.TEXT },
 		importid: { type: sequelize.TEXT },
 	}, global_options);

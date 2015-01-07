@@ -4,91 +4,140 @@
   <div class="input-group-addon"><i class="fa fa-fw {{ type }}"></i></div>
 {% endmacro %}
 
+{% block script %}
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('.datetime').datetimepicker()
+    $('.datetime').on('dp.change', function(e){
+      $(e.target).find('input[type=hidden]').val(e.date.unix());
+    });
+		$('.datetime').each(function(){
+			var dt = $(this).find('input[type=hidden]').val();
+			if (dt !== '') {
+				$(this).data("DateTimePicker").setDate(
+					moment.unix(dt)
+				)
+			}
+		});
+  });
+</script>
+{% endblock %}
 
 {% block pageclass %}event_add{% endblock %}
 
 {% block leftcontent %}
-
 <ol class="breadcrumb">
   <li><a href="/">Echo</a></li>
   <li><a href="/events">Events</a></li>
   <li><a href="/events/add">Add Event</a></li>
 </ol>
 
+{% if errors %}
+<div class="alert alert-danger">
+	<ul>
+		{% for error in errors %}
+		<li><strong>{{ error.path }}</strong>: {{ error.message }}</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endif %}
 <form method="POST" action="/event/add">
+	<div class="form-group">
+		<label for="title">Event name:</label>
+		<input class="form-control required"
+			type="text" name="title" id="title"
+			value="{{ event_.title }}">
+	</div>
 
-<div class="form-group">
-<label for="title">Event name:</label>
-<input class="form-control required" type="text" name="title" id="title">
-</div>
+	<div class="form-group datetime">
+		<label class="title" for="i_startdt">Starts:</label>
+		<div class='input-group date'>
+			<input class="required form-control" type="text" id="i_startdt"
+				placeholder="click to pick">
+			<input type="hidden" name="startdt" id="startdt"
+				value="{{ event_.startdt }}">
+			<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+		</div>
+	</div>
 
-<div class="form-group">
-<label class="title" for="date1">Starts:</label>
-<input class="required time" type="text" name="time1" id="time1"}} placeholder="time"> on <input class="required" type="text" id="date1" name="date1" placeholder="date">
-</div>
+	<div class="form-group datetime">
+		<label class="title" for="i_enddt">Ends:</label>
+		<div class='input-group date'>
+			<input class="required form-control" type="text" id="i_enddt"
+				placeholder="click to pick">
+			<input type="hidden" name="enddt" id="enddt"
+				value="{{ event_.enddt }}">
+			<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+		</div>
+	</div>
 
-<div class="form-group">
-<label class="title" for="date1">Ends:</label>
-<input class="required time" type="text" name="time2" id="time2" placeholder="time"> on <input class="required" type="text" id="date2" name="date2" placeholder="date">
-</div>
+	<div class="form-group">
+		<label class="title" for="location">Location:</label>
+		<div class="input-group">
+			{{ inputIcon("fa-map-marker") }}
+			<input class="form-control required" type="text" name="location" id="location"
+				value="{{ event_.location }}">
+		</div>
+	</div>
 
-<div class="form-group">
-<label class="title" for="location">Location:</label>
+	<div class="form-group">
+		<label class="title" for="host">What group or organisation is putting on the event?</label>
+		<div class="input-group">
+			{{ inputIcon("fa-group") }}
+			<input class="form-control long" type="text" name="host"
+				value="{{ event_.host }}">
+		</div>
+	</div>
 
-<div class="input-group">
-  {{ inputIcon("fa-map-marker") }}
-  <input class="form-control required" type="text" name="location" id="location">
-</div>
-</div>
+	<div class="form-group">
+		<label class="title" for="blurb">Event description:</label>
+		<textarea class="form-control required" name="blurb" id="blurb" rows="8"
+			aria-describedby="blurbHelp">{{ event_.blurb }}</textarea>
+		<p id="blurbHelp" class="help-block">
+			Please include information about booking if you have to book.<br>
+			Maximum 150 words.
+			Currently <span id="wordcount">0</span> / 150.
+		</p>
+	</div>
 
-<div class="form-group">
-<label class="title" for="blurb">What group or organisation is putting on the event?</label>
+	<div class="form-group">
+		<label>Price:</label>
+		<div class="radio">
+			<label for="cost_free">
+				<input type="radio" name="cost" id="cost_free" value="free"
+					{% if event_.cost == 'free' %}checked="checked"{% endif %}> Free
+			</label>
+		</div>
+		<div class="radio">
+			<label for="cost_paid">
+				<input type="radio" name="cost" id="cost_paid"
+				{% if event_.cost != 'free' %}checked="checked"{% endif %}> It costs
+			</label>
+			<input type="text" name="cost_fee" id="cost_fee"
+				style="width: 220px;" placeholder="how much?">
+		</div>
+	</div>
 
-<div class="input-group">
-  {{ inputIcon("fa-group") }}
-  <input class="form-control long" type="text" name="host">
-</div>
-</div>
+	<div class="form-group">
+		<label class="title" for="url">URL for more info:</label>
+		<div class="input-group">
+			{{ inputIcon("fa-link") }}
+			<input class="form-control permissive_url" type="url" name="url" id="url"
+				value="{{ event_.url }}">
+		</div>
+	</div>
 
-<div class="form-group">
-<label class="title" for="blurb">Event description:</label>
-<textarea class="form-control required" name="blurb" id="blurb" rows="8" aria-describedby="blurbHelp"></textarea>
-<p id="blurbHelp" class="help-block">Please include information about booking if you have to book.<br>
-Maximum 150 words.  Currently <span id="wordcount">0</span> / 150.</p>
-</div>
+	<div class="form-group">
+		<label class="title" for="email">Your email:</label>
+		<div class="input-group">
+			{{ inputIcon("fa-envelope") }}
+			<input class="form-control required email" type="email" name="email"
+				id="email" aria-describedBy="emailHelp"
+				value="{{ event_.email }}">
+		</div>
+		<p id="emailHelp" class="help-block">This is not made public, but we will send you an email so we know you're not a spammer.</p>
+	</div>
 
-<div class="form-group">
-<label>Price:</label>
-
-<div class="radio">
-<label for="free"> <input type="radio" name="free" id="free" value="free"> Free</label><br>
-</div>
-
-<div class="radio">
-<label for="costbutton"> <input type="radio" name="free" id="costbutton"> It costs</label> <input type="text" name="cost" id="cost" style="width: 220px;">
-</div>
-</div>
-
-<div class="form-group">
-<label class="title" for="url">URL for more info:</label>
-<div class="input-group">
-  {{ inputIcon("fa-link") }}
-  <input class="form-control permissive_url" type="url" name="url" id="url">
-</div>
-</div>
-
-<div class="form-group">
-<label class="title" for="email">Your email:</label>
-<div class="input-group">
-  {{ inputIcon("fa-envelope") }}
-  <input class="form-control required email" type="email" name="email" id="email" aria-describedBy="emailHelp">
-</div>
-<p id="emailHelp" class="help-block">This is not made public, but we will send you an email so we know you're not a spammer.</p>
-</div>
-
-<input type="submit" value="Submit your event!">
+	<input type="submit" value="Submit your event!">
 </form>
-
-
-
 {% endblock %}
