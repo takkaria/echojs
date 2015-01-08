@@ -40,17 +40,12 @@ router.post('/add', function(req, res) {
 			cost: b.cost,
 			email: b.email,
 		};
-		console.log(event_);
 	models.Event
 		.create(event_)
 		.then(function(event_) {
-			console.log('ok');
-			console.log(event_);
 			res.redirect(event_.id);
 		})
 		.catch(function(errors) {
-			console.log(errors);
-			console.log(req.body);
 			res.render('event_add', {
 				event_: event_,
 				errors: errors.errors,

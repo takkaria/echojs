@@ -88,7 +88,7 @@ module.exports = function(debug) {
 
 		state: {
 			type: sequelize.ENUM,
-			values: [ 'submitted', 'approved', 'imported' ]
+			values: [ 'submitted', 'approved', 'imported', 'hidden' ]
 		},
 		email: {
 			type: sequelize.TEXT,

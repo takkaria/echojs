@@ -67,7 +67,6 @@ router.post('/:id/approve', ensureAuthenticated, function(req, res) {
 	event_.set('state', 'approved');
 	event_.save().then(function(){
 		event_.reload();
-		console.log(event_.absolute_url);
 		res.redirect('/event/' + event_.id);  // FIXME should be event_.absolute_url
 	})
 	.catch(function(errors){
@@ -79,6 +78,20 @@ router.get('/:id/reject', ensureAuthenticated, function(req, res) {
 	res.render('event_reject', {
 		event_: req.event_,
 		user: req.user
+	});
+});
+
+router.post('/:id/reject', ensureAuthenticated, function(req, res) {
+	var event_ = req.event_;
+	if (event_.state !== 'submitted') {
+		res.redirect('/admin/' + req.event_.id);
+	}
+	event_.set('state', 'hidden');
+	event_.save().then(function(){
+		res.redirect('/admin');
+	})
+	.catch(function(errors){
+		console.log(errors);
 	});
 });
 
