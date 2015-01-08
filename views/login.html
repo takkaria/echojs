@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block pageclass %}login{% endblock %}
+
+{% block leftcontent %}
+
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/login">Login</a></li>
+</ol>
+<form action="/user/login" method="post">
+  <div>
+    <label>e-mail:</label>
+    <input type="text" name="email"/>
+  </div>
+  <div>
+    <label>password:</label>
+    <input type="password" name="password"/>
+  </div>
+  <div>
+    <input type="submit" value="Log In"/>
+  </div>
+</form> 
+{% endblock %}

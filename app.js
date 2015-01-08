@@ -1,16 +1,19 @@
 var express = require('express');
+var session = require('express-session');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
+var passport = require('passport');
 
 var models = require('./models');
 
 var routes = require('./routes/index');
 var events = require('./routes/events');
 var event = require('./routes/event');
+var user = require('./routes/user');
 var api = require('./routes/api');
 
 var app = express();
@@ -20,18 +23,25 @@ app.engine('html', swig.renderFile);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
-// uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
 app.use('/', routes);
 app.use('/event', event);
 app.use('/events', events);
+app.use('/user', user);
 app.use('/api', api);
 
 app.set('models', models(false));
@@ -67,5 +77,44 @@ app.use(function(err, req, res, next) {
     });
 });
 
+var passport = require('passport')
+  , LocalStrategy = require('passport-local').Strategy;
+
+passport.use(new LocalStrategy({
+        usernameField: 'email',
+    },
+    function(email, password, done) {
+    var models = app.get('models');
+    var sequelize = models.sequelize;
+
+    models.User.find({
+        where: [
+            { email: email },
+        ]
+    }).then(function(user) {
+        if (!user) {
+            return done(null, false, { message: 'Incorrect email.' });
+        }
+        if (!user.checkPassword(password)) {
+            return done(null, false, { message: 'Incorrect password.' });
+        }
+        return done(null, user);
+    });
+}));
+
+passport.serializeUser(function(user, done) {
+  done(null, user.email);
+});
+
+passport.deserializeUser(function(email, done) {
+    var models = app.get('models');
+    models.User.find({
+        where: [
+            { email: email },
+        ]
+    }).then(function(user) {
+    done(null, user);
+  });
+});
 
 module.exports = app;

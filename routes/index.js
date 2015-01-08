@@ -52,7 +52,11 @@ router.get('/', function(req, res) {
 				"WHERE p2.feed_id = post.feed_id AND p2.date > post.date) == 0",
 			order: "date DESC"
 		}).then(function(posts) {
-			res.render('index', { events: ordered, posts: posts });
+			res.render('index', {
+				events: ordered,
+				posts: posts,
+				user: req.user
+			});
 		});
 	});
 });
