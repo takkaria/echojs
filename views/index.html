@@ -10,7 +10,6 @@
 <h2>Events</h2>
 
 {% for chunk in events %}
-
 	{% if chunk.shortDate %}
 		<h3>{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small></h3>
 	{% else %}
@@ -21,7 +20,7 @@
 		{% if loop.first %}
 
 		<div class="event event-expanded">
-			<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="/event/{{ event.id }}">{{ event.title }}</a></h4>
+			<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="{{ event.absolute_url }}">{{ event.title }}</a></h4>
 			<p><i class="fa fa-map-marker"></i> {{ event.location }}
 			<p>{{ event.blurbAsHTML() }}
 			<p>more info at <i class="fa fa-external-link"></i>
@@ -31,7 +30,7 @@
 		{% else %}
 
 		<div class="event">
-		<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="/event/{{ event.id }}">{{ event.title }}</a></h4>
+		<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="{{ event.absolute_url }}">{{ event.title }}</a></h4>
 		</div>
 
 		{% endif %}
