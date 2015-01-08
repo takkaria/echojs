@@ -15,7 +15,6 @@ router.get('/', function(req, res) {
 		limit: 10,
 		order: "startdt ASC"
 	}).then(function(events) {
-
 		// This will look like
 		// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
 		var ordered = [];

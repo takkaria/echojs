@@ -19,13 +19,23 @@ router.param('email', function(req, res, next, id) {
 })
 
 router.get('/login', function(req, res) {
-	res.render('login');
+	res.render('login', {next: req.query.next});
 });
 
-router.post('/login',
-  passport.authenticate('local', { successRedirect: '/',
-                                   failureRedirect: '/user/login' })
-);
+router.post('/login', function(req, res, next) {
+  passport.authenticate('local', function(err, user, info) {
+		if (err) { return next(err); }
+    if (!user) { return res.redirect('/login'); }
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+			console.log(req.body.next);
+			if (req.body.next) {
+				return res.redirect(req.body.next);
+			}
+      return res.redirect('/');
+    });
+	})(req, res, next);
+});
 
 router.get('/logout', function(req, res){
 	req.logout();

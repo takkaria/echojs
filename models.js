@@ -130,7 +130,6 @@ module.exports = function(debug) {
 				var digest = crypto.createHash('sha256').update(
 					this.getDataValue('salt') + password
 				).digest('base64');
-				console.log('wrong password, digest: ', digest);
 				return digest === this.getDataValue('digest');
 			}
 		}
