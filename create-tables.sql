@@ -29,6 +29,7 @@ CREATE TABLE users (
 	notify BOOLEAN,
 	rights TEXT		/* "admin", "editor" */
 );
+INSERT INTO "users" VALUES('test@example.com',NULL,'aaa','e3MjCoP7Oui8bQ+BK+2wWIRmq/OApZ8nXNuv6Kt6qiw=',NULL,NULL,'admin');
 
 CREATE TABLE posts (
 	id TEXT PRIMARY KEY,
