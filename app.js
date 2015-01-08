@@ -14,6 +14,7 @@ var routes = require('./routes/index');
 var events = require('./routes/events');
 var event = require('./routes/event');
 var user = require('./routes/user');
+var admin = require('./routes/admin');
 var api = require('./routes/api');
 
 var app = express();
@@ -42,6 +43,7 @@ app.use('/', routes);
 app.use('/event', event);
 app.use('/events', events);
 app.use('/user', user);
+app.use('/admin', admin);
 app.use('/api', api);
 
 app.set('models', models(false));
