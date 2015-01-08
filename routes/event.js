@@ -7,11 +7,11 @@ router.param('id', function(req, res, next, id) {
 
 	models.Event.find({
 		where: { id: id }
-	}).then(function(event) {
-		if (!event)
+	}).then(function(event_) {
+		if (!event_)
 			return next(new Error("No such event"));
 
-		req.event = event;
+		req.event_ = event_;
 	}).then(next, function (err) {
 		next(err);
 	});
@@ -19,7 +19,10 @@ router.param('id', function(req, res, next, id) {
 
 /* GET event add */
 router.get('/add', function(req, res) {
-	res.render('event_add', { event: req.event });
+	res.render('event_add', { 
+		event_: req.event_,
+		user: req.user
+	});
 });
 
 /* POST event add */
@@ -50,14 +53,18 @@ router.post('/add', function(req, res) {
 			console.log(req.body);
 			res.render('event_add', {
 				event_: event_,
-				errors: errors.errors
+				errors: errors.errors,
+				user: user
 			});
 		});
 });
 
-/* GET home page. */
+/* GET event page. */
 router.get('/:id', function(req, res) {
-	res.render('event_page', { event: req.event });
+	res.render('event_page', {
+		event_: req.event_,
+		user: req.user
+	});
 });
 
 module.exports = router;
