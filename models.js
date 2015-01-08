@@ -98,7 +98,6 @@ module.exports = function(debug) {
 		},
 		key: { type: sequelize.TEXT },
 		importid: { type: sequelize.TEXT },
-
 	}, {
 		timestamps: false,
 		createdAt: false,
@@ -106,6 +105,14 @@ module.exports = function(debug) {
 		instanceMethods: {
 			blurbAsHTML: function() {
 				return marked(this.blurb);
+			},
+		},
+		getterMethods: {
+			absolute_url: function() {
+				var url = moment(this.getDataValue('startdt')).format('[/]YYYY[/]MM/') + this.getDataValue('slug');
+				return '/event'
+					+ moment(this.getDataValue('startdt')).format('[/]YYYY[/]MM/')
+					+ this.getDataValue('slug');
 			}
 		}
 	});
