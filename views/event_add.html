@@ -34,20 +34,15 @@
 </ol>
 
 {% if errors %}
-<div class="alert alert-danger">
-	<ul>
-		{% for error in errors %}
-		<li><strong>{{ error.path }}</strong>: {{ error.message }}</li>
-		{% endfor %}
-	</ul>
-</div>
+<p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
 {% endif %}
+
 <form method="POST" action="/event/add">
 
 	{{ form.inputText({ label: "Event name:", field: "title", fill: event_.title }) }}
 	{{ form.inputDateTime({ label: "Starts:", field: "startdt", fill: event_.startdt }) }}
 	{{ form.inputDateTime({ label: "Ends:", field: "enddt", fill: event_.enddt }) }}
-	{{ form.inputText({ label: "Location:", field: "title", fill: event_.title, icon: "fa-map-marker" }) }}
+	{{ form.inputText({ label: "Location:", field: "location", fill: event_.location, icon: "fa-map-marker" }) }}
 	{{ form.inputText({ label: "What group or organisation is putting on the event?",
 			field: "host", fill: event_.host, icon: "fa-group" }) }}
 

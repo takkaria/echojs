@@ -1,28 +1,43 @@
+{% macro iconStart(opts) %}
+	{% if opts.icon %}
+		<div class="input-group">
+			<div class="input-group-addon"><i class="fa fa-fw {{ opts.icon }}"></i></div>
+	{% endif %}
+{% endmacro %}
+
+{% macro iconEnd(opts) %}
+	{% if opts.icon %}
+		</div>
+	{% endif %}
+{% endmacro %}
+
+{% macro helpText(opts) %}
+	{% if opts.helpText %}
+		<p id="{{opts.field}}Help" class="help-block">{{ opts.helpText }}</p>
+	{% endif %}
+{% endmacro %}
+
 {% macro inputText(opts) %}
 	{# opts = { label, field, fill, icon, helpText } #}
 
 	<div class="form-group">
 		<label for="{{ opts.field }}">{{ opts.label }}</label>
 
-		{% if opts.icon %}
-			<div class="input-group">
-				<div class="input-group-addon"><i class="fa fa-fw {{ opts.icon }}"></i></div>
-				<input class="form-control long"
-					name="{{ opts.field }}"
-					type="text"
-					value="{{ opts.fill }}">
-					{# Add aria-describedBy="{{ opts.field }}Help" #}
-			</div>
-		{% else %}
-			<input class="form-control long"
-				name="{{ opts.field }}"
-				type="text"
-				value="{{ opts.fill }}">
-		{% endif %}
+		{{ iconStart(opts) }}
+		<input class="form-control long"
+			name="{{ opts.field }}"
+			type="text"
+			{% if opts.fill %}     value="{{ opts.fill }}" {% endif %}
+			{% if opts.helpText %} aria-describedBy="{{ opts.field }}Help" {% endif %}
+		>
+		{{ iconEnd(opts) }}
 
-		{% if opts.helpText %}
-			<p id="{{opts.field}}Help" class="help-block">{{ opts.helpText }}</p>
-		{% endif %}
+		{% for err in errors %}
+			{% if err.path == opts.field %}
+				<p class="text-danger">Error: {{ err.message }}</p>
+			{% endif %}
+		{% endfor %}
+		{{ helpText(opts) }}
 	</div>
 {% endmacro %}
 
@@ -31,9 +46,22 @@
 
 	<div class="form-group">
 		<label for="{{ opts.field }}">{{ opts.label }}</label>
+
+		{{ iconStart(opts) }}
 		<input class="form-control long"
 			name="{{ opts.field }}"
-			type="password">
+			type="password"
+			{% if opts.fill %}		value="{{ opts.fill }}" {% endif %}
+			{% if opts.helpText %}	aria-describedBy="{{ opts.field }}Help" {% endif %}
+		>
+		{{ iconEnd(opts) }}
+
+		{% for err in errors %}
+			{% if err.path == opts.field %}
+				<p class="text-danger">Error: {{ err.message }}</p>
+			{% endif %}
+		{% endfor %}
+		{{ helpText(opts) }}
 	</div>
 {% endmacro %}
 
