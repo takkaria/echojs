@@ -22,14 +22,13 @@ router.param('id', function(req, res, next, id) {
 	});
 })
 
-/* GET event add */
 router.get('/', ensureAuthenticated, function(req, res) {
 	var models = req.app.get('models'),
 		sequelize = models.sequelize;
 
 	models.Event.findAll({
 		where: [
-			{ state: "submitted" }
+			{ state: ["submitted", "imported"] }
 		],
 		limit: 20,
 		order: "startdt ASC"
@@ -50,7 +49,7 @@ router.get('/:id', ensureAuthenticated, function(req, res) {
 
 router.get('/:id/approve', ensureAuthenticated, function(req, res) {
 	var event_ = req.event_;
-	if (event_.state !== 'submitted') {
+	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
 	}
 	res.render('event_approve', {
@@ -61,7 +60,7 @@ router.get('/:id/approve', ensureAuthenticated, function(req, res) {
 
 router.post('/:id/approve', ensureAuthenticated, function(req, res) {
 	var event_ = req.event_;
-	if (event_.state !== 'submitted') {
+	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
 	}
 	event_.set('state', 'approved');
@@ -75,6 +74,10 @@ router.post('/:id/approve', ensureAuthenticated, function(req, res) {
 });
 
 router.get('/:id/reject', ensureAuthenticated, function(req, res) {
+	var event_ = req.event_;
+	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
+		res.redirect('/admin/' + req.event_.id);
+	}
 	res.render('event_reject', {
 		event_: req.event_,
 		user: req.user
@@ -83,7 +86,7 @@ router.get('/:id/reject', ensureAuthenticated, function(req, res) {
 
 router.post('/:id/reject', ensureAuthenticated, function(req, res) {
 	var event_ = req.event_;
-	if (event_.state !== 'submitted') {
+	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
 	}
 	event_.set('state', 'hidden');
