@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% import "formmacros.html" as form %}
 
 {% macro inputIcon(type) %}
   <div class="input-group-addon"><i class="fa fa-fw {{ type }}"></i></div>
@@ -33,66 +34,23 @@
 </ol>
 
 {% if errors %}
-<div class="alert alert-danger">
-	<ul>
-		{% for error in errors %}
-		<li><strong>{{ error.path }}</strong>: {{ error.message }}</li>
-		{% endfor %}
-	</ul>
-</div>
+<p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
 {% endif %}
+
 <form method="POST" action="/event/add">
-	<div class="form-group">
-		<label for="title">Event name:</label>
-		<input class="form-control required"
-			type="text" name="title" id="title"
-			value="{{ event_.title }}">
-	</div>
 
-	<div class="form-group datetime">
-		<label class="title" for="i_startdt">Starts:</label>
-		<div class='input-group date'>
-			<input class="required form-control" type="text" id="i_startdt"
-				placeholder="click to pick">
-			<input type="hidden" name="startdt" id="startdt"
-				value="{{ event_.startdt }}">
-			<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-		</div>
-	</div>
-
-	<div class="form-group datetime">
-		<label class="title" for="i_enddt">Ends:</label>
-		<div class='input-group date'>
-			<input class="required form-control" type="text" id="i_enddt"
-				placeholder="click to pick">
-			<input type="hidden" name="enddt" id="enddt"
-				value="{{ event_.enddt }}">
-			<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-		</div>
-	</div>
-
-	<div class="form-group">
-		<label class="title" for="location">Location:</label>
-		<div class="input-group">
-			{{ inputIcon("fa-map-marker") }}
-			<input class="form-control required" type="text" name="location" id="location"
-				value="{{ event_.location }}">
-		</div>
-	</div>
-
-	<div class="form-group">
-		<label class="title" for="host">What group or organisation is putting on the event?</label>
-		<div class="input-group">
-			{{ inputIcon("fa-group") }}
-			<input class="form-control long" type="text" name="host"
-				value="{{ event_.host }}">
-		</div>
-	</div>
+	{{ form.inputText({ label: "Event name:", field: "title", fill: event_.title }) }}
+	{{ form.inputDateTime({ label: "Starts:", field: "startdt", fill: event_.startdt }) }}
+	{{ form.inputDateTime({ label: "Ends:", field: "enddt", fill: event_.enddt }) }}
+	{{ form.inputText({ label: "Location:", field: "location", fill: event_.location, icon: "fa-map-marker" }) }}
+	{{ form.inputText({ label: "What group or organisation is putting on the event?",
+			field: "host", fill: event_.host, icon: "fa-group" }) }}
 
 	<div class="form-group">
 		<label class="title" for="blurb">Event description:</label>
 		<textarea class="form-control required" name="blurb" id="blurb" rows="8"
 			aria-describedby="blurbHelp">{{ event_.blurb }}</textarea>
+		{{ form.checkErorrs("blurb") }}
 		<p id="blurbHelp" class="help-block">
 			Please include information about booking if you have to book.<br>
 			Maximum 150 words.
@@ -115,29 +73,15 @@
 			</label>
 			<input type="text" name="cost_fee" id="cost_fee"
 				style="width: 220px;" placeholder="how much?">
+
+			{{ form.checkErorrs("cost_fee") }}
 		</div>
 	</div>
 
-	<div class="form-group">
-		<label class="title" for="url">URL for more info:</label>
-		<div class="input-group">
-			{{ inputIcon("fa-link") }}
-			<input class="form-control permissive_url" type="url" name="url" id="url"
-				value="{{ event_.url }}">
-		</div>
-	</div>
+	{{ form.inputText({ label: "URL for more info:", field: "url", fill: event_.url, icon: "fa-link" }) }}
+	{{ form.inputText({ label: "Your email:", field: "email", fill: event_.email, icon: "fa-envelope",
+					helpText: "This is not made public, but we will let you know when your event is approved." }) }}
 
-	<div class="form-group">
-		<label class="title" for="email">Your email:</label>
-		<div class="input-group">
-			{{ inputIcon("fa-envelope") }}
-			<input class="form-control required email" type="email" name="email"
-				id="email" aria-describedBy="emailHelp"
-				value="{{ event_.email }}">
-		</div>
-		<p id="emailHelp" class="help-block">This is not made public, but we will send you an email so we know you're not a spammer.</p>
-	</div>
-
-	<input type="submit" value="Submit your event!">
+	{{ form.inputSubmit("Submit your event") }}
 </form>
 {% endblock %}

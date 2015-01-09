@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% import "formmacros.html" as form %}
 
 {% block pageclass %}login{% endblock %}
 
@@ -8,18 +9,12 @@
   <li><a href="/">Echo</a></li>
   <li><a href="/login">Login</a></li>
 </ol>
+
 <form action="/user/login" method="post">
-  <div>
-    <label>e-mail:</label>
-    <input type="text" name="email"/>
-  </div>
-  <div>
-    <label>password:</label>
-    <input type="password" name="password"/>
-  </div>
-  <div>
-    <input type="hidden" name="next" value="{{ next }}" />
-    <input type="submit" value="Log In"/>
-  </div>
+  <input type="hidden" name="next" value="{{ next }}">
+  {{ form.inputText({ label: "Email:", field: "email" }) }}
+  {{ form.inputPassword({ label: "Password:", field: "password" }) }}
+  {{ form.inputSubmit("Log in") }}
 </form> 
+
 {% endblock %}
