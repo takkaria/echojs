@@ -28,7 +28,7 @@ router.get('/', ensureAuthenticated, function(req, res) {
 		limit: 20,
 		order: "startdt ASC"
 	}).then(function(events_) {
-		res.render('admin', { 
+		res.render('admin', {
 			user: req.user,
 			events_: events_
 		});
@@ -91,6 +91,22 @@ router.post('/event/:id/reject', ensureAuthenticated, function(req, res) {
 	})
 	.catch(function(errors){
 		console.log(errors);
+	});
+});
+
+router.get('/user', ensureAuthenticated, function(req, res) {
+	if (req.user.rights !== 'admin') {
+		return res.redirect('/admin');
+	}
+	var models = req.app.get('models');
+
+	models.User.findAll({
+		limit: 20,
+	}).then(function(users) {
+		res.render('users', {
+			user: req.user,
+			users: users
+		});
 	});
 });
 
