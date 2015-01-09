@@ -17,6 +17,14 @@
 	{% endif %}
 {% endmacro %}
 
+{% macro checkErrors(field) %}
+	{% for err in errors %}
+		{% if err.path == field %}
+			<p class="text-danger">Error: {{ err.message }}</p>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}
+
 {% macro inputText(opts) %}
 	{# opts = { label, field, fill, icon, helpText } #}
 
@@ -31,12 +39,7 @@
 			{% if opts.helpText %} aria-describedBy="{{ opts.field }}Help" {% endif %}
 		>
 		{{ iconEnd(opts) }}
-
-		{% for err in errors %}
-			{% if err.path == opts.field %}
-				<p class="text-danger">Error: {{ err.message }}</p>
-			{% endif %}
-		{% endfor %}
+		{{ checkErrors(opts.field) }}
 		{{ helpText(opts) }}
 	</div>
 {% endmacro %}
@@ -55,12 +58,7 @@
 			{% if opts.helpText %}	aria-describedBy="{{ opts.field }}Help" {% endif %}
 		>
 		{{ iconEnd(opts) }}
-
-		{% for err in errors %}
-			{% if err.path == opts.field %}
-				<p class="text-danger">Error: {{ err.message }}</p>
-			{% endif %}
-		{% endfor %}
+		{{ checkErrors(opts.field) }}
 		{{ helpText(opts) }}
 	</div>
 {% endmacro %}
@@ -78,6 +76,8 @@
 				value="{{ event_.startdt }}">
 			<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 		</div>
+
+		{{ checkErrors(opts.field) }}
 	</div>
 {% endmacro %}
 
