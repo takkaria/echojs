@@ -10,6 +10,8 @@
 
 <h2>Users</h2>
 
+<a href="/admin/user/add" class="btn btn-lg btn-primary">Add user</a>
+
 <table class="table">
 	<tr>
 		<th>email</th>
@@ -23,9 +25,6 @@
 		<td>{{ user.notify }}</td>
 		<td>{{ user.rights }}</td>
 		<td>
-			<a href="/admin/user/{{ user.email }}/edit" class="btn btn-xs btn-success">
-				edit
-			</a>
 		</td>
 	</tr>
 	{% endfor %}
