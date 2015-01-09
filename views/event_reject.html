@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% macro inputIcon(type) %}
+  <div class="input-group-addon"><i class="fa fa-fw {{ type }}"></i></div>
+{% endmacro %}
+
+{% block pageclass %}admin{% endblock %}
+
+{% block leftcontent %}
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/admin">Admin</a></li>
+	<li><a href="/admin/{{ event_.id }}">{{ event_.id }}</a></li>
+	<li>Reject?</li>
+</ol>
+
+<form method="POST" action="/admin/{{ event_.id }}/reject">
+	<div class="form-group">
+		<label>Are you sure?</label>
+		<button class="btn btn-danger" type="submit">Yes</button>
+		<a href="/admin/{{ event_.id }}" class="btn btn-default">Back to event</a>
+	</div>
+</form>
+{% endblock %}

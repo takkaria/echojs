@@ -3,6 +3,10 @@
 {% block pageclass %}admin{% endblock %}
 
 {% block leftcontent %}
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/admin">Admin</a></li>
+</ol>
 
 <h2>Administration</h2>
 <p>
@@ -11,11 +15,43 @@
 
 <h3>Events awaiting moderation</h3>
 
-{% for event in events_ %}
-	<div class="event">
-	<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="/event/{{ event.id }}">{{ event.title }}</a></h4>
-	</div>
-{% endfor %}
+<table class="table">
+	<tr>
+		<th>id</th>
+		<th>title</th>
+		<th>start</th>
+		<th>end</th>
+		<th>location</th>
+		<th>host</th>
+		<th>url</th>
+		<th>state</th>
+		<th>actions</th>
+	</tr>
+	{% for event in events_ %}
+	<tr>
+		<td><a href="/admin/{{ event.id }}">{{ event.id }}</a></td>
+		<td>{{ event.title }}</td>
+		<td>{{ event.startdt.format("YYYY-MM-DD ha") }}</td>
+		<td>{% if event.enddt.isValid() %}
+			{{ event.enddt.format("YYYY-MM-DD ha") }}
+		{% else %}
+			<i>(not set)</i>
+		{% endif %}</td>
+		<td>{{ event.location }}</td>
+		<td>{{ event.host }}</td>
+		<td>{{ event.url }}</td>
+		<td>{{ event.state }}</td>
+		<td>
+			<a href="/admin/{{ event.id }}/approve" class="btn btn-xs btn-success">
+				approve
+			</a>
+			<a href="/admin/{{ event.id }}/reject" class="btn btn-xs btn-warning">
+				reject
+			</a>
+		</td>
+	</tr>
+	{% endfor %}
+</table>
 {% endblock %}
 
 {% block rightcontent %}
