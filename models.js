@@ -129,7 +129,19 @@ module.exports = function(debug) {
 
 	exports.User = db.define('user', {
 		email: { type: sequelize.TEXT, primaryKey: true },
-		salt: { type: sequelize.TEXT },
+		salt: {
+			type: sequelize.TEXT,
+			get: function() {
+				var salt = this.getDataValue('salt');
+				console.log('curr salt: ' + salt);
+				if ((salt === '')||(typeof(salt) === 'undefined')) {
+					salt = crypto.randomBytes(256).toString('base64');
+					console.log('new salt: ' + salt);
+					this.setDataValue('salt', salt);
+				}
+				return salt;
+			}
+		},
 		digest: { type: sequelize.TEXT },
 
 		pwreset: { type: sequelize.TEXT },
@@ -143,9 +155,15 @@ module.exports = function(debug) {
 		createdAt: false,
 		underscored: true,
 		instanceMethods: {
+			setPassword: function(password) {
+				var salt = this.salt;
+				var digest = crypto.createHash('sha256').update(salt + password).digest('base64');
+				console.log('digest: ' + digest);
+				this.setDataValue('digest', digest);
+			},
 			checkPassword: function(password) {
 				var digest = crypto.createHash('sha256').update(
-					this.getDataValue('salt') + password
+					this.salt + password
 				).digest('base64');
 				return digest === this.getDataValue('digest');
 			}
