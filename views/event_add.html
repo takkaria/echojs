@@ -50,6 +50,7 @@
 		<label class="title" for="blurb">Event description:</label>
 		<textarea class="form-control required" name="blurb" id="blurb" rows="8"
 			aria-describedby="blurbHelp">{{ event_.blurb }}</textarea>
+		{{ form.checkErorrs("blurb") }}
 		<p id="blurbHelp" class="help-block">
 			Please include information about booking if you have to book.<br>
 			Maximum 150 words.
@@ -72,6 +73,8 @@
 			</label>
 			<input type="text" name="cost_fee" id="cost_fee"
 				style="width: 220px;" placeholder="how much?">
+
+			{{ form.checkErorrs("cost_fee") }}
 		</div>
 	</div>
 
