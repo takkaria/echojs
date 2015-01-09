@@ -33,8 +33,7 @@ router.param('slug', function(req, res, next, slug) {
 
 /* GET event add */
 router.get('/add', function(req, res) {
-	res.render('event_add', { 
-		event_: req.event_,
+	res.render('event_add', {
 		user: req.user
 	});
 });

@@ -114,4 +114,38 @@ router.get('/user', ensureAuthenticated, function(req, res) {
 	});
 });
 
+router.get('/user/add', ensureAuthenticated, function(req, res) {
+	if (req.user.rights !== 'admin') {
+		return res.redirect('/admin');
+	}
+	res.render('user_add', {
+		user: req.user
+	});
+});
+
+router.post('/user/add', ensureAuthenticated, function(req, res) {
+	if (req.user.rights !== 'admin') {
+		return res.redirect('/admin');
+	}
+	var b = req.body,
+		models = req.app.get('models');
+	models.User
+		.create(b)
+		.then(function(user) {
+			user.setPassword(b.password);
+			user.save().then(function() {
+				console.log(b.password, user.digest, user.salt);
+				res.redirect('/admin/user');
+			});
+		})
+		.catch(function(errors) {
+			console.log(errors);
+			res.render('user_add', {
+				new_user: b,
+				errors: errors.errors,
+				user: req.user
+			});
+		});
+});
+
 module.exports = router;
