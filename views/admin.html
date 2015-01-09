@@ -29,7 +29,7 @@
 	</tr>
 	{% for event in events_ %}
 	<tr>
-		<td><a href="/admin/{{ event.id }}">{{ event.id }}</a></td>
+		<td><a href="/event/admin/{{ event.id }}">{{ event.id }}</a></td>
 		<td>{{ event.title }}</td>
 		<td>{{ event.startdt.format("YYYY-MM-DD ha") }}</td>
 		<td>{% if event.enddt.isValid() %}
@@ -42,10 +42,10 @@
 		<td>{{ event.url }}</td>
 		<td>{{ event.state }}</td>
 		<td>
-			<a href="/admin/{{ event.id }}/approve" class="btn btn-xs btn-success">
+			<a href="/admin/event/{{ event.id }}/approve" class="btn btn-xs btn-success">
 				approve
 			</a>
-			<a href="/admin/{{ event.id }}/reject" class="btn btn-xs btn-warning">
+			<a href="/admin/event/{{ event.id }}/reject" class="btn btn-xs btn-warning">
 				reject
 			</a>
 		</td>

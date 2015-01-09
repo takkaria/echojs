@@ -38,7 +38,6 @@
 {% endif %}
 
 <form method="POST" action="/event/add">
-
 	{{ form.inputText({ label: "Event name:", field: "title", fill: event_.title }) }}
 	{{ form.inputDateTime({ label: "Starts:", field: "startdt", fill: event_.startdt }) }}
 	{{ form.inputDateTime({ label: "Ends:", field: "enddt", fill: event_.enddt }) }}
