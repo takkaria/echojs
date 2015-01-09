@@ -15,7 +15,6 @@ router.get('/', function(req, res) {
 		limit: 10,
 		order: "startdt ASC"
 	}).then(function(events) {
-
 		// This will look like
 		// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
 		var ordered = [];
@@ -52,7 +51,11 @@ router.get('/', function(req, res) {
 				"WHERE p2.feed_id = post.feed_id AND p2.date > post.date) == 0",
 			order: "date DESC"
 		}).then(function(posts) {
-			res.render('index', { events: ordered, posts: posts });
+			res.render('index', {
+				events: ordered,
+				posts: posts,
+				user: req.user
+			});
 		});
 	});
 });

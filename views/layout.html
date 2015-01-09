@@ -39,6 +39,10 @@
 				</ul>
 			<li><a href="/events">Calendar</a>
 			<li><a href="/event/add">Add event</a>
+			{% if user %}
+			<li><a href="/admin">Admin</a>
+			<li><a href="/user/logout">Logout</a>
+			{% endif %}
 		</ul>
 	</div><!--/.navbar-collapse -->
 </div>

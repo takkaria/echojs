@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET events */
 router.get('/*', function(req, res) {
-	res.render('events', { event: req.event });
+	res.render('events', { user: req.user });
 });
 
 module.exports = router;

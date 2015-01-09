@@ -2,78 +2,70 @@
 
 {% block pageclass %}event{% endblock %}
 
-
 {% block leftcontent %}
-
 <ol class="breadcrumb">
   <li><a href="/">Echo</a></li>
   <li><a href="/events">Events</a></li>
-  <li><a href="/events/{{ event.startdt.format("YYYY/MMM") }}">{{ event.startdt.format("MMMM YYYY") }}</a></li>
+  <li><a href="/events/{{ event_.startdt.format("YYYY/MMM") }}">{{ event_.startdt.format("MMMM YYYY") }}</a></li>
 </ol>
  
 {# <div class="img"></div> one day... #}
 
-<h4 class="date">{{ event.startdt.format("dddd, Do MMMM, h:mma") }}</h4>
+<h4 class="date">{{ event_.startdt.format("dddd, Do MMMM, h:mma") }}</h4>
  
-<h2>{{ event.title }}</h2>
+<h2>{{ event_.title }}</h2>
 
-{% if event.host %}
-<p>Hosted by the <b>{{ event.host }}</b></p>
+{% if event_.host %}
+<p>Hosted by the <b>{{ event_.host }}</b></p>
 {% endif %}
 
-<p>{{ event.blurbAsHTML() }}
+<p>{{ event_.blurbAsHTML() }}
 
-<p><b>Cost:</b> {{ event.cost|default("Free") }}</p>
+<p><b>Cost:</b> {{ event_.cost|default("Free") }}</p>
 
-{% if event.url %}
+{% if event_.url %}
 <p><b>More information:</b>
-  {% if event.url.hostNoWww == "facebook.com" %}
-    <i class="fa fa-fw fa-facebook"></i> <a href="{{ event.url.href }}" target="_blank">Facebook</a>
+  {% if event_.url.hostNoWww == "facebook.com" %}
+    <i class="fa fa-fw fa-facebook"></i> <a href="{{ event_.url.href }}" target="_blank">Facebook</a>
   {% else %}
-    <i class="fa fa-fw fa-external-link"></i> <a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a>
+    <i class="fa fa-fw fa-external-link"></i> <a href="{{ event_.url.href }}" target="_blank">{{ event_.url.hostNoWww }}</a>
   {% endif %}
+</p>
 {% endif %}
 
 <h3>Location</h3>
-<p><i class="fa fa-fw fa-map-marker"></i> {{ event.location }}<p>
+<p><i class="fa fa-fw fa-map-marker"></i> {{ event_.location }}<p>
 <div id="map-canvas"></div>
-
 {% endblock %}
-
 
 {% block rightcontent %}
-
 {% endblock %}
 
-
 {% block script %}
-
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyCIIJrpahlkTrn1e4wkIujyzqCEfK_C9_M"></script>
 <script>
+  function initialize() {
+    var myLatlng = new google.maps.LatLng(53.484297,-2.273368);
+    var mapOptions = {
+      zoom: 15,
+      center: myLatlng
+    }
+    var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-function initialize() {
-  var myLatlng = new google.maps.LatLng(53.484297,-2.273368);
-  var mapOptions = {
-    zoom: 15,
-    center: myLatlng
+    var infowindow = new google.maps.InfoWindow({
+        content: "<div style='width: 200px;'><b>Working Class Movement Library</b><br>51 The Crescent<br>Salford<br>M5 4WX</div>",
+        maxWidth: 500
+    });
+
+    var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: map,
+        title: 'Hello World!'
+    });
+
+    infowindow.open(map, marker);
   }
-  var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-  var infowindow = new google.maps.InfoWindow({
-      content: "<div style='width: 200px;'><b>Working Class Movement Library</b><br>51 The Crescent<br>Salford<br>M5 4WX</div>",
-      maxWidth: 500
-  });
-
-  var marker = new google.maps.Marker({
-      position: myLatlng,
-      map: map,
-      title: 'Hello World!'
-  });
-
-  infowindow.open(map, marker);
-}
-
-google.maps.event.addDomListener(window, 'load', initialize);
+  google.maps.event.addDomListener(window, 'load', initialize);
 </script>
-
 {% endblock %}

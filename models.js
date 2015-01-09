@@ -2,6 +2,7 @@ var sequelize = require('sequelize');
 var moment = require('moment');
 var url = require('url');
 var marked = require('marked');
+var crypto = require('crypto');
 
 module.exports = function(debug) {
 	var exports = {};
@@ -128,7 +129,19 @@ module.exports = function(debug) {
 			type: sequelize.ENUM,
 			values: [ "admin", "editor" ]
 		}
-	}, global_options);
+	}, {
+		timestamps: false,
+		createdAt: false,
+		underscored: true,
+		instanceMethods: {
+			checkPassword: function(password) {
+				var digest = crypto.createHash('sha256').update(
+					this.getDataValue('salt') + password
+				).digest('base64');
+				return digest === this.getDataValue('digest');
+			}
+		}
+	});
 
 	exports.Post = db.define('post', {
 		id: { type: sequelize.TEXT, primaryKey: true },

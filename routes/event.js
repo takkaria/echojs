@@ -33,7 +33,10 @@ router.param('slug', function(req, res, next, slug) {
 
 /* GET event add */
 router.get('/add', function(req, res) {
-	res.render('event_add', { event: req.event_ });
+	res.render('event_add', { 
+		event_: req.event_,
+		user: req.user
+	});
 });
 
 /* POST event add */
@@ -64,7 +67,8 @@ router.post('/add', function(req, res) {
 			console.log(req.body);
 			res.render('event_add', {
 				event_: event_,
-				errors: errors.errors
+				errors: errors.errors,
+				user: user
 			});
 		});
 });
@@ -77,7 +81,10 @@ router.get('/:id', function(req, res) {
 
 /* GET event by slug */
 router.get('/:year/:month/:slug', function(req, res) {
-	res.render('event_page', { event: req.event_ });
+	res.render('event_page', {
+		event_: req.event_,
+		user: req.user
+	});
 });
 
 module.exports = router;

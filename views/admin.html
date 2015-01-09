@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block pageclass %}admin{% endblock %}
+
+{% block leftcontent %}
+
+<h2>Administration</h2>
+<p>
+	Welcome to the admin area. Have fun!
+</p>
+
+<h3>Events awaiting moderation</h3>
+
+{% for event in events_ %}
+	<div class="event">
+	<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="/event/{{ event.id }}">{{ event.title }}</a></h4>
+	</div>
+{% endfor %}
+{% endblock %}
+
+{% block rightcontent %}
+{% endblock %}
