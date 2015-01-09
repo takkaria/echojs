@@ -63,7 +63,7 @@ router.post('/add', function(req, res) {
 			res.render('event_add', {
 				event_: event_,
 				errors: errors.errors,
-				user: user
+				user: req.user
 			});
 		});
 });
