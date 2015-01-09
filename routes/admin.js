@@ -19,8 +19,7 @@ router.param('id', function(req, res, next, id) {
 })
 
 router.get('/', ensureAuthenticated, function(req, res) {
-	var models = req.app.get('models'),
-		sequelize = models.sequelize;
+	var models = req.app.get('models');
 
 	models.Event.findAll({
 		where: [
@@ -36,14 +35,14 @@ router.get('/', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.get('/:id', ensureAuthenticated, function(req, res) {
+router.get('/event/:id', ensureAuthenticated, function(req, res) {
 	res.render('event_page', {
 		event_: req.event_,
 		user: req.user
 	});
 });
 
-router.get('/:id/approve', ensureAuthenticated, function(req, res) {
+router.get('/event/:id/approve', ensureAuthenticated, function(req, res) {
 	var event_ = req.event_;
 	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
@@ -54,7 +53,7 @@ router.get('/:id/approve', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.post('/:id/approve', ensureAuthenticated, function(req, res) {
+router.post('/event/:id/approve', ensureAuthenticated, function(req, res) {
 	var event_ = req.event_;
 	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
@@ -70,7 +69,7 @@ router.post('/:id/approve', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.get('/:id/reject', ensureAuthenticated, function(req, res) {
+router.get('/event/:id/reject', ensureAuthenticated, function(req, res) {
 	var event_ = req.event_;
 	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
@@ -81,7 +80,7 @@ router.get('/:id/reject', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.post('/:id/reject', ensureAuthenticated, function(req, res) {
+router.post('/event/:id/reject', ensureAuthenticated, function(req, res) {
 	var event_ = req.event_;
 	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
