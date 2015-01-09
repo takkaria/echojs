@@ -24,6 +24,7 @@
 		<th>location</th>
 		<th>host</th>
 		<th>url</th>
+		<th>state</th>
 		<th>actions</th>
 	</tr>
 	{% for event in events_ %}
@@ -39,6 +40,7 @@
 		<td>{{ event.location }}</td>
 		<td>{{ event.host }}</td>
 		<td>{{ event.url }}</td>
+		<td>{{ event.state }}</td>
 		<td>
 			<a href="/admin/{{ event.id }}/approve" class="btn btn-xs btn-success">
 				approve
