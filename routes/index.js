@@ -2,6 +2,19 @@ var express = require('express');
 var router = express.Router();
 var moment = require('moment');
 
+// Get rid of the times from moment.calendar() strings as we only want dates
+// See: http://momentjs.com/docs/#/customization/calendar/
+moment.locale('en', {
+	calendar : {
+		lastDay : '[Yesterday]',
+		sameDay : '[Today]',
+		nextDay : '[Tomorrow]',
+		lastWeek : '[last] dddd',
+		nextWeek : 'dddd',
+		sameElse : 'L'
+	}
+});
+
 /* GET home page. */
 router.get('/', function(req, res) {
 	var models = req.app.get('models');
@@ -31,6 +44,7 @@ router.get('/', function(req, res) {
 				chunk.date = moment(date);
 				chunk.longDate = chunk.date.format("dddd, Do MMMM YYYY");
 				chunk.events = [];
+
 				if (chunk.date.diff(moment(), 'days') < 7)
 					chunk.shortDate = chunk.date.calendar();
 
