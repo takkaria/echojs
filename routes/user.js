@@ -23,17 +23,17 @@ router.get('/login', function(req, res) {
 });
 
 router.post('/login', function(req, res, next) {
-  passport.authenticate('local', function(err, user, info) {
+	passport.authenticate('local', function(err, user, info) {
 		if (err) { return next(err); }
-    if (!user) { return res.redirect('/login'); }
-    req.logIn(user, function(err) {
-      if (err) { return next(err); }
+		if (!user) { return res.redirect('/user/login'); }
+		req.logIn(user, function(err) {
+			if (err) { return next(err); }
 			console.log(req.body.next);
 			if (req.body.next) {
 				return res.redirect(req.body.next);
 			}
-      return res.redirect('/');
-    });
+			return res.redirect('/');
+		});
 	})(req, res, next);
 });
 
