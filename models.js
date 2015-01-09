@@ -1,8 +1,9 @@
-var sequelize = require('sequelize');
-var moment = require('moment');
-var url = require('url');
-var marked = require('marked');
-var crypto = require('crypto');
+var sequelize = require('sequelize'),
+	moment = require('moment'),
+	url = require('url'),
+	marked = require('marked'),
+	crypto = require('crypto'),
+	slug = require('slug');
 
 module.exports = function(debug) {
 	var exports = {};
@@ -107,6 +108,14 @@ module.exports = function(debug) {
 			blurbAsHTML: function() {
 				return marked(this.blurb);
 			},
+
+			generateSlug: function() {
+				if (!this.getDataValue('slug')) {
+					var text = slug(this.getDataValue('title')) + "-" + this.id;
+					this.setDataValue('slug', text.toLowerCase());
+				}
+				return this;
+			}
 		},
 		getterMethods: {
 			absolute_url: function() {

@@ -64,6 +64,7 @@ router.post('/:id/approve', ensureAuthenticated, function(req, res) {
 		res.redirect('/admin/' + req.event_.id);
 	}
 	event_.set('state', 'approved');
+	event_.generateSlug();
 	event_.save().then(function(){
 		event_.reload();
 		res.redirect('/event/' + event_.id);  // FIXME should be event_.absolute_url
