@@ -26,6 +26,17 @@
 	</div>
 {% endmacro %}
 
+{% macro inputPassword(opts) %}
+	{# opts = { label, field } #}
+
+	<div class="form-group">
+		<label for="{{ opts.field }}">{{ opts.label }}</label>
+		<input class="form-control long"
+			name="{{ opts.field }}"
+			type="password">
+	</div>
+{% endmacro %}
+
 {% macro inputDateTime(opts) %}
 	{# opts = { label, field, fill } #}
 
