@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Echo Manchester</h1>
+<h2>Your submitted event has been approved</h2>
+
+<p>
+	Hi there,
+</p>
+
+<p>
+	Your event, {{ event_.title }}, has been approved for display on Echo
+	Manchester &ndash; you can now <a href="http://echomanchester.net{{ event_.absolute_url }}">view it on
+		the site</a>.
+</p>
+
+<p>
+	Thanks!
+</p>
+
+<p>
+	Take care,
+</p>
+
+<p>
+	- The Echo Crew
+</p>
+{% endblock %}

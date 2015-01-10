@@ -96,6 +96,14 @@ router.post('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) 
 		e.reload();  // XXX surely should use a promise here?
 		req.flash('success', 'Event <a href="%s">%s</a> approved', 
 							event_.absolute_url, event_.id);
+		mailer.sendMail({
+			template: 'event_approve.html',
+			subject: 'Event approved!',
+			to: event_.email,
+			context: {
+				event_: event_
+			}
+		});
 		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
@@ -123,6 +131,16 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
 	event_.save().then(function(){
 		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
 							event_.absolute_url, event_.id);
+		mailer.sendMail({
+			template: 'event_reject.html',
+			subject: 'Sorry :(',
+			to: event_.email,
+			context: {
+				event_: event_
+				// FIXME add custom admin explanation from a form, e.g.
+				// message: req.body.message
+			}
+		});
 		res.redirect('/admin');
 	})
 	.catch(function(errors){
