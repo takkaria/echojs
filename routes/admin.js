@@ -65,9 +65,9 @@ router.post('/:id/approve', ensureAuthenticated, function(req, res) {
 	}
 	event_.set('state', 'approved');
 	event_.generateSlug();
-	event_.save().then(function(){
-		event_.reload();
-		res.redirect('/event/' + event_.id);  // FIXME should be event_.absolute_url
+	event_.save().then(function(e){
+		e.reload();  // XXX surely should use a promise here?
+		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
 		console.log(errors);

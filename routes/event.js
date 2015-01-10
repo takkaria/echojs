@@ -33,7 +33,7 @@ router.param('slug', function(req, res, next, slug) {
 
 /* GET event add */
 router.get('/add', function(req, res) {
-	res.render('event_add', { 
+	res.render('event_add', {
 		event_: req.event_,
 		user: req.user
 	});
@@ -52,12 +52,23 @@ router.post('/add', function(req, res) {
 			host: b.host,
 			type: '',
 			cost: b.cost,
-			email: b.email
+			email: b.email,
+			state: (req.isAuthenticated()&&((req.user.rights === 'editor')||(req.user.rights === 'admin')))
+				?  'approved'
+				: 'submitted'
 		};
 	models.Event
 		.create(event_)
-		.then(function(event_) {
-			return res.redirect(event_.absolute_url);
+		.then(function(e) {
+			e.generateSlug();
+			e.save().then(function(e_){
+				// FIXME add "success" toast
+				return res.redirect(
+					(e_.state === 'approved')
+						? e_.absolute_url
+						: '/events'
+				);
+			});
 		})
 		.catch(function(errors) {
 			console.log(errors, event_, b);
