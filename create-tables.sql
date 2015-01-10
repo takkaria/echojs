@@ -22,6 +22,7 @@ CREATE TABLE events (
 
 CREATE TABLE users (
 	email TEXT PRIMARY KEY,
+	id INTEGER,
 	salt TEXT,
 	digest TEXT,
 
@@ -29,7 +30,7 @@ CREATE TABLE users (
 	notify BOOLEAN,
 	rights TEXT		/* "admin", "editor" */
 );
-INSERT INTO "users" VALUES('test@example.com',NULL,'aaa','e3MjCoP7Oui8bQ+BK+2wWIRmq/OApZ8nXNuv6Kt6qiw=',NULL,NULL,'admin');
+INSERT INTO "users" VALUES(1, 'test@example.com','aaa','e3MjCoP7Oui8bQ+BK+2wWIRmq/OApZ8nXNuv6Kt6qiw=',NULL,NULL,'admin');
 
 CREATE TABLE posts (
 	id TEXT PRIMARY KEY,

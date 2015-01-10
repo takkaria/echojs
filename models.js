@@ -135,7 +135,15 @@ module.exports = function(debug) {
 	});
 
 	exports.User = db.define('user', {
-		email: { type: sequelize.TEXT, primaryKey: true },
+		email: {
+			type: sequelize.TEXT,
+			primaryKey: true,
+			allowNull: false,
+			validate:  {
+				isEmail: true
+			}
+		},
+		id: { type: sequelize.INTEGER, autoIncrement: true },
 		salt: {
 			type: sequelize.TEXT,
 			get: function() {
@@ -155,7 +163,8 @@ module.exports = function(debug) {
 		notify: { type: sequelize.BOOLEAN },
 		rights: {
 			type: sequelize.ENUM,
-			values: [ "admin", "editor" ]
+			values: [ "admin", "editor" ],
+			allowNull: false
 		}
 	}, {
 		timestamps: false,
