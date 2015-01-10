@@ -129,7 +129,7 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
 	});
 });
 
-router.get('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
+router.get('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
 	if ((req.user.rights !== 'admin')&&(req.user.rights !== 'editor')) {
 		return res.redirect('/admin');
 	}
@@ -139,10 +139,7 @@ router.get('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.post('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
-	if ((req.user.rights !== 'admin')&&(req.user.rights !== 'editor')) {
-		return res.redirect('/admin');
-	}
+router.post('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
 	var b = req.body,
 		e = req.event_;
 
