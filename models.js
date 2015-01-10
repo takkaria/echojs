@@ -68,7 +68,6 @@ module.exports = function(debug) {
 		},
 		host: {
 			type: sequelize.TEXT,
-			allowNull: false,
 			validate: {
 				notEmpty: true
 			}
@@ -84,7 +83,10 @@ module.exports = function(debug) {
 		},
 		enddt: {
 			type: sequelize.DATE,
-			get: function() { return moment(this.getDataValue('enddt')); }
+			get: function() {
+				var d = moment(this.getDataValue('enddt'));
+				return (d.isValid() ? d : null);
+			}
 		},
 
 		state: {
@@ -93,7 +95,6 @@ module.exports = function(debug) {
 		},
 		email: {
 			type: sequelize.TEXT,
-			allowNull: false,
 			validate:  {
 				isEmail: true
 			}

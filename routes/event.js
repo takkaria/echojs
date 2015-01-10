@@ -7,7 +7,7 @@ router.param('id', function(req, res, next, id) {
 		where = {id: id};
 
 	models.Event.find({
-		where: { 
+		where: {
 			id: id,
 			state: 'approved'
 		}
@@ -38,21 +38,30 @@ router.get('/add', function(req, res) {
 /* POST event add */
 router.post('/add', function(req, res) {
 	var b = req.body,
-		models = req.app.get('models'),
-		event_ = {
-			title: b.title,
-			startdt: moment(b.startdt, 'YYYY/MM/DD hh:mm'),
-			enddt: moment(b.enddt, 'YYYY/MM/DD hh:mm'),
-			blurb: b.blurb,
-			location: b.location,  // FIXME
-			host: b.host,
-			type: '',
-			cost: b.cost,
-			email: b.email,
-			state: (req.isAuthenticated()&&((req.user.rights === 'editor')||(req.user.rights === 'admin')))
-				?  'approved'
-				: 'submitted'
-		};
+		models = req.app.get('models');
+
+	b.startdt = moment(b.startdt, 'YYYY/MM/DD hh:mm')
+	// strict mode to prevent blank enddt being taken as "now"
+	b.enddt = moment(b.enddt, 'YYYY/MM/DD hh:mm', true)
+	if(!b.enddt.isValid()) {
+		b.enddt = null;
+	}
+
+	var	event_ = {
+		title: b.title,
+		startdt: b.startdt,
+		enddt: b.enddt,
+		blurb: b.blurb,
+		location: b.location,  // FIXME
+		host: b.host,
+		type: '',
+		cost: b.cost,
+		email: b.email,
+		state: (req.isAuthenticated()&&((req.user.rights === 'editor')||(req.user.rights === 'admin')))
+			?  'approved'
+			: 'submitted'
+	};
+
 	models.Event
 		.create(event_)
 		.then(function(e) {
@@ -69,7 +78,7 @@ router.post('/add', function(req, res) {
 		.catch(function(errors) {
 			console.log(errors, event_, b);
 			res.render('event_add', {
-				event_: b,
+				event_: event_,
 				errors: errors.errors,
 				user: req.user
 			});
