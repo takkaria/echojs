@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<h1>Echo Manchester</h1>
+<h2>New user account</h2>
+
+<p>
+	You can now <a href="http://echomanchester.net/admin">log in to the admin area</a>
+	and moderate submitted and imported events. 
+</p>
+{% if u.rights === 'admin' %}
+<p>
+	<b>You are also an administrator</b>, and can edit / create / delete user
+	accounts; use this power wisely!
+</p>
+{% endif %}
+<p>
+	You might want to make a note of this login link (it's not displayed on the
+	public site):
+</p>
+<blockquote>
+	<code>
+		http://echomanchester.net/admin
+	</code>
+</blockquote>
+{% endblock %}

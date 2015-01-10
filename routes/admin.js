@@ -1,5 +1,6 @@
 var express = require('express'),
 	moment = require('moment'),
+	mailer = require('../lib/mailer'),
 	router = express.Router();
 
 function ensureAuthenticated(req, res, next) {
@@ -227,6 +228,14 @@ router.post('/user/add', ensureAdmin, function(req, res) {
 				user_obj.save().then(function(u){
 					req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added', 
 										u.id, u.id);
+					mailer.sendMail({
+						template: 'user_add.html',
+						subject: 'New account',
+						to: u.email,
+						context: {
+							user: u
+						}
+					});
 					return res.redirect('/admin/user');
 				});
 			} else {
