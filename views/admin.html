@@ -30,7 +30,7 @@
 	</tr>
 	{% for event in events_ %}
 	<tr>
-		<td><a href="/event/admin/{{ event.id }}">{{ event.id }}</a></td>
+		<td><a href="/admin/event/{{ event.id }}">{{ event.id }}</a></td>
 		<td>{{ event.title }}</td>
 		<td>{{ event.startdt.format("YYYY-MM-DD ha") }}</td>
 		<td>{% if event.enddt.isValid() %}

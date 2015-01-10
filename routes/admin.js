@@ -12,7 +12,7 @@ router.param('event_id', function(req, res, next, event_id) {
 	var models = req.app.get('models');
 
 	models.Event.find({
-		where: { id: id }
+		where: { id: event_id }
 	}).then(function(event_) {
 		req.event_ = event_;
 		next(!event_ ? new Error("No such event") : null);
@@ -25,27 +25,8 @@ router.param('user_id', function(req, res, next, user_id) {
 	models.User.find({
 		where: { id: user_id }
 	}).then(function(user) {
-		if (!user)
-			return next(new Error("No such user"));
-
 		req.user_obj = user;
-	}).then(next, function (err) {
-		next(err);
-	});
-})
-
-router.param('user_id', function(req, res, next, user_id) {
-	var models = req.app.get('models');
-
-	models.User.find({
-		where: { id: user_id }
-	}).then(function(user) {
-		if (!user)
-			return next(new Error("No such user"));
-
-		req.user_obj = user;
-	}).then(next, function (err) {
-		next(err);
+		next(!user ? new Error("No such user") : null);
 	});
 })
 
@@ -122,6 +103,54 @@ router.post('/event/:event_id/reject', ensureAuthenticated, function(req, res) {
 	})
 	.catch(function(errors){
 		console.log(errors);
+	});
+});
+
+router.get('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
+	if ((req.user.rights !== 'admin')&&(req.user.rights !== 'editor')) {
+		return res.redirect('/admin');
+	}
+	res.render('event_edit', {
+		user: req.user,
+		event_: req.event_
+	});
+});
+
+router.post('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
+	if ((req.user.rights !== 'admin')&&(req.user.rights !== 'editor')) {
+		return res.redirect('/admin');
+	}
+	var b = req.body,
+		e = req.event_;
+
+	b.startdt = moment(b.startdt, 'YYYY/MM/DD hh:mm')
+	// strict mode to prevent blank enddt being taken as "now"
+	b.enddt = moment(b.enddt, 'YYYY/MM/DD hh:mm', true)
+	if(!b.enddt.isValid()) {
+		b.enddt = null;
+	}
+
+	e.set({
+		title: b.title,
+		startdt: b.startdt,
+		enddt: b.enddt,
+		blurb: b.blurb,
+		location: b.location,  // FIXME
+		host: b.host,
+		type: '',
+		cost: b.cost,
+		email: b.email,
+	});
+	e.save({validate: false}).then(function(event_) {
+		// FIXME "success" toast message
+		res.redirect('/admin/event/' + event_.id);
+	}).catch(function(errors) {
+		console.log(errors);
+		res.render('event_edit', {
+			errors: errors.errors,
+			user: req.user,
+			event_: e
+		});
 	});
 });
 

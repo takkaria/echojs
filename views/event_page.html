@@ -14,7 +14,12 @@
 
 <h4 class="date">{{ event_.startdt.format("dddd, Do MMMM, h:mma") }}</h4>
  
-<h2>{{ event_.title }}</h2>
+<h2>
+  {{ event_.title }}
+  {% if user.rights === 'admin' or user.rights === 'editor' %}
+  <a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-primary">edit</a>
+  {% endif %}
+</h2>
 
 {% if event_.host %}
 <p>Hosted by the <b>{{ event_.host }}</b></p>
