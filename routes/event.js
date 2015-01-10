@@ -52,16 +52,17 @@ router.post('/add', function(req, res) {
 			host: b.host,
 			type: '',
 			cost: b.cost,
-			email: b.email,
+			email: b.email
 		};
 	models.Event
 		.create(event_)
 		.then(function(event_) {
-			res.redirect(event_.absolute_url);
+			return res.redirect(event_.absolute_url);
 		})
 		.catch(function(errors) {
+			console.log(errors, event_, b);
 			res.render('event_add', {
-				event_: event_,
+				event_: b,
 				errors: errors.errors,
 				user: req.user
 			});
