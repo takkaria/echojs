@@ -25,6 +25,12 @@
 		<td>{{ user.notify }}</td>
 		<td>{{ user.rights }}</td>
 		<td>
+			<a href="/admin/user/{{ user.id }}/edit" class="btn btn-xs btn-success">
+				edit
+			</a>
+			<a href="/admin/user/{{ user.id }}/delete" class="btn btn-xs btn-danger">
+				delete
+			</a>
 		</td>
 	</tr>
 	{% endfor %}

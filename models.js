@@ -148,10 +148,8 @@ module.exports = function(debug) {
 			type: sequelize.TEXT,
 			get: function() {
 				var salt = this.getDataValue('salt');
-				console.log('curr salt: ' + salt);
 				if ((salt === '')||(typeof(salt) === 'undefined')) {
 					salt = crypto.randomBytes(256).toString('base64');
-					console.log('new salt: ' + salt);
 					this.setDataValue('salt', salt);
 				}
 				return salt;
