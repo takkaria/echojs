@@ -1,0 +1,16 @@
+{% extends "user_edit.html" %}
+
+{% import "formmacros.html" as form %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/admin">Admin</a></li>
+  <li><a href="/admin/user">User</a></li>
+	<li>Add</li>
+</ol>
+{% endblock breadcrumb %}
+
+{% block form_action %}/admin/user/add{% endblock form_action %}
+
+{% block button %}{{ form.inputSubmit("Create user") }}{% endblock %}

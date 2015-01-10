@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block pageclass %}admin{% endblock %}
+
+{% block leftcontent %}
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/admin">Admin</a></li>
+</ol>
+
+<h2>Users</h2>
+
+<a href="/admin/user/add" class="btn btn-lg btn-primary">Add user</a>
+
+<table class="table">
+	<tr>
+		<th>email</th>
+		<th>notify?</th>
+		<th>rights</th>
+		<th>actions</th>
+	</tr>
+	{% for user in users %}
+	<tr>
+		<td>{{ user.email }}</td>
+		<td>{{ user.notify }}</td>
+		<td>{{ user.rights }}</td>
+		<td>
+			<a href="/admin/user/{{ user.id }}/edit" class="btn btn-xs btn-success">
+				edit
+			</a>
+			<a href="/admin/user/{{ user.id }}/delete" class="btn btn-xs btn-danger">
+				delete
+			</a>
+		</td>
+	</tr>
+	{% endfor %}
+</table>
+{% endblock %}
+
+{% block rightcontent %}
+{% endblock %}

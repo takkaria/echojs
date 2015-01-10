@@ -135,24 +135,49 @@ module.exports = function(debug) {
 	});
 
 	exports.User = db.define('user', {
-		email: { type: sequelize.TEXT, primaryKey: true },
-		salt: { type: sequelize.TEXT },
+		email: {
+			type: sequelize.TEXT,
+			primaryKey: true,
+			allowNull: false,
+			validate:  {
+				isEmail: true
+			}
+		},
+		id: { type: sequelize.INTEGER, autoIncrement: true },
+		salt: {
+			type: sequelize.TEXT,
+			get: function() {
+				var salt = this.getDataValue('salt');
+				if ((salt === '')||(typeof(salt) === 'undefined')) {
+					salt = crypto.randomBytes(256).toString('base64');
+					this.setDataValue('salt', salt);
+				}
+				return salt;
+			}
+		},
 		digest: { type: sequelize.TEXT },
 
 		pwreset: { type: sequelize.TEXT },
 		notify: { type: sequelize.BOOLEAN },
 		rights: {
 			type: sequelize.ENUM,
-			values: [ "admin", "editor" ]
+			values: [ "admin", "editor" ],
+			allowNull: false
 		}
 	}, {
 		timestamps: false,
 		createdAt: false,
 		underscored: true,
 		instanceMethods: {
+			setPassword: function(password) {
+				var salt = this.salt;
+				var digest = crypto.createHash('sha256').update(salt + password).digest('base64');
+				console.log('digest: ' + digest);
+				this.setDataValue('digest', digest);
+			},
 			checkPassword: function(password) {
 				var digest = crypto.createHash('sha256').update(
-					this.getDataValue('salt') + password
+					this.salt + password
 				).digest('base64');
 				return digest === this.getDataValue('digest');
 			}
