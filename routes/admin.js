@@ -7,7 +7,6 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/user/login?next=' + encodeURIComponent(req.originalUrl))
 }
 
-
 router.param('event_id', function(req, res, next, event_id) {
 	var models = req.app.get('models');
 
@@ -220,7 +219,9 @@ router.post('/user/add', ensureAuthenticated, function(req, res) {
 					return render_form(extra_errors);
 				}
 				user_obj.setPassword(b.password);
-				user_obj.save().then(function(){
+				user_obj.save().then(function(u){
+					req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added', 
+										u.id, u.id);
 					return res.redirect('/admin/user');
 				});
 			} else {
@@ -259,7 +260,8 @@ router.post('/user/:user_id/edit', ensureAuthenticated, function(req, res) {
 		console.log('password changed');
 	}
 	u.save().then(function() {
-		// FIXME "success" toast message
+		req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> saved', 
+							u.id, u.id);
 		res.redirect('/admin/user');
 	}).catch(function(errors) {
 		console.log(errors);
@@ -273,6 +275,7 @@ router.post('/user/:user_id/edit', ensureAuthenticated, function(req, res) {
 
 router.get('/user/:user_id/delete', ensureAuthenticated, function(req, res) {
 	if (req.user.rights !== 'admin') {
+		req.flash('danger', 'Computer says no');
 		return res.redirect('/admin');
 	}
 	res.render('user_delete', {
@@ -283,11 +286,11 @@ router.get('/user/:user_id/delete', ensureAuthenticated, function(req, res) {
 
 router.post('/user/:user_id/delete', ensureAuthenticated, function(req, res) {
 	if (req.user.rights !== 'admin') {
-		// FIXME "failure" toast message
+		req.flash('danger', 'Computer says no');
 		return res.redirect('/admin');
 	}
 	req.user.destroy().then(function(){
-		// FIXME "success" toast message
+		req.flash('warning', 'User deleted');
 		return res.redirect('/admin');
 	});
 });
