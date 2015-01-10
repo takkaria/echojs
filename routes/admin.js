@@ -74,6 +74,8 @@ router.post('/event/:event_id/approve', ensureAuthenticated, function(req, res) 
 	event_.generateSlug();
 	event_.save().then(function(e){
 		e.reload();  // XXX surely should use a promise here?
+		req.flash('success', 'Event <a href="%s">%s</a> approved', 
+							event_.absolute_url, event_.id);
 		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
@@ -99,6 +101,8 @@ router.post('/event/:event_id/reject', ensureAuthenticated, function(req, res) {
 	}
 	event_.set('state', 'hidden');
 	event_.save().then(function(){
+		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
+							event_.absolute_url, event_.id);
 		res.redirect('/admin');
 	})
 	.catch(function(errors){
