@@ -34,6 +34,21 @@ router.param('user_id', function(req, res, next, user_id) {
 	});
 })
 
+router.param('user_id', function(req, res, next, user_id) {
+	var models = req.app.get('models');
+
+	models.User.find({
+		where: { id: user_id }
+	}).then(function(user) {
+		if (!user)
+			return next(new Error("No such user"));
+
+		req.user_obj = user;
+	}).then(next, function (err) {
+		next(err);
+	});
+})
+
 router.get('/', ensureAuthenticated, function(req, res) {
 	var models = req.app.get('models');
 
