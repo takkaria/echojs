@@ -2,25 +2,14 @@
 {% import "formmacros.html" as form %}
 
 {% macro inputIcon(type) %}
-  <div class="input-group-addon"><i class="fa fa-fw {{ type }}"></i></div>
+	<div class="input-group-addon"><i class="fa fa-fw {{ type }}"></i></div>
 {% endmacro %}
 
 {% block script %}
 <script type="text/javascript">
-  $(document).ready(function() {
-    $('.datetime').datetimepicker()
-    $('.datetime').on('dp.change', function(e){
-      $(e.target).find('input[type=hidden]').val(e.date.unix());
-    });
-		$('.datetime').each(function(){
-			var dt = $(this).find('input[type=hidden]').val();
-			if (dt !== '') {
-				$(this).data("DateTimePicker").setDate(
-					moment.unix(dt)
-				)
-			}
-		});
-  });
+	$(document).ready(function() {
+		$('.datetime').datetimepicker()
+	});
 </script>
 {% endblock %}
 
@@ -28,13 +17,13 @@
 
 {% block leftcontent %}
 <ol class="breadcrumb">
-  <li><a href="/">Echo</a></li>
-  <li><a href="/events">Events</a></li>
-  <li><a href="/events/add">Add Event</a></li>
+	<li><a href="/">Echo</a></li>
+	<li><a href="/events">Events</a></li>
+	<li><a href="/events/add">Add Event</a></li>
 </ol>
 
 {% if errors %}
-<p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
+<p class="alert alert-danger"><b>There were problems validating your form.</b>	Please see below for more details.
 {% endif %}
 
 <form method="POST" action="/event/add">

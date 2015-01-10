@@ -45,8 +45,8 @@ router.post('/add', function(req, res) {
 		models = req.app.get('models'),
 		event_ = {
 			title: b.title,
-			startdt: moment.unix(b.startdt),
-			enddt: moment.unix(b.enddt),
+			startdt: moment(b.startdt, 'YYYY/MM/DD hh:mm'),
+			enddt: moment(b.enddt, 'YYYY/MM/DD hh:mm'),
 			blurb: b.blurb,
 			location: b.location,  // FIXME
 			host: b.host,
