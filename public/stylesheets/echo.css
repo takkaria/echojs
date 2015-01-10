@@ -9,6 +9,7 @@ footer p { margin-bottom: 0; font-size: 85%; }
 /* index.html */
 
 ul.news { clear: both; margin-left: 0; padding-left: 1em; }
+ul.news li p { margin-bottom: 0.5em; }
 h3 small { margin-left: 10px; }
 
 .index .event { padding: 1px 0.5em; border: 1px solid transparent; cursor: pointer; }
