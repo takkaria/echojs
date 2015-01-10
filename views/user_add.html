@@ -16,7 +16,7 @@
 {% endif %}
 
 <form method="POST" action="/admin/user/add">
-	{{ form.inputText({ label: "E-mail address:", field: "email", fill: new_user.email }) }}
+	{{ form.inputText({ label: "E-mail address:", field: "email", fill: user_obj.email }) }}
 	{{ form.inputPassword({ label: "Password:", field: "password" }) }}
 
 	<div class="form-group">
@@ -24,16 +24,16 @@
 		<div class="radio">
 			<label for="rights_editor">
 				<input type="radio" name="rights" id="rights_editor" value="editor"
-					{% if user.rights == 'editor' %}checked="checked"{% endif %}> Editor
+					{% if user_obj.rights == 'editor' %}checked="checked"{% endif %}> Editor
 			</label>
 		</div>
 		<div class="radio">
 			<label for="rights_admin">
 				<input type="radio" name="rights" id="rights_admin" value="admin"
-					{% if user.rights == 'admin' %}checked="checked"{% endif %}> Admin
+					{% if user_obj.rights == 'admin' %}checked="checked"{% endif %}> Admin
 			</label>
 		</div>
-		{{ form.checkErorrs("rights") }}
+		{{ form.checkErrors("rights") }}
 	</div>
 
 	{{ form.inputSubmit("Create user") }}
