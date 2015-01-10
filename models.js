@@ -138,13 +138,26 @@ module.exports = function(debug) {
 	exports.User = db.define('user', {
 		email: {
 			type: sequelize.TEXT,
-			primaryKey: true,
 			allowNull: false,
 			validate:  {
-				isEmail: true
+				isEmail: true,
+				isUnique: function(value, next) {
+					var id = this.getDataValue('id');
+
+					exports.User.find({
+						where: {email: value},
+						attributes: ['id']
+					}).then(function(user) {
+						if (user && user.id !== id)
+							return next('email already in use');
+						next();
+					}).catch(function(err) {
+						return next(err);
+					});
+				}
 			}
 		},
-		id: { type: sequelize.INTEGER, autoIncrement: true },
+		id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true },
 		salt: {
 			type: sequelize.TEXT,
 			get: function() {
