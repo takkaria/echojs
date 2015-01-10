@@ -4,14 +4,21 @@ h1, h2, h3, h4, h5, h6, nav { font-family: "Raleway"; }
 h2 { font-weight: bold; }
 nav { background-color: #ddd; border-bottom-width: 2px; }
 footer { text-align: center; background-color: #eee; padding: 5px 0; margin: 1em 0; }
+footer p { margin-bottom: 0; font-size: 85%; }
 
-/* Front page */
+/* index.html */
 
 ul.news { clear: both; margin-left: 0; padding-left: 1em; }
 h3 small { margin-left: 10px; }
-.event-expanded { border: 2px solid black; border-radius: 4px; padding: 0 10px; }
 
-/* Event page */
+.index .event { padding: 1px 0.5em; border: 1px solid transparent; cursor: pointer; }
+.index .event:hover, .event[aria-expanded=true]
+	{ border: 1px solid #eee; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26); }
+/* Shadow filched from Material Design */
+
+#more { margin-top: 2em; }
+
+/* event_page.html */
 
 /*body.event {*/
 	h4.date {

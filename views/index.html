@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}Radical Events &amp; News{% endblock %}
+{% block pageclass %}index{% endblock %}
 
 {% block leftcontent %}
 
@@ -18,34 +19,32 @@
 	{% endif %}
 
 	{% for event in chunk.events %}
-		{% if loop.first %}
+		{% for event in chunk.events %}
 
-		<div class="event event-expanded">
-			<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="{{ event.absolute_url }}">{{ event.title }}</a></h4>
-			<p><i class="fa fa-map-marker"></i> {{ event.location }}
-			<p>{{ event.blurbAsHTML() }}
-			<p>more info at <i class="fa fa-external-link"></i>
-				<a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a>
-		</div>
+			<div class="event" data-toggle="collapse" data-target="#expanded-{{ event.id }}" aria-expanded="false" aria-controls="expanded-{{ event.id }}">
+				<h4><b>{{ event.startdt.format("ha") }}</b> <a href="{{ event.absolute_url }}">{{ event.title }}</a></h4>
+				<div class="collapse" id="expanded-{{ event.id }}">
+					<p>{{ event.blurbAsHTML() }}
+					<p><i class="fa fa-fw fa-map-marker"></i> {{ event.location }}
+					{% if event.url %}
+						<p><i class="fa fa-fw fa-external-link"></i> <a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a>
+					{% endif %}
+				</div>
+			</div>
 
-		{% else %}
-
-		<div class="event">
-		<h4><b>{{ event.startdt.format("ha") }}</b>, <a href="{{ event.absolute_url }}">{{ event.title }}</a></h4>
-		</div>
-
-		{% endif %}
+		{% endfor %}
 	{% endfor %}
+
 {% endfor %}
+
+<p id="more" class="text-right"><a class="btn btn-default btn-lg" href="/events">See more events <i class="fa fa-angle-right"></i></a>
 
 {% endblock %}
 
-
 {% block rightcontent %}
-
 <h2>Subscribe</h2>
  
-<p>We now have an email newsletter we send monthly:
+<p>We now have a monthly newsletter:
  
 <form class="form-inline" action="https://docs.google.com/forms/d/114oUUpYGh0vox28-_wuEh7asoXyHa9zr8yb2B_zqJLE/formResponse" method="POST" target="_new">
 	<input type="email" name="entry.557563294" placeholder="Enter email address" style="width: 13em; margin: 0 0.5em">
