@@ -1,5 +1,6 @@
 var express = require('express'),
 	moment = require('moment'),
+	debug = require('debug')('admin'),
 	mailer = require('../lib/mailer'),
 	router = express.Router();
 
@@ -267,9 +268,6 @@ router.post('/user/add', ensureAdmin, function(req, res) {
 });
 
 router.get('/user/:user_id/edit', ensureAdmin, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		return res.redirect('/admin');
-	}
 	res.render('user_edit', {
 		user: req.user,
 		user_obj: req.user_obj
@@ -277,26 +275,25 @@ router.get('/user/:user_id/edit', ensureAdmin, function(req, res) {
 });
 
 router.post('/user/:user_id/edit', ensureAdmin, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		return res.redirect('/admin');
-	}
 	var b = req.body,
 		u = req.user_obj;
-
 	u.set({
 		email: b.email,
+		notify: (b.notify === 'on') ? 1 : 0,
 		rights: b.rights
 	});
+	debug(u.changed());
+	debug(b, u);
 	if ((b.password !== '')&&(typeof(b.password) !== 'undefined')){
 		u.setPassword(b.password);
-		console.log('password changed');
+		debug('password changed');
 	}
-	u.save().then(function() {
+	u.save().then(function(u_) {
 		req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> saved', 
-							u.id, u.id);
+							u_.id, u_.id);
 		res.redirect('/admin/user');
 	}).catch(function(errors) {
-		console.log(errors);
+		debug(errors);
 		res.render('user_edit', {
 			errors: errors.errors,
 			user: req.user,
@@ -306,10 +303,6 @@ router.post('/user/:user_id/edit', ensureAdmin, function(req, res) {
 });
 
 router.get('/user/:user_id/delete', ensureAdmin, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		req.flash('danger', 'Computer says no');
-		return res.redirect('/admin');
-	}
 	res.render('user_delete', {
 		user: req.user,
 		user_obj: req.user_obj

@@ -85,10 +85,10 @@ router.post('/add', function(req, res) {
 					where: {notify: 1},
 					attributes: ['email']
 				}).then(function(emails){
-					debug(emails);
 					emails = emails.map(function(value, i, array) {
 						return value.email;
 					});
+					debug(emails.join(','));
 					mailer.sendMail({
 						template: 'event_notify.html',
 						subject: 'Event submitted',
