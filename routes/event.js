@@ -1,5 +1,6 @@
 var express = require('express'),
 	moment = require('moment'),
+	mailer = require('../lib/mailer'),
 	router = express.Router();
 
 router.param('id', function(req, res, next, id) {
@@ -69,6 +70,14 @@ router.post('/add', function(req, res) {
 			e.save().then(function(e_){
 				// FIXME should show a different message if it's approved already
 				req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
+				mailer.sendMail({
+					template: 'event_submit.html',
+					subject: 'Event submitted',
+					to: event_.email,
+					context: {
+						event_: event_
+					}
+				});
 				return res.redirect(
 					(e_.state === 'approved')
 						? e_.absolute_url
