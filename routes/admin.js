@@ -165,7 +165,8 @@ router.post('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
 		email: b.email,
 	});
 	e.save({validate: false}).then(function(event_) {
-		// FIXME "success" toast message
+		req.flash('success', 'Event <a href="/admin/event/%s">%s</a> edited', 
+							event_.id, event_.slug);
 		res.redirect('/admin/event/' + event_.id);
 	}).catch(function(errors) {
 		console.log(errors);
