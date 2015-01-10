@@ -3,17 +3,17 @@ var express = require('express'),
 	router = express.Router();
 
 router.param('id', function(req, res, next, id) {
-	var models = req.app.get('models');
+	var models = req.app.get('models'),
+		where = {id: id};
 
 	models.Event.find({
-		where: { id: id }
+		where: { 
+			id: id,
+			state: 'approved'
+		}
 	}).then(function(event_) {
-		if (!event_)
-			return next(new Error("No such event"));
-
 		req.event_ = event_;
-	}).then(next, function (err) {
-		next(err);
+		next(!event_ ? new Error("No such event") : null);
 	});
 })
 
@@ -23,11 +23,8 @@ router.param('slug', function(req, res, next, slug) {
 	models.Event.find({
 		where: { slug: slug }
 	}).then(function(event_) {
-		if (!event_)
-			return next(new Error("No such event_"));
 		req.event_ = event_;
-	}).then(next, function (err) {
-		next(err);
+		next(!event_ ? new Error("No such event") : null);
 	});
 })
 
