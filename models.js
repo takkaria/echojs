@@ -124,6 +124,13 @@ module.exports = function(debug) {
 					+ moment(this.getDataValue('startdt')).format('[/]YYYY[/]MM/')
 					+ this.getDataValue('slug');
 			}
+		},
+		validate: {
+			startBeforeEnd: function() {
+				if((this.enddt !== null)&&(this.enddt.diff(this.startdt) < 0)){
+					throw new Error("Event can't finish after it starts!")
+				}
+			}
 		}
 	});
 

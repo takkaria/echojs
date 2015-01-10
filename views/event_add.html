@@ -38,9 +38,13 @@
 {% endif %}
 
 <form method="POST" action="/event/add">
-
 	{{ form.inputText({ label: "Event name:", field: "title", fill: event_.title }) }}
 	{{ form.inputDateTime({ label: "Starts:", field: "startdt", fill: event_.startdt }) }}
+	{% for error in errors %}
+	{% if error.path == 'startBeforeEnd' %}
+		<p class="alert alert-danger">{{ error.message }}
+	{% endif %}
+	{% endfor %}
 	{{ form.inputDateTime({ label: "Ends:", field: "enddt", fill: event_.enddt }) }}
 	{{ form.inputText({ label: "Location:", field: "location", fill: event_.location, icon: "fa-map-marker" }) }}
 	{{ form.inputText({ label: "What group or organisation is putting on the event?",
