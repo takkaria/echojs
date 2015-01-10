@@ -67,7 +67,8 @@ router.post('/add', function(req, res) {
 		.then(function(e) {
 			e.generateSlug();
 			e.save().then(function(e_){
-				// FIXME add "success" toast
+				// FIXME should show a different message if it's approved already
+				req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
 				return res.redirect(
 					(e_.state === 'approved')
 						? e_.absolute_url
