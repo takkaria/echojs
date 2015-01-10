@@ -187,4 +187,63 @@ router.post('/user/add', ensureAuthenticated, function(req, res) {
 		});
 });
 
+router.get('/user/:user_id/edit', ensureAuthenticated, function(req, res) {
+	if (req.user.rights !== 'admin') {
+		return res.redirect('/admin');
+	}
+	res.render('user_edit', {
+		user: req.user,
+		user_obj: req.user_obj
+	});
+});
+
+router.post('/user/:user_id/edit', ensureAuthenticated, function(req, res) {
+	if (req.user.rights !== 'admin') {
+		return res.redirect('/admin');
+	}
+	var b = req.body,
+		u = req.user_obj;
+
+	u.set({
+		email: b.email,
+		rights: b.rights
+	});
+	if ((b.password !== '')&&(typeof(b.password) !== 'undefined')){
+		u.setPassword(b.password);
+		console.log('password changed');
+	}
+	u.save().then(function() {
+		// FIXME "success" toast message
+		res.redirect('/admin/user');
+	}).catch(function(errors) {
+		console.log(errors);
+		res.render('user_edit', {
+			errors: errors.errors,
+			user: req.user,
+			user_obj: u
+		});
+	});
+});
+
+router.get('/user/:user_id/delete', ensureAuthenticated, function(req, res) {
+	if (req.user.rights !== 'admin') {
+		return res.redirect('/admin');
+	}
+	res.render('user_delete', {
+		user: req.user,
+		user_obj: req.user_obj
+	});
+});
+
+router.post('/user/:user_id/delete', ensureAuthenticated, function(req, res) {
+	if (req.user.rights !== 'admin') {
+		// FIXME "failure" toast message
+		return res.redirect('/admin');
+	}
+	req.user.destroy().then(function(){
+		// FIXME "success" toast message
+		return res.redirect('/admin');
+	});
+});
+
 module.exports = router;

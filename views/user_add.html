@@ -1,41 +1,16 @@
-{% extends "layout.html" %}
+{% extends "user_edit.html" %}
+
 {% import "formmacros.html" as form %}
 
-{% block pageclass %}admin user_add{% endblock %}
-
-{% block leftcontent %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
   <li><a href="/">Echo</a></li>
   <li><a href="/admin">Admin</a></li>
   <li><a href="/admin/user">User</a></li>
-  <li>Add</li>
+	<li>Add</li>
 </ol>
+{% endblock breadcrumb %}
 
-{% if errors %}
-<p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
-{% endif %}
+{% block form_action %}/admin/user/add{% endblock form_action %}
 
-<form method="POST" action="/admin/user/add">
-	{{ form.inputText({ label: "E-mail address:", field: "email", fill: user_obj.email }) }}
-	{{ form.inputPassword({ label: "Password:", field: "password" }) }}
-
-	<div class="form-group">
-		<label>Rights:</label>
-		<div class="radio">
-			<label for="rights_editor">
-				<input type="radio" name="rights" id="rights_editor" value="editor"
-					{% if user_obj.rights == 'editor' %}checked="checked"{% endif %}> Editor
-			</label>
-		</div>
-		<div class="radio">
-			<label for="rights_admin">
-				<input type="radio" name="rights" id="rights_admin" value="admin"
-					{% if user_obj.rights == 'admin' %}checked="checked"{% endif %}> Admin
-			</label>
-		</div>
-		{{ form.checkErrors("rights") }}
-	</div>
-
-	{{ form.inputSubmit("Create user") }}
-</form>
-{% endblock %}
+{% block button %}{{ form.inputSubmit("Create user") }}{% endblock %}

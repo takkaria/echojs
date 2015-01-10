@@ -21,8 +21,8 @@ CREATE TABLE events (
 );
 
 CREATE TABLE users (
-	email TEXT PRIMARY KEY,
-	id INTEGER,
+	id INTEGER PRIMARY KEY NOT NULL,
+	email TEXT UNIQUE,
 	salt TEXT,
 	digest TEXT,
 
