@@ -130,9 +130,6 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
 });
 
 router.get('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
-	if ((req.user.rights !== 'admin')&&(req.user.rights !== 'editor')) {
-		return res.redirect('/admin');
-	}
 	res.render('event_edit', {
 		user: req.user,
 		event_: req.event_
