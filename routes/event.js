@@ -1,6 +1,7 @@
 var express = require('express'),
 	moment = require('moment'),
 	mailer = require('../lib/mailer'),
+	debug = require('debug')('event'),
 	router = express.Router();
 
 router.param('id', function(req, res, next, id) {
@@ -70,13 +71,32 @@ router.post('/add', function(req, res) {
 			e.save().then(function(e_){
 				// FIXME should show a different message if it's approved already
 				req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
+				// owner "confirm"
 				mailer.sendMail({
 					template: 'event_submit.html',
 					subject: 'Event submitted',
 					to: event_.email,
 					context: {
-						event_: event_
+						event_: e_
 					}
+				});
+				// admin notification
+				models.User.findAll({
+					where: {notify: 1},
+					attributes: ['email']
+				}).then(function(emails){
+					debug(emails);
+					emails = emails.map(function(value, i, array) {
+						return value.email;
+					});
+					mailer.sendMail({
+						template: 'event_notify.html',
+						subject: 'Event submitted',
+						to: emails.join(','),
+						context: {
+							event_: e_
+						}
+					});
 				});
 				return res.redirect(
 					(e_.state === 'approved')
