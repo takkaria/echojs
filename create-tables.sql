@@ -1,3 +1,13 @@
+CREATE TABLE locations (
+	id INTEGER PRIMARY KEY,
+	name TEXT,
+	address TEXT,
+	description TEXT,
+
+	longitude REAL,
+	latitude REAL
+);
+
 CREATE TABLE events (
 	id INTEGER PRIMARY KEY,
 	slug TEXT,

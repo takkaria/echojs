@@ -48,6 +48,21 @@ router.param('user_id', function(req, res, next, user_id) {
 	}).then(function(user) {
 		req.user_obj = user;
 		next(!user ? new Error("No such user") : null);
+	}).then(next, function (err) {
+		next(err);
+	});
+})
+
+router.param('location_id', function(req, res, next, id) {
+	var models = req.app.get('models');
+
+	models.Location.find({
+		where: { id: id }
+	}).then(function(loc) {
+		req.loc = loc;
+		next(!user ? new Error("No such location") : null);
+	}).then(next, function (err) {
+		next(err);
 	});
 })
 
@@ -67,6 +82,65 @@ router.get('/', ensureEditorOrAdmin, function(req, res) {
 		});
 	});
 });
+
+/////////// LOCATIONS ///////////
+
+router.get('/locations', ensureEditorOrAdmin, function(req, res) {
+	var models = req.app.get('models');
+
+	models.Location.findAll({
+		limit: 20,
+	}).then(function(locations) {
+		res.render('locations', {
+			user: req.user,
+			locations: locations
+		});
+	});
+});
+
+router.get('/location/add', ensureEditorOrAdmin, function(req, res) {
+	var models = req.app.get('models');
+
+	res.render('location_add', {
+		user: req.user,
+	});
+});
+
+/* POST event add */
+router.post('/location/add', ensureEditorOrAdmin, function(req, res) {
+	var b = req.body,
+		models = req.app.get('models'),
+		location = {
+			name: b.name,
+			address: b.address,
+			description: b.description,
+			longitude: b.longitude,
+			latitude: b.latitude
+		};
+	models.Location
+		.create(location)
+		.then(function(location) {
+			res.redirect("/admin/locations");
+		})
+		.catch(function(errors) {
+			res.render('location_add', {
+				loc: location,
+				errors: errors.errors,
+				user: req.user
+			});
+		});
+});
+
+router.get('/location/:location_id', function(req, res) {
+	var models = req.app.get('models');
+
+	res.render('location', {
+		user: req.user,
+		loc: req.loc,
+	});
+});
+
+/////////// EVENTS ///////////
 
 router.get('/event/:event_id', ensureEditorOrAdmin, function(req, res) {
 	res.render('event_page', {
@@ -191,6 +265,8 @@ router.post('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
 		});
 	});
 });
+
+/////////// USERS ///////////
 
 router.get('/user', ensureAdmin, function(req, res) {
 	var models = req.app.get('models');

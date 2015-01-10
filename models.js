@@ -267,6 +267,53 @@ module.exports = function(debug) {
 		errors: { type: sequelize.TEXT },
 	}, global_options);
 
+	exports.Location = db.define('location', {
+		id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+		name: {
+			type: sequelize.TEXT,
+			allowNull: false,
+			validate:  {
+				notEmpty: true
+			},
+		},
+		address: {
+			type: sequelize.TEXT,
+			allowNull: false,
+			validate:  {
+				notEmpty: true
+			},
+		},
+		description: { type: sequelize.TEXT },
+
+		longitude: {
+			type: sequelize.FLOAT,
+			allowNull: false,
+			validate:  {
+				notEmpty: true
+			},
+		},
+		latitude: {
+			type: sequelize.FLOAT,
+			allowNull: false,
+			validate:  {
+				notEmpty: true
+			},
+		},
+	}, {
+		timestamps: false,
+		createdAt: false,
+		underscored: true,
+		instanceMethods: {
+			addressAsHTML: function() {
+			    return this.getDataValue('address').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>');
+			},
+			descriptionAsHTML: function() {
+				var d = this.getDataValue('description');
+				return d ? marked(d) : null;
+			}
+		}
+	});
+
 	exports.Feed.hasMany(exports.Post);
 	exports.Post.belongsTo(exports.Feed);
 
