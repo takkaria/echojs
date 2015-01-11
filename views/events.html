@@ -3,15 +3,18 @@
 {# FIXME add a page title here #}
 {% block pageclass %}event_calendar{% endblock %}
 
-{% block leftcontent %}
+{% block content %}
+<div class="col-md-10 col-md-offset-1">
 
-<ol class="breadcrumb">
-  <li><a href="/">Echo</a></li>
-  <li><a href="/events">Events</a></li>
-</ol>
+	<ol class="breadcrumb">
+	  <li><a href="/">Echo</a></li>
+	  <li><a href="/events">Events</a></li>
+	</ol>
 
-<div id='calendar'></div>
+	{# FIXME add search engine-friendly fallback content #}
+	<div id='calendar'></div>
 
+</div>
 {% endblock %}
 
 {% block script %}
