@@ -2,7 +2,7 @@
 
 h1, h2, h3, h4, h5, h6, nav { font-family: "Raleway"; }
 h2 { font-weight: bold; }
-nav { background-color: #ddd; border-bottom-width: 2px; }
+nav.navbar-default { background-color: #ddd; border-bottom-width: 2px; border-radius: 0; border-bottom-color: black; }
 footer { text-align: center; background-color: #eee; padding: 5px 0; margin: 1em 0; }
 footer p { margin-bottom: 0; font-size: 85%; }
 
