@@ -1,5 +1,6 @@
 var express = require('express');
 var session = require('express-session');
+var flash = require('express-flash');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -34,6 +35,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));

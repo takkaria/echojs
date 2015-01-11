@@ -7,6 +7,25 @@ function ensureAuthenticated(req, res, next) {
   res.redirect('/user/login?next=' + encodeURIComponent(req.originalUrl))
 }
 
+function ensureEditorOrAdmin(req, res, next) {
+	ensureAuthenticated(req, res, function(){
+		if((req.user.rights === 'admin')||(req.user.rights == 'editor')) { 
+			return next()
+		}
+		req.flash('danger', 'Computer says no');
+		res.redirect('/');
+	});
+}
+
+function ensureAdmin(req, res, next) {
+	ensureAuthenticated(req, res, function(){
+		if(req.user.rights === 'admin') { 
+			return next()
+		}
+		req.flash('danger', 'Computer says no');
+		res.redirect('/admin');
+	});
+}
 
 router.param('event_id', function(req, res, next, event_id) {
 	var models = req.app.get('models');
@@ -30,7 +49,7 @@ router.param('user_id', function(req, res, next, user_id) {
 	});
 })
 
-router.get('/', ensureAuthenticated, function(req, res) {
+router.get('/', ensureEditorOrAdmin, function(req, res) {
 	var models = req.app.get('models');
 
 	models.Event.findAll({
@@ -47,14 +66,14 @@ router.get('/', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.get('/event/:event_id', ensureAuthenticated, function(req, res) {
+router.get('/event/:event_id', ensureEditorOrAdmin, function(req, res) {
 	res.render('event_page', {
 		event_: req.event_,
 		user: req.user
 	});
 });
 
-router.get('/event/:event_id/approve', ensureAuthenticated, function(req, res) {
+router.get('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) {
 	var event_ = req.event_;
 	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
@@ -65,7 +84,7 @@ router.get('/event/:event_id/approve', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.post('/event/:event_id/approve', ensureAuthenticated, function(req, res) {
+router.post('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) {
 	var event_ = req.event_;
 	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
@@ -74,6 +93,8 @@ router.post('/event/:event_id/approve', ensureAuthenticated, function(req, res) 
 	event_.generateSlug();
 	event_.save().then(function(e){
 		e.reload();  // XXX surely should use a promise here?
+		req.flash('success', 'Event <a href="%s">%s</a> approved', 
+							event_.absolute_url, event_.id);
 		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
@@ -81,7 +102,7 @@ router.post('/event/:event_id/approve', ensureAuthenticated, function(req, res) 
 	});
 });
 
-router.get('/event/:event_id/reject', ensureAuthenticated, function(req, res) {
+router.get('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
 	var event_ = req.event_;
 	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
@@ -92,13 +113,15 @@ router.get('/event/:event_id/reject', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.post('/event/:event_id/reject', ensureAuthenticated, function(req, res) {
+router.post('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
 	var event_ = req.event_;
 	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
 		res.redirect('/admin/' + req.event_.id);
 	}
 	event_.set('state', 'hidden');
 	event_.save().then(function(){
+		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
+							event_.absolute_url, event_.id);
 		res.redirect('/admin');
 	})
 	.catch(function(errors){
@@ -106,7 +129,7 @@ router.post('/event/:event_id/reject', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.get('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
+router.get('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
 	if ((req.user.rights !== 'admin')&&(req.user.rights !== 'editor')) {
 		return res.redirect('/admin');
 	}
@@ -116,10 +139,7 @@ router.get('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.post('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
-	if ((req.user.rights !== 'admin')&&(req.user.rights !== 'editor')) {
-		return res.redirect('/admin');
-	}
+router.post('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
 	var b = req.body,
 		e = req.event_;
 
@@ -142,7 +162,8 @@ router.post('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
 		email: b.email,
 	});
 	e.save({validate: false}).then(function(event_) {
-		// FIXME "success" toast message
+		req.flash('success', 'Event <a href="/admin/event/%s">%s</a> edited', 
+							event_.id, event_.slug);
 		res.redirect('/admin/event/' + event_.id);
 	}).catch(function(errors) {
 		console.log(errors);
@@ -154,10 +175,7 @@ router.post('/event/:event_id/edit', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.get('/user', ensureAuthenticated, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		return res.redirect('/admin');
-	}
+router.get('/user', ensureAdmin, function(req, res) {
 	var models = req.app.get('models');
 
 	models.User.findAll({
@@ -170,20 +188,13 @@ router.get('/user', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.get('/user/add', ensureAuthenticated, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		return res.redirect('/admin');
-	}
+router.get('/user/add', ensureAdmin, function(req, res) {
 	res.render('user_add', {
 		user: req.user
 	});
 });
 
-router.post('/user/add', ensureAuthenticated, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		return res.redirect('/admin');
-	}
-
+router.post('/user/add', ensureAdmin, function(req, res) {
 	var b = req.body,
 		models = req.app.get('models'),
 		extra_errors = [];
@@ -216,7 +227,9 @@ router.post('/user/add', ensureAuthenticated, function(req, res) {
 					return render_form(extra_errors);
 				}
 				user_obj.setPassword(b.password);
-				user_obj.save().then(function(){
+				user_obj.save().then(function(u){
+					req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added', 
+										u.id, u.id);
 					return res.redirect('/admin/user');
 				});
 			} else {
@@ -229,7 +242,7 @@ router.post('/user/add', ensureAuthenticated, function(req, res) {
 		});
 });
 
-router.get('/user/:user_id/edit', ensureAuthenticated, function(req, res) {
+router.get('/user/:user_id/edit', ensureAdmin, function(req, res) {
 	if (req.user.rights !== 'admin') {
 		return res.redirect('/admin');
 	}
@@ -239,7 +252,7 @@ router.get('/user/:user_id/edit', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.post('/user/:user_id/edit', ensureAuthenticated, function(req, res) {
+router.post('/user/:user_id/edit', ensureAdmin, function(req, res) {
 	if (req.user.rights !== 'admin') {
 		return res.redirect('/admin');
 	}
@@ -255,7 +268,8 @@ router.post('/user/:user_id/edit', ensureAuthenticated, function(req, res) {
 		console.log('password changed');
 	}
 	u.save().then(function() {
-		// FIXME "success" toast message
+		req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> saved', 
+							u.id, u.id);
 		res.redirect('/admin/user');
 	}).catch(function(errors) {
 		console.log(errors);
@@ -267,8 +281,9 @@ router.post('/user/:user_id/edit', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.get('/user/:user_id/delete', ensureAuthenticated, function(req, res) {
+router.get('/user/:user_id/delete', ensureAdmin, function(req, res) {
 	if (req.user.rights !== 'admin') {
+		req.flash('danger', 'Computer says no');
 		return res.redirect('/admin');
 	}
 	res.render('user_delete', {
@@ -277,13 +292,9 @@ router.get('/user/:user_id/delete', ensureAuthenticated, function(req, res) {
 	});
 });
 
-router.post('/user/:user_id/delete', ensureAuthenticated, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		// FIXME "failure" toast message
-		return res.redirect('/admin');
-	}
+router.post('/user/:user_id/delete', ensureAdmin, function(req, res) {
 	req.user.destroy().then(function(){
-		// FIXME "success" toast message
+		req.flash('warning', 'User deleted');
 		return res.redirect('/admin');
 	});
 });
