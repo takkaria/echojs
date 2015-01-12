@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Echo Manchester</h1>
+<h2>Event submitted</h2>
+
+<p>
+	Hello,
+</p>
+
+<p>
+	{{ event_.email }} has submitted a new event to Manchester Echo.
+</p>
+
+<ul>
+	<li>
+		{% if event_.type === 'film' %}Film showing:{% endif %}
+		{{ event_.title }}
+	</li>
+	<li>URL: {{ event_.url }}</li>
+	<li>Host: {{ event_.host }}</li>
+	<li>Location: {{ event_.location }}</li>
+</ul>
+
+<p>
+	Please 
+	<a href="http://echomanchester.net/admin/event/{{ event_.id }}/approve">approve</a>
+	or <a href="http://echomanchester.net/admin/event/{{ event_.id }}/reject">hide</a>
+	this event, or <a href="http://echomanchester.net/admin/event/{{ event_.id }}">
+		view the full event details online
+	</a>before taking action.
+</p>
+
+<p>
+	Take care,
+</p>
+
+<p>
+	- The Echo Crew
+</p>
+{% endblock %}

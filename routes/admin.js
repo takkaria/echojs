@@ -1,5 +1,7 @@
 var express = require('express'),
 	moment = require('moment'),
+	debug = require('debug')('admin'),
+	mailer = require('../lib/mailer'),
 	router = express.Router();
 
 function ensureAuthenticated(req, res, next) {
@@ -95,6 +97,14 @@ router.post('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) 
 		e.reload();  // XXX surely should use a promise here?
 		req.flash('success', 'Event <a href="%s">%s</a> approved', 
 							event_.absolute_url, event_.id);
+		mailer.sendMail({
+			template: 'event_approve.html',
+			subject: 'Event approved!',
+			to: event_.email,
+			context: {
+				event_: event_
+			}
+		});
 		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
@@ -122,6 +132,16 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
 	event_.save().then(function(){
 		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
 							event_.absolute_url, event_.id);
+		mailer.sendMail({
+			template: 'event_reject.html',
+			subject: 'Sorry :(',
+			to: event_.email,
+			context: {
+				event_: event_
+				// FIXME add custom admin explanation from a form, e.g.
+				// message: req.body.message
+			}
+		});
 		res.redirect('/admin');
 	})
 	.catch(function(errors){
@@ -130,9 +150,6 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
 });
 
 router.get('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
-	if ((req.user.rights !== 'admin')&&(req.user.rights !== 'editor')) {
-		return res.redirect('/admin');
-	}
 	res.render('event_edit', {
 		user: req.user,
 		event_: req.event_
@@ -230,6 +247,14 @@ router.post('/user/add', ensureAdmin, function(req, res) {
 				user_obj.save().then(function(u){
 					req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added', 
 										u.id, u.id);
+					mailer.sendMail({
+						template: 'user_add.html',
+						subject: 'New account',
+						to: u.email,
+						context: {
+							user: u
+						}
+					});
 					return res.redirect('/admin/user');
 				});
 			} else {
@@ -243,9 +268,6 @@ router.post('/user/add', ensureAdmin, function(req, res) {
 });
 
 router.get('/user/:user_id/edit', ensureAdmin, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		return res.redirect('/admin');
-	}
 	res.render('user_edit', {
 		user: req.user,
 		user_obj: req.user_obj
@@ -253,26 +275,25 @@ router.get('/user/:user_id/edit', ensureAdmin, function(req, res) {
 });
 
 router.post('/user/:user_id/edit', ensureAdmin, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		return res.redirect('/admin');
-	}
 	var b = req.body,
 		u = req.user_obj;
-
 	u.set({
 		email: b.email,
+		notify: (b.notify === 'on') ? 1 : 0,
 		rights: b.rights
 	});
+	debug(u.changed());
+	debug(b, u);
 	if ((b.password !== '')&&(typeof(b.password) !== 'undefined')){
 		u.setPassword(b.password);
-		console.log('password changed');
+		debug('password changed');
 	}
-	u.save().then(function() {
+	u.save().then(function(u_) {
 		req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> saved', 
-							u.id, u.id);
+							u_.id, u_.id);
 		res.redirect('/admin/user');
 	}).catch(function(errors) {
-		console.log(errors);
+		debug(errors);
 		res.render('user_edit', {
 			errors: errors.errors,
 			user: req.user,
@@ -282,10 +303,6 @@ router.post('/user/:user_id/edit', ensureAdmin, function(req, res) {
 });
 
 router.get('/user/:user_id/delete', ensureAdmin, function(req, res) {
-	if (req.user.rights !== 'admin') {
-		req.flash('danger', 'Computer says no');
-		return res.redirect('/admin');
-	}
 	res.render('user_delete', {
 		user: req.user,
 		user_obj: req.user_obj

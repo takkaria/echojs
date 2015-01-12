@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<head>
+	<title>{% block title %}{% endblock %} ~ Echo Manchester</title>
+	<link href="/base.css" rel="stylesheet">
+</head>
+
+<body class="{% block pageclass %}normal{% endblock %}">
+	{% block content %}{% endblock %}
+	<footer>
+	<p>&copy; Echo Manchester, 2014.  Licenced under the GNU AGPL v3, source code on <a href="//github.com/takkaria/echo">GitHub</a>.<br>
+	Found a bug? <a href="https://echomanchester.net/about#contact">Let us know</a>.
+	</footer>
+</body>
