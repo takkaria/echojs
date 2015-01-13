@@ -1,0 +1,42 @@
+{% extends "layout_simple.html" %}
+
+{% block title %}Leaflet{% endblock %}
+
+{% block content %}
+<p>
+	Coming up over the next couple of weeks:
+</p>
+{% for chunk in events %}
+<p>
+	<b>{% if chunk.shortDate %}
+		{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small>
+	{% else %}
+		{{ chunk.longDate }}
+	{% endif %}</b><br>
+
+	{% for event in chunk.events %}
+		<i>{{ event.startdt.format("ha") }}</i>
+		<a href="https://echomanchester.net{{ event.absolute_url }}">{{ event.title }}</a>
+		{% if not loop.last %}<br>{% endif %}
+	{% endfor %}
+</p>
+{% endfor %}
+<p>
+	Please keep an eye on echomanchester.net for updates and new events.
+</p>
+<p>
+	Cheers,
+</p>
+<p>
+	<b>- The Echo crew</b>
+</p>
+
+<footer>
+	<p>
+		To subscribe to this fortnightly newsletter, email echomanchester-subscribe@lists.riseup.net
+	</p>
+	<p>
+		To unsubscribe, email echomanchester-unsubscribe@lists.riseup.net
+	</p>
+</footer>
+{% endblock %}
