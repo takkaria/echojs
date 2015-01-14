@@ -42,11 +42,13 @@
 			{% if user %}
 			<li class="dropdown">
 				<a href="/admin" class="dropdown-toggle" data-toggle="dropdown"
-					role="button" aria-expanded="false">Admin <span class="caret"></span></a>
+					role="button" aria-expanded="false">⚙ <span class="caret"></span></a>
 				<ul class="dropdown-menu" role="menu">
+					<li><a href="/admin/">Manage events</a></li>
 					{% if user.rights == 'admin' %}
-					<li><a href="/admin/user">Users</a></li>
+					<li><a href="/admin/user">Manage users</a></li>
 					{% endif %}
+					<li><a href="/user/password">Change password</a>
 					<li><a href="/user/logout">Logout</a>
 				</ul>
 			{% endif %}
