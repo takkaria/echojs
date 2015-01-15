@@ -231,6 +231,12 @@ module.exports = function(debug) {
 					this.salt + password
 				).digest('base64');
 				return digest === this.getDataValue('digest');
+			},
+			resetPassword: function() {
+				var token = crypto.createHash('sha256')
+					.update(crypto.pseudoRandomBytes(24))
+					.digest('base64');
+				this.setDataValue('pwreset', token);
 			}
 		}
 	});
