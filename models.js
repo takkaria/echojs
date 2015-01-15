@@ -126,6 +126,43 @@ module.exports = function(debug) {
 					+ this.getDataValue('slug');
 			}
 		},
+		classMethods: {
+			groupByDays: function(options, callback) {
+				this.findAll(options).then(function(events) {
+					// This will look like
+					// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
+					var ordered = [];
+					var chunk;
+					var last;
+
+					// Group events by date
+					events.forEach(function(event) {
+						var date = event.startdt.format("YYYY-MM-DD");
+
+						// Create a new grouping ('chunk') for a different date
+						if (date != last) {
+							chunk = {};
+							chunk.date = moment(date);
+							chunk.longDate = chunk.date.format("dddd, Do MMMM YYYY");
+							chunk.events = [];
+
+							if (chunk.date.diff(moment(), 'days') < 7)
+								chunk.shortDate = chunk.date.calendar();
+
+							ordered.push(chunk);
+
+							// Remember date for next iteration
+							last = date;
+						}
+
+						// Add event to current chunk
+						chunk.events.push(event);
+					});
+
+					return callback(ordered);
+				});
+			}
+		},
 		validate: {
 			startBeforeEnd: function() {
 				if((this.enddt !== null)&&(this.enddt.diff(this.startdt) < 0)){

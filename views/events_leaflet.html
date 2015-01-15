@@ -1,0 +1,17 @@
+{% extends "layout_simple.html" %}
+
+{% block title %}Leaflet{% endblock %}
+
+{% block content %}
+{% for event in events %}
+<p>
+	{{ event.startdt.format("dddd, Do MMMM, h:mma") }}<br>
+
+	<b>{{ event.title }}</b>
+	<i>{{ event.location }}</i>
+
+	{{ event.blurb }}
+	{{ event.url }}
+</p>
+{% endfor %}
+{% endblock %}
