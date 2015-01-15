@@ -1,5 +1,7 @@
 var express = require('express'),
 	moment = require('moment'),
+	mailer = require('../lib/mailer'),
+	debug = require('debug')('user'),
 	passport = require('passport'),
 	router = express.Router();
 
@@ -33,7 +35,7 @@ router.post('/login', function(req, res, next) {
 		if (!user) { return res.render('login'); }
 		req.logIn(user, function(err) {
 			if (err) { return next(err); }
-			console.log(req.body.next);
+			debug(req.body.next);
 			if (req.body.next) {
 				return res.redirect(req.body.next);
 			}
@@ -42,14 +44,14 @@ router.post('/login', function(req, res, next) {
 	})(req, res, next);
 });
 
-router.get('/password', ensureAuthenticated, function(req, res) {
-	res.render('user_password', {user: req.user});
+router.get('/password/change', ensureAuthenticated, function(req, res) {
+	res.render('password_change', {user: req.user});
 });
 
-router.post('/password', ensureAuthenticated, function(req, res, next) {
+router.post('/password/change', ensureAuthenticated, function(req, res, next) {
 	passport.authenticate('local', function(err, user, info) {
 		if (err) { return next(err); }
-		if (!user) { return res.render('user_password', {
+		if (!user) { return res.render('password_change', {
 			user: req.user,
 			errors: [{
 				path: 'password',
@@ -57,7 +59,7 @@ router.post('/password', ensureAuthenticated, function(req, res, next) {
 			}]
 		}); }
 		if(req.body.new_password === ''){
-			return res.render('user_password', {
+			return res.render('password_change', {
 				user: req.user,
 				errors: [{
 					path: 'new_password',
@@ -66,7 +68,7 @@ router.post('/password', ensureAuthenticated, function(req, res, next) {
 			});
 		}
 		if(req.body.new_password !== req.body.new_password2){
-			return res.render('user_password', {
+			return res.render('password_change', {
 				user: req.user,
 				errors: [{
 					path: 'new_password2',
@@ -76,7 +78,7 @@ router.post('/password', ensureAuthenticated, function(req, res, next) {
 		}
 		req.user.setPassword(req.body.new_password);
 		req.user.save().then(function(u_){
-			req.flash('success', 'Password changed')
+			req.flash('success', 'Password changed. You are now logged in.')
 			return res.redirect('/');
 		});
 	})(req, res, next);
@@ -86,5 +88,80 @@ router.get('/logout', ensureAuthenticated, function(req, res){
 	req.logout();
 	res.redirect('/');
 });
+
+router.get('/password/reset', function(req, res) {
+	res.render('password_reset', {user: req.user});
+});
+
+router.post('/password/reset', function(req, res, next) {
+	var models = req.app.get('models');
+	models.User.find({where: {email: req.body.email}}).then(function(user){
+		if (user) {
+			user.resetPassword();
+			user.save().then(function(u) {
+				mailer.sendMail({
+					template: 'password_reset.html',
+					subject: 'Password Reset',
+					to: user.email,
+					context: {
+						user: u
+					}
+				});
+			});
+		}
+
+		res.redirect('/user/password/reset/done')
+	});
+});
+
+router.get('/password/reset/done', function(req, res, next) {
+	res.render('password_reset_done');
+});
+
+router.get('/password/reset/:token', function(req, res, next) {
+	var models = req.app.get('models');
+	models.User.find({where: { pwreset: req.params.token}}).then(function(user){
+		if (user) {
+			res.render('password_reset_change', {user: user});
+		} else {
+			req.flash('danger', 'Invalid reset link, or maybe it has been used already?');
+			res.redirect('/user/password/reset');
+		}
+	});
+});
+
+router.post('/password/reset/:token', function(req, res, next) {
+	var models = req.app.get('models');
+	models.User.find({
+		where: {pwreset: req.params.token,}}).then(function(user){
+		if(req.body.new_password === ''){
+			return res.render('password_change', {
+				user: user,
+				errors: [{
+					path: 'new_password',
+					message: 'New password can\'t be blank'
+				}]
+			});
+		}
+		if(req.body.new_password !== req.body.new_password2){
+			return res.render('password_change', {
+				user: user,
+				errors: [{
+					path: 'new_password2',
+					message: 'New passwords don\'t match'
+				}]
+			});
+		}
+		user.setPassword(req.body.new_password);
+		user.set('pwreset', null);
+		user.save().then(function(u_){
+			req.logIn(u_, function(err) {
+				req.flash('success', 'Password changed')
+				return res.redirect('/');
+			});
+		});
+	});
+});
+
 
 module.exports = router;
