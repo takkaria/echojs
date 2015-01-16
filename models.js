@@ -110,6 +110,11 @@ module.exports = function(debug) {
 				return marked(this.blurb);
 			},
 
+			shortBlurb: function() {
+				// FIXME: This could be done with more finesse
+				return this.blurb.substr(0, 90);
+			},
+
 			generateSlug: function() {
 				if (!this.getDataValue('slug')) {
 					var text = slug(this.getDataValue('title')) + "-" + this.id;

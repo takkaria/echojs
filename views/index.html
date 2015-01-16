@@ -11,33 +11,42 @@
 
 <h2>Events</h2>
 
-{% for chunk in events %}
-	{% if chunk.shortDate %}
-		<h3>{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small></h3>
-	{% else %}
-		<h3>{{ chunk.longDate }}</h3>
-	{% endif %}
+{% for event in events %}
 
-	{% for event in chunk.events %}
-		{% for event in chunk.events %}
+{% if loop.index % 2 == 1 %}
+<div class="row">
+{% endif %}
 
-			<div class="event" data-toggle="collapse" data-target="#expanded-{{ event.id }}" aria-expanded="false" aria-controls="expanded-{{ event.id }}">
-				<h4><b>{{ event.startdt.format("ha") }}</b> <a href="{{ event.absolute_url }}">{{ event.title }}</a></h4>
-				<div class="collapse" id="expanded-{{ event.id }}">
-					<p>{{ event.blurbAsHTML() }}
-					<p><i class="fa fa-fw fa-map-marker"></i> {{ event.location }}
-					{% if event.url %}
-						<p><i class="fa fa-fw fa-external-link"></i> <a href="{{ event.url.href }}" target="_blank">{{ event.url.hostNoWww }}</a>
-					{% endif %}
-				</div>
-			</div>
+	<div class="col-md-6">
+		<div class="box event-box">
+			<p class="head">{{ event.startdt.format("dddd, Do MMMM h:mma") }}</p>
 
-		{% endfor %}
-	{% endfor %}
+			<h4><a href="{{ event.absolute_url }}">{{ event.title }}</a></h4>
+			<p>{{ event.shortBlurb() }}...
+
+			<p class="foot"><small><i class="fa fa-fw fa-map-marker"></i> {{ event.location }}</small>
+		</div>
+	</div>
+
+{% if loop.index % 2 == 0 %}
+</div>
+{% endif %}
 
 {% endfor %}
 
-<p id="more" class="text-right"><a class="btn btn-default btn-lg" href="/events">See more events <i class="fa fa-angle-right"></i></a>
+<div class="row">
+	<div class="col-md-6">
+		<div class="box add-yours">
+			<p><a href="/event/add"><i class="fa fa-plus"></i> Add your event</a></p>
+		</div>
+	</div>
+
+	<div class="col-md-6">
+		<div class="box add-yours">
+			<p><a href="/event/add">See more events <i class="fa fa-angle-right"></i></a></p>
+		</div>
+	</div>
+</div>
 
 {% endblock %}
 
@@ -60,4 +69,15 @@
 	{% if loop.last %}</ul>{% endif %}
 {% endfor %}
 
+{% endblock %}
+
+
+{% block script %}
+<script>
+$(function() {
+	$(".box").on("click", function (evt) {
+		location.href = $(this).find("a").attr("href");
+	});
+});
+</script>
 {% endblock %}

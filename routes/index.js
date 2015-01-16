@@ -20,14 +20,14 @@ router.get('/', function(req, res) {
 	var models = req.app.get('models');
 	var sequelize = models.sequelize;
 
-	models.Event.groupByDays({
+	models.Event.findAll({
 		where: [
 			{ state: "approved" },
 			"(startdt >= date('now', 'start of day') OR date('now') <= enddt)"
 		],
 		limit: 10,
 		order: "startdt ASC"
-	}, function(ordered){
+	}).then(function(events) {
 		models.Post.findAll({
 			include: [ models.Feed ],
 			where: "hidden IS NOT 1 AND date >= date('now', '-3 months') AND ( " +
@@ -36,7 +36,7 @@ router.get('/', function(req, res) {
 			order: "date DESC"
 		}).then(function(posts) {
 			res.render('index', {
-				events: ordered,
+				events: events,
 				posts: posts,
 				user: req.user
 			});

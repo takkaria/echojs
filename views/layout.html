@@ -62,7 +62,7 @@
 
 {% block content %}
 
-	<div class="col-md-8 col-sm-7">
+	<div class="col-md-8 col-sm-7 leftcontent">
 	{% for type, message in messages %}
 		<div class="alert alert-{{ type }}">{{ message|safe }}</div>
 	{% endfor %}
@@ -70,7 +70,7 @@
 	{% block leftcontent %}{% endblock %}
 	</div>
 
-	<div class="col-md-4 col-sm-5">
+	<div class="col-md-4 col-sm-5 rightcontent">
 	{% block rightcontent %}{% endblock %}
 	</div>
 
