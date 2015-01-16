@@ -47,3 +47,5 @@ CREATE TABLE feeds (
 	title TEXT,
 	errors TEXT
 );
+
+CREATE VIEW post_info AS SELECT * FROM posts LEFT OUTER JOIN feeds ON posts.feed_id = feeds.id;
