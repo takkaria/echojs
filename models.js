@@ -62,6 +62,9 @@ module.exports = function(debug) {
 				if (urlValue) {
 					var urlObj = url.parse(urlValue);
 					urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, "");
+					urlObj.toString = function() {
+						return urlValue;
+					}
 					return urlObj;
 				}
 			}
