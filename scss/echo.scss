@@ -1,7 +1,9 @@
+$primary-colour: #8fbc8f;
+
 ////////// BOOTSTRAP //////////
 
 // List of variables here: http://getbootstrap.com/customize/#less-variables
-$navbar-default-bg: #8fbc8f;
+$navbar-default-bg: $primary-colour;
 $navbar-default-color: black;
 $navbar-default-link-color: $navbar-default-color;
 
@@ -18,7 +20,7 @@ footer p { margin-bottom: 0; font-size: 85%; }
 #map-canvas { width: 100%; height: 300px; }
 
 // This makes scrolling to the bottom feel a bit more satisfying
-.leftcontent, footer { margin-bottom: 3em; }
+footer { margin-bottom: 3em; }
 
 .leftcontent {
 	@extend .col-md-8;
