@@ -1,6 +1,9 @@
 ////////// BOOTSTRAP //////////
 
-$navbar-default-bg: #ddd;
+// List of variables here: http://getbootstrap.com/customize/#less-variables
+$navbar-default-bg: #8fbc8f;
+$navbar-default-color: black;
+$navbar-default-link-color: $navbar-default-color;
 
 @import "bootstrap";
 
@@ -37,11 +40,10 @@ footer p { margin-bottom: 0; font-size: 85%; }
 
 // index.html
 .index {
-	ul.news { clear: both; margin-left: 0; padding-left: 1em; }
-	ul.news li { margin-bottom: 0.5em; }
-	h3 small { margin-left: 10px; }
-
-	#more { margin-top: 2em; }
+	ul.news {
+		clear: both; margin-left: 0; padding-left: 1em;
+		li { margin-bottom: 0.5em; }
+	}
 
 	.add-yours {
 		@extend %box;
