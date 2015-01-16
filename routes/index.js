@@ -6,12 +6,12 @@ var moment = require('moment');
 // See: http://momentjs.com/docs/#/customization/calendar/
 moment.locale('en', {
 	calendar : {
-		lastDay : '[Yesterday]',
-		sameDay : '[Today]',
-		nextDay : '[Tomorrow]',
 		lastWeek : '[last] dddd',
-		nextWeek : 'dddd',
-		sameElse : 'L'
+		lastDay : '[Yesterday]',
+		sameDay : '[Today], h:mma',
+		nextDay : '[Tomorrow], h:mma',
+		nextWeek : 'dddd, h:mma',
+		sameElse : 'dddd, Do MMMM h:mma'
 	}
 });
 

@@ -19,7 +19,7 @@
 
 	<div class="col-md-6">
 		<div class="box event-box">
-			<p class="head">{{ event.startdt.format("dddd, Do MMMM h:mma") }}</p>
+			<p class="head">{{ event.startdt.calendar() }}</p>
 
 			<h4><a href="{{ event.absolute_url }}">{{ event.title }}</a></h4>
 			<p>{{ event.shortBlurb() }}...
