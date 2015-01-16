@@ -43,6 +43,8 @@
 		fill: event_.enddt.format('YYYY/MM/DD hh:mm') 
 	}) }}
 	{{ form.inputText({ label: "Location:", field: "location", fill: event_.location, icon: "fa-map-marker" }) }}
+	<input type="hidden" name="location_id" id="location_id">
+
 	{{ form.inputText({ 
 		label: "What group or organisation is putting on the event?",
 		field: "host", 
@@ -88,4 +90,72 @@
 
 	{% block button %}{{ form.inputSubmit("Save changes") }}{% endblock %}
 </form>
+{% endblock %}
+
+
+{% block script %}
+<script src="/bower_components/typeahead.js/dist/typeahead.bundle.min.js"></script>
+<script>
+$(function() {
+	var locations = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		limit: 4,
+		prefetch: {
+			url: '/api/json/locations',
+		}
+	});
+
+	// kicks off the loading/processing of `local` and `prefetch`
+	locations.initialize();
+
+	$('#location').typeahead({
+		hint: true,
+		highlight: true,
+		minLength: 1
+	}, {
+		name: 'locations',
+		displayKey: 'name',
+		// `ttAdapter` wraps the suggestion engine in an adapter that
+		// is compatible with the typeahead jQuery plugin
+		source: locations.ttAdapter(),
+		templates: {
+			'suggestion': function(suggestion) {
+				return '<p>' + suggestion.name + '<br><small>' + suggestion.address + '</small></p>';
+			}
+		}
+	});
+
+	function select(evt, suggestion) {
+		console.log("selected");
+		$("#location").addClass("tt-selected");
+		$("#location_id").val(suggestion.id);
+	}
+
+	function deselect(evt) {
+		$("#location").removeClass("tt-selected");
+		$("#location_id").val("");
+	}
+
+	$('#location')
+		.on("typeahead:selected", select)
+		.on("typeahead:autocompleted", select)
+		.on("keydown", function(evt) {
+			// Backspace or Delete
+			if (evt.charCode == 0 &&
+				(evt.keyCode == 8 || evt.keyCode == 46)) deselect(evt);
+		})
+		.on("keypress", deselect);
+})
+</script>
+
+<style>
+.typeahead { width: 700px; }
+.tt-dropdown-menu { background-color: white; border: 1px solid #aaa; width: 500px; }
+.tt-dropdown-menu p { margin: 0; padding: 10px; }
+.tt-suggestion { }
+.tt-suggestion.tt-cursor { background-color: #ddd; }
+
+.tt-selected { background-color: #ccc !important; color: red; }
+</style>
 {% endblock %}
