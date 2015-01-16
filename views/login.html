@@ -17,12 +17,14 @@
 			<input type="hidden" name="next" value="{{ next }}">
 			{{ form.inputText({ label: "Email:", field: "email" }) }}
 			{{ form.inputPassword({ label: "Password:", field: "password" }) }}
+
+			<p class="pull-left">
+				<a href="/user/password/reset">Forgot password?</a>
+			</p>
+
 			<div class="text-right">
 				{{ form.inputSubmit("Log in") }}
 			</div>
-			<p>
-				<a href="/user/password/reset">Forgot password?</a>
-			</p>
 		</form>
 	</div>
 </div>
