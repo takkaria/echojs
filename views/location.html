@@ -9,7 +9,13 @@
   <li><a href="/admin/locations">Locations</a></li>
 </ol>
 
-<h2>{{ loc.name }}</h2>
+<h2>
+  {{ loc.name }}
+
+  {% if user.rights === 'admin' or user.rights === 'editor' %}
+  <a href="/admin/location/{{ loc.id }}/edit" class="btn btn-xs btn-primary">edit</a>
+  {% endif %}
+</h2>
 
 <p>{{ loc.descriptionAsHTML() | default("") }}</p>
 
@@ -18,9 +24,6 @@
 <p>{{ loc.addressAsHTML() }}</p>
 <div id="map-canvas"></div>
 
-{% endblock %}
-
-{% block rightcontent %}
 {% endblock %}
 
 {% block script %}

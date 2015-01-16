@@ -5,8 +5,8 @@ var express = require('express'),
 	router = express.Router();
 
 function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/user/login?next=' + encodeURIComponent(req.originalUrl))
+	if (req.isAuthenticated()) { return next(); }
+	res.redirect('/user/login?next=' + encodeURIComponent(req.originalUrl));
 }
 
 function ensureEditorOrAdmin(req, res, next) {
@@ -48,21 +48,17 @@ router.param('user_id', function(req, res, next, user_id) {
 	}).then(function(user) {
 		req.user_obj = user;
 		next(!user ? new Error("No such user") : null);
-	}).then(next, function (err) {
-		next(err);
 	});
 })
 
-router.param('location_id', function(req, res, next, id) {
+router.param('location_id', function(req, res, next, loc_id) {
 	var models = req.app.get('models');
 
 	models.Location.find({
-		where: { id: id }
+		where: { id: loc_id }
 	}).then(function(loc) {
 		req.loc = loc;
-		next(!user ? new Error("No such location") : null);
-	}).then(next, function (err) {
-		next(err);
+		next(!loc ? new Error("No such location") : null);
 	});
 })
 
@@ -99,8 +95,6 @@ router.get('/locations', ensureEditorOrAdmin, function(req, res) {
 });
 
 router.get('/location/add', ensureEditorOrAdmin, function(req, res) {
-	var models = req.app.get('models');
-
 	res.render('location_add', {
 		user: req.user,
 	});
@@ -117,9 +111,13 @@ router.post('/location/add', ensureEditorOrAdmin, function(req, res) {
 			longitude: b.longitude,
 			latitude: b.latitude
 		};
+
 	models.Location
 		.create(location)
 		.then(function(location) {
+			req.flash('success', 'Location %s created',
+					location.name);
+
 			res.redirect("/admin/locations");
 		})
 		.catch(function(errors) {
@@ -131,9 +129,42 @@ router.post('/location/add', ensureEditorOrAdmin, function(req, res) {
 		});
 });
 
-router.get('/location/:location_id', function(req, res) {
-	var models = req.app.get('models');
+router.get('/location/:location_id/edit', ensureEditorOrAdmin, function(req, res) {
+	res.render('location_edit', {
+		user: req.user,
+		loc: req.loc
+	});
+});
 
+router.post('/location/:location_id/edit', ensureEditorOrAdmin, function(req, res) {
+	var b = req.body,
+		location = req.loc;
+
+	location
+		.set({
+			name: b.name,
+			address: b.address,
+			description: b.description,
+			longitude: b.longitude,
+			latitude: b.latitude
+		})
+		.save()
+		.then(function(loc) {
+			req.flash('success', 'Location <a href="/admin/location/%s">%s</a> edited',
+					l.id, l.name);
+			res.redirect('/admin/location/' + loc.id);
+		})
+		.catch(function(errors) {
+			console.log(errors);
+			res.render('location_edit', {
+				errors: errors.errors,
+				user: req.user,
+				loc: location
+			});
+		});
+});
+
+router.get('/location/:location_id', ensureEditorOrAdmin, function(req, res) {
 	res.render('location', {
 		user: req.user,
 		loc: req.loc,
