@@ -20,6 +20,7 @@
 		<th>description</th>
 		<th>longitude</th>
 		<th>latitude</th>
+		<th>actions</th>
 	</tr>
 	{% for loc in locations %}
 	<tr>
@@ -29,6 +30,10 @@
 		<td>{{ loc.description }}</td>
 		<td>{{ loc.longitude }}</td>
 		<td>{{ loc.latitude }}</td>
+		<td>
+			<a href="/admin/location/{{ loc.id }}/edit" class="btn btn-xs btn-primary">edit</a>
+			<a href="/admin/location/{{ loc.id }}/delete" class="btn btn-xs btn-warning">delete</a>
+		</td>
 	</tr>
 	{% endfor %}
 </table>

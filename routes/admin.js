@@ -94,6 +94,13 @@ router.get('/locations', ensureEditorOrAdmin, function(req, res) {
 	});
 });
 
+router.get('/location/:location_id', ensureEditorOrAdmin, function(req, res) {
+	res.render('location', {
+		user: req.user,
+		loc: req.loc,
+	});
+});
+
 router.get('/location/add', ensureEditorOrAdmin, function(req, res) {
 	res.render('location_add', {
 		user: req.user,
@@ -164,11 +171,25 @@ router.post('/location/:location_id/edit', ensureEditorOrAdmin, function(req, re
 		});
 });
 
-router.get('/location/:location_id', ensureEditorOrAdmin, function(req, res) {
-	res.render('location', {
+router.get('/location/:location_id/delete', ensureEditorOrAdmin, function(req, res) {
+	var location = req.loc;
+
+	res.render('location_delete', {
 		user: req.user,
-		loc: req.loc,
+		loc: location
 	});
+});
+
+router.post('/location/:location_id/delete', ensureEditorOrAdmin, function(req, res) {
+	var location = req.loc;
+
+	location
+		.destroy()
+		.then(function () {
+			req.flash('warning', 'Location %s deleted',
+					location.name);
+			res.redirect('/admin/locations');
+		});
 });
 
 /////////// EVENTS ///////////
