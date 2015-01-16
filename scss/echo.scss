@@ -20,6 +20,16 @@ footer p { margin-bottom: 0; font-size: 85%; }
 // This makes scrolling to the bottom feel a bit more satisfying
 .leftcontent, footer { margin-bottom: 3em; }
 
+.leftcontent {
+	@extend .col-md-8;
+	@extend .col-sm-7;
+}
+
+.rightcontent {
+	@extend .col-md-4;
+	@extend .col-sm-5;
+}
+
 // Generic effects we might want to re-use
 %box {
 	border: 1px solid #eee;

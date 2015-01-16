@@ -57,11 +57,12 @@
 </nav>
  
 <div class="container">
-<div class="row">
 
 {% block content %}
 
-	<div class="col-md-8 col-sm-7 leftcontent">
+<div class="row">
+
+	<div class="leftcontent">
 	{% for type, message in messages %}
 		<div class="alert alert-{{ type }}">{{ message|safe }}</div>
 	{% endfor %}
@@ -69,13 +70,13 @@
 	{% block leftcontent %}{% endblock %}
 	</div>
 
-	<div class="col-md-4 col-sm-5 rightcontent">
+	<div class="rightcontent">
 	{% block rightcontent %}{% endblock %}
 	</div>
 
-{% endblock %}
-
 </div>
+
+{% endblock %}
  
 <footer>
 <p>&copy; Echo Manchester, 2014.  Licenced under the GNU AGPL v3, source code on <a href="//github.com/takkaria/echo">GitHub</a>.<br>
