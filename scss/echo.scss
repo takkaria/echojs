@@ -95,7 +95,7 @@ footer { margin-bottom: 3em; }
 		width: 100%;
 		display: table-cell !important;	// If we don't !important, it gets overriden by script
 
-		input#location { // This much specificity overrides Bootstrap
+		input#location_text { // This much specificity overrides Bootstrap
 			border-radius: $border-radius-base;
 			@include border-left-radius(0);
 		}

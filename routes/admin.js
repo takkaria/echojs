@@ -33,6 +33,7 @@ router.param('event_id', function(req, res, next, event_id) {
 	var models = req.app.get('models');
 
 	models.Event.find({
+		include: [ models.Location ],
 		where: { id: event_id }
 	}).then(function(event_) {
 		req.event_ = event_;
@@ -289,34 +290,43 @@ router.post('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
 	b.startdt = moment(b.startdt, 'YYYY/MM/DD hh:mm')
 	// strict mode to prevent blank enddt being taken as "now"
 	b.enddt = moment(b.enddt, 'YYYY/MM/DD hh:mm', true)
-	if(!b.enddt.isValid()) {
+	if (!b.enddt.isValid()) {
 		b.enddt = null;
 	}
 
+	// Only one of (id, text) can be stored
+	if (b.location_id) {
+		b.location_text = null;
+	}
+
+	e.setLocation(b.location_id);
 	e.set({
 		title: b.title,
 		startdt: b.startdt,
 		enddt: b.enddt,
 		blurb: b.blurb,
 		location_text: b.location_text,
-		location: b.location_id,
 		host: b.host,
 		type: '',
 		cost: b.cost,
 		email: b.email,
 	});
-	e.save({validate: false}).then(function(event_) {
-		req.flash('success', 'Event <a href="/admin/event/%s">%s</a> edited', 
-							event_.id, event_.slug);
-		res.redirect('/admin/event/' + event_.id);
-	}).catch(function(errors) {
-		console.log(errors);
-		res.render('event_edit', {
-			errors: errors.errors,
-			user: req.user,
-			event_: e
+
+	e
+		.save({ validate: false })
+		.then(function(event_) {
+			req.flash('success', 'Event <a href="/admin/event/%s">%s</a> edited',
+								event_.id, event_.slug);
+			res.redirect('/admin/event/' + event_.id);
+		})
+		.catch(function(errors) {
+			console.log(errors);
+			res.render('event_edit', {
+				errors: errors.errors,
+				user: req.user,
+				event_: e
+			});
 		});
-	});
 });
 
 /////////// USERS ///////////

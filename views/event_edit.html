@@ -9,7 +9,7 @@
 <ol class="breadcrumb">
 	<li><a href="/">Echo</a></li>
 	<li><a href="/admin">Admin</a></li>
-	<li><a href="/admin/events/{{ event.id }}">{{ event.slug }}</a></li>
+	<li><a href="/admin/events/{{ event_.id }}">{{ event_.slug }}</a></li>
 	<li>Edit</li>
 </ol>
 {% endblock breadcrumb %}
@@ -21,18 +21,23 @@
 <form method="POST" action="{% block form_action %}/admin/event/{{ event_.id }}/edit{% endblock %}">
 	{{ form.inputText({ label: "Event name:", field: "title", fill: event_.title }) }}
 	{{ form.inputDateTime({ label: "Starts:", field: "startdt", fill: event_.startdt.format('YYYY/MM/DD hh:mm') }) }}
-	{% for error in errors %}
-	{% if error.path == 'startBeforeEnd' %}
-		<p class="alert alert-danger">{{ error.message }}
-	{% endif %}
-	{% endfor %}
+
+	{{ form.checkErrors("startBeforeEnd") }}
+
 	{{ form.inputDateTime({ 
 		label: "Ends:", 
 		field: "enddt", 
 		fill: event_.enddt.format('YYYY/MM/DD hh:mm') 
 	}) }}
-	{{ form.inputText({ label: "Location:", field: "location_text", fill: event_.location_text, icon: "fa-map-marker" }) }}
-	<input type="hidden" name="location_id" id="location_id">
+
+	{{ form.inputText({
+		label: "Location:",
+		field: "location_text",
+		fill: event_.shortLocation,
+		icon: "fa-map-marker" }) }}
+	{{ form.inputHidden({ field: "location_id", fill: event_.location_id }) }}
+
+	{{ form.checkErrors("locationEmpty") }}
 
 	{{ form.inputText({ 
 		label: "What group or organisation is putting on the event?",
@@ -45,7 +50,7 @@
 		<label class="title" for="blurb">Event description:</label>
 		<textarea class="form-control required" name="blurb" id="blurb" rows="8"
 			aria-describedby="blurbHelp">{{ event_.blurb }}</textarea>
-		{{ form.checkErorrs("blurb") }}
+		{{ form.checkErrors("blurb") }}
 		<p id="blurbHelp" class="help-block">
 			Please include information about booking if you have to book.<br>
 			Maximum 150 words.
@@ -100,10 +105,10 @@ $(function() {
 		}
 	});
 
-	// kicks off the loading/processing of `local` and `prefetch`
+	// kicks off the loading/processing of the 'prefetch' list
 	locations.initialize();
 
-	$('#location').typeahead({
+	$('#location_text').typeahead({
 		hint: true,
 		highlight: true,
 		minLength: 1
@@ -120,18 +125,18 @@ $(function() {
 		}
 	});
 
+	// Set up event handlers to select a location ID & to deselect it
 	function select(evt, suggestion) {
-		console.log("selected");
-		$("#location").addClass("tt-selected");
+		$("#location_text").addClass("tt-selected");
 		$("#location_id").val(suggestion.id);
 	}
 
 	function deselect(evt) {
-		$("#location").removeClass("tt-selected");
+		$("#location_text").removeClass("tt-selected");
 		$("#location_id").val("");
 	}
 
-	$('#location')
+	$('#location_text')
 		.on("typeahead:selected", select)
 		.on("typeahead:autocompleted", select)
 		.on("keydown", function(evt) {
@@ -140,6 +145,12 @@ $(function() {
 				(evt.keyCode == 8 || evt.keyCode == 46)) deselect(evt);
 		})
 		.on("keypress", deselect);
-})
+
+	// Work out if we already have an ID provided and update text field accordingly
+	if ($("#location_id").val() > 0) {
+		$("#location_text").addClass("tt-selected");
+	}
+
+});
 </script>
 {% endblock %}

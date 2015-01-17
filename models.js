@@ -34,10 +34,6 @@ module.exports = function(debug) {
 		location_text: {
 			field: "location",
 			type: sequelize.TEXT,
-			allowNull: false,
-			validate: {
-				notEmpty: true
-			}
 		},
 		blurb: {
 			type: sequelize.TEXT,
@@ -182,8 +178,15 @@ module.exports = function(debug) {
 		},
 		validate: {
 			startBeforeEnd: function() {
-				if((this.enddt !== null)&&(this.enddt.diff(this.startdt) < 0)){
+				if (this.enddt !== null && this.enddt.diff(this.startdt) < 0) {
 					throw new Error("Event can't finish after it starts!")
+				}
+			},
+
+			locationEmpty: function() {
+				if (!this.location_id &&
+						(this.location_text === "" || this.location_text === null)) {
+					throw new Error("You must provide a location.");
 				}
 			}
 		}

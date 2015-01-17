@@ -38,6 +38,15 @@ router.get('/add', function(req, res) {
 	});
 });
 
+function defaultState(req) {
+	if (req.isAuthenticated() &&
+			(req.user.rights === 'editor' || req.user.rights === 'admin')) {
+		return 'approved';
+	}
+
+	return 'submitted';
+}
+
 /* POST event add */
 router.post('/add', function(req, res) {
 	var b = req.body,
@@ -46,74 +55,81 @@ router.post('/add', function(req, res) {
 	b.startdt = moment(b.startdt, 'YYYY/MM/DD hh:mm')
 	// strict mode to prevent blank enddt being taken as "now"
 	b.enddt = moment(b.enddt, 'YYYY/MM/DD hh:mm', true)
-	if(!b.enddt.isValid()) {
+	if (!b.enddt.isValid()) {
 		b.enddt = null;
 	}
 
-	var	event_ = {
+	var event_ = models.Event.build({
 		title: b.title,
 		startdt: b.startdt,
 		enddt: b.enddt,
 		blurb: b.blurb,
-		location: b.location,  // FIXME
+		location_text: b.location_text,
 		host: b.host,
 		type: '',
 		cost: b.cost,
 		email: b.email,
-		state: (req.isAuthenticated()&&((req.user.rights === 'editor')||(req.user.rights === 'admin')))
-			?  'approved'
-			: 'submitted'
-	};
+		state: defaultState(req)
+	});
 
-	models.Event
-		.create(event_)
-		.then(function(e) {
-			e.generateSlug();
-			e.save().then(function(e_){
-				// FIXME should show a different message if it's approved already
-				req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
-				// owner "confirm"
+	event_.setLocation(b.location_id);
+
+	event_.save().then(function(e_) {
+		// Must be called post-save to get ID property
+		e_.generateSlug();
+
+		// If we have an ID that works, erase the text
+		if (e.location_id) {
+			e.location_text = null;
+		}
+
+		e_.save().then(function(e_) {
+
+			// FIXME should show a different message if it's approved already
+			req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
+			// owner "confirm"
+			mailer.sendMail({
+				template: 'event_submit.html',
+				subject: 'Event submitted',
+				to: event_.email,
+				context: {
+					event_: e_
+				}
+			});
+
+			// admin notification
+			models.User.findAll({
+				where: {notify: 1},
+				attributes: ['email']
+			}).then(function(emails){
+				emails = emails.map(function(value, i, array) {
+					return value.email;
+				});
+				debug(emails.join(','));
 				mailer.sendMail({
-					template: 'event_submit.html',
+					template: 'event_notify.html',
 					subject: 'Event submitted',
-					to: event_.email,
+					to: emails.join(','),
 					context: {
 						event_: e_
 					}
 				});
-				// admin notification
-				models.User.findAll({
-					where: {notify: 1},
-					attributes: ['email']
-				}).then(function(emails){
-					emails = emails.map(function(value, i, array) {
-						return value.email;
-					});
-					debug(emails.join(','));
-					mailer.sendMail({
-						template: 'event_notify.html',
-						subject: 'Event submitted',
-						to: emails.join(','),
-						context: {
-							event_: e_
-						}
-					});
-				});
-				return res.redirect(
-					(e_.state === 'approved')
-						? e_.absolute_url
-						: '/events'
-				);
 			});
-		})
-		.catch(function(errors) {
-			console.log(errors, event_, b);
-			res.render('event_add', {
-				event_: event_,
-				errors: errors.errors,
-				user: req.user
-			});
+			return res.redirect(
+				(e_.state === 'approved')
+					? e_.absolute_url
+					: '/events'
+			);
 		});
+	})
+	.catch(function(errors) {
+		console.log(errors, event_, b);
+		res.render('event_add', {
+			event_: event_,
+			errors: errors.errors,
+			user: req.user
+		});
+	});
 });
 
 /* GET event by ID */

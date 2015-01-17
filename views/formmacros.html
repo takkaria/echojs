@@ -45,6 +45,17 @@
 	</div>
 {% endmacro %}
 
+{% macro inputHidden(opts) %}
+	{# opts = { field, fill } #}
+
+	<input
+		name="{{ opts.field }}"
+		type="hidden"
+		id="{{ opts.field }}"
+		{% if opts.fill %}     value="{{ opts.fill }}" {% endif %}
+	>
+{% endmacro %}
+
 {% macro textarea(opts) %}
 	{# opts = { label, field, fill, helpText, rows } #}
 
