@@ -17,6 +17,7 @@ CREATE TABLE events (
 	startdt DATETIME,
 	enddt DATETIME,
 	location TEXT,
+	location_id INTEGER,	/* Indexes into locations */
 	blurb TEXT,
 	url TEXT,
 	type TEXT,		/* ATM this can only be "film" */

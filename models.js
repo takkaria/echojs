@@ -31,7 +31,8 @@ module.exports = function(debug) {
 				notEmpty: true
 			}
 		},
-		location: {
+		location_text: {
+			field: "location",
 			type: sequelize.TEXT,
 			allowNull: false,
 			validate: {
@@ -132,6 +133,14 @@ module.exports = function(debug) {
 				return '/event'
 					+ moment(this.getDataValue('startdt')).format('[/]YYYY[/]MM/')
 					+ this.getDataValue('slug');
+			},
+
+			shortLocation: function() {
+				if (this.location) {
+					return this.location.singleLine;
+				} else {
+					return this.getDataValue('location_text');
+				}
 			}
 		},
 		classMethods: {
@@ -307,12 +316,21 @@ module.exports = function(debug) {
 			addressAsHTML: function() {
 			    return this.getDataValue('address').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>');
 			},
+
 			descriptionAsHTML: function() {
 				var d = this.getDataValue('description');
 				return d ? marked(d) : null;
-			}
-		}
+			},
+		},
+		getterMethods: {
+			singleLine: function() {
+				return this.name + ", " + this.address.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1, ');
+			},
+		},
 	});
+
+	exports.Location.hasMany(exports.Event);
+	exports.Event.belongsTo(exports.Location);
 
 	exports.Feed.hasMany(exports.Post);
 	exports.Post.belongsTo(exports.Feed);

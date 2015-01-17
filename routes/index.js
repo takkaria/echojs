@@ -21,6 +21,7 @@ router.get('/', function(req, res) {
 	var sequelize = models.sequelize;
 
 	models.Event.findAll({
+		include: [ models.Location ],
 		where: [
 			{ state: "approved" },
 			"(startdt >= date('now', 'start of day') OR date('now') <= enddt)"

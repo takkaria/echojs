@@ -298,7 +298,8 @@ router.post('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
 		startdt: b.startdt,
 		enddt: b.enddt,
 		blurb: b.blurb,
-		location: b.location,  // FIXME
+		location_text: b.location_text,
+		location: b.location_id,
 		host: b.host,
 		type: '',
 		cost: b.cost,

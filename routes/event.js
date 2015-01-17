@@ -5,10 +5,10 @@ var express = require('express'),
 	router = express.Router();
 
 router.param('id', function(req, res, next, id) {
-	var models = req.app.get('models'),
-		where = {id: id};
+	var models = req.app.get('models');
 
-	models.Event.find({
+	models.Event.findOne({
+		include: [ models.Location ],
 		where: {
 			id: id,
 			state: 'approved'
@@ -23,6 +23,7 @@ router.param('slug', function(req, res, next, slug) {
 	var models = req.app.get('models');
 
 	models.Event.find({
+		include: [ models.Location ],
 		where: { slug: slug }
 	}).then(function(event_) {
 		req.event_ = event_;
