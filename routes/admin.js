@@ -10,8 +10,8 @@ function ensureAuthenticated(req, res, next) {
 }
 
 function ensureEditorOrAdmin(req, res, next) {
-	ensureAuthenticated(req, res, function(){
-		if((req.user.rights === 'admin')||(req.user.rights == 'editor')) { 
+	ensureAuthenticated(req, res, function() {
+		if (req.user.rights === 'admin' || req.user.rights == 'editor') {
 			return next()
 		}
 		req.flash('danger', 'Computer says no');
@@ -20,8 +20,8 @@ function ensureEditorOrAdmin(req, res, next) {
 }
 
 function ensureAdmin(req, res, next) {
-	ensureAuthenticated(req, res, function(){
-		if(req.user.rights === 'admin') { 
+	ensureAuthenticated(req, res, function() {
+		if (req.user.rights === 'admin') {
 			return next()
 		}
 		req.flash('danger', 'Computer says no');
@@ -203,22 +203,24 @@ router.get('/event/:event_id', ensureEditorOrAdmin, function(req, res) {
 	});
 });
 
-router.get('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) {
-	var event_ = req.event_;
-	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
+function canApproveOrReject(req, res, next) {
+	if (event_.state === 'approved' || event_.state === 'hidden') {
 		res.redirect('/admin/' + req.event_.id);
+	} else {
+		return next();
 	}
+}
+
+router.get('/event/:event_id/approve', ensureEditorOrAdmin, canApproveOrReject, function(req, res) {
+	var event_ = req.event_;
 	res.render('event_approve', {
 		event_: event_,
 		user: req.user
 	});
 });
 
-router.post('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) {
+router.post('/event/:event_id/approve', ensureEditorOrAdmin, canApproveOrReject, function(req, res) {
 	var event_ = req.event_;
-	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
-		res.redirect('/admin/' + req.event_.id);
-	}
 	event_.set('state', 'approved');
 	event_.generateSlug();
 	event_.save().then(function(e) {
@@ -233,22 +235,16 @@ router.post('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) 
 	});
 });
 
-router.get('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
+router.get('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, function(req, res) {
 	var event_ = req.event_;
-	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
-		res.redirect('/admin/' + req.event_.id);
-	}
 	res.render('event_reject', {
 		event_: req.event_,
 		user: req.user
 	});
 });
 
-router.post('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
+router.post('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, function(req, res) {
 	var event_ = req.event_;
-	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
-		res.redirect('/admin/' + req.event_.id);
-	}
 	event_.set('state', 'hidden');
 	event_.save().then(function(){
 		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
