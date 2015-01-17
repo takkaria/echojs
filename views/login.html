@@ -5,24 +5,27 @@
 {% block pageclass %}login{% endblock %}
 
 {% block content %}
-<div class="col-md-6 col-md-offset-3" id="loginbox">
+<div class="row">
+	<div class="col-md-6 col-md-offset-3" id="loginbox">
 
-<ol class="breadcrumb">
-	<li><a href="/">Echo</a></li>
-	<li><a href="/login">Login</a></li>
-</ol>
+		<ol class="breadcrumb">
+			<li><a href="/">Echo</a></li>
+			<li><a href="/login">Login</a></li>
+		</ol>
 
-<form action="/user/login" method="post">
-	<input type="hidden" name="next" value="{{ next }}">
-	{{ form.inputText({ label: "Email:", field: "email" }) }}
-	{{ form.inputPassword({ label: "Password:", field: "password" }) }}
-	<div class="text-right">
-		{{ form.inputSubmit("Log in") }}
+		<form action="/user/login" method="post">
+			<input type="hidden" name="next" value="{{ next }}">
+			{{ form.inputText({ label: "Email:", field: "email" }) }}
+			{{ form.inputPassword({ label: "Password:", field: "password" }) }}
+
+			<p class="pull-left">
+				<a href="/user/password/reset">Forgot password?</a>
+			</p>
+
+			<div class="text-right">
+				{{ form.inputSubmit("Log in") }}
+			</div>
+		</form>
 	</div>
-	<p>
-		<a href="/user/password/reset">Forgot password?</a>
-	</p>
-</form>
-
 </div>
 {% endblock %}

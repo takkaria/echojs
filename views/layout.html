@@ -7,10 +7,9 @@
 	<script type="text/javascript" src="/bower_components/moment/min/moment.min.js"></script>
 	<script type="text/javascript" src="/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
-	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
-	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 	<link href="/stylesheets/echo.css" rel="stylesheet">
+	<link rel="stylesheet" href="/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
+	<link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css " />
 </head>
 
 <body class="{% block pageclass %}normal{% endblock %}">
@@ -58,11 +57,12 @@
 </nav>
  
 <div class="container">
-<div class="row">
 
 {% block content %}
 
-	<div class="col-md-8 col-sm-7 leftcontent">
+<div class="row">
+
+	<div class="leftcontent">
 	{% for type, message in messages %}
 		<div class="alert alert-{{ type }}">{{ message|safe }}</div>
 	{% endfor %}
@@ -70,13 +70,13 @@
 	{% block leftcontent %}{% endblock %}
 	</div>
 
-	<div class="col-md-4 col-sm-5 rightcontent">
+	<div class="rightcontent">
 	{% block rightcontent %}{% endblock %}
 	</div>
 
-{% endblock %}
-
 </div>
+
+{% endblock %}
  
 <footer>
 <p>&copy; Echo Manchester, 2014.  Licenced under the GNU AGPL v3, source code on <a href="//github.com/takkaria/echo">GitHub</a>.<br>

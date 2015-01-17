@@ -4,16 +4,17 @@
 {% block pageclass %}event_calendar{% endblock %}
 
 {% block content %}
-<div class="col-md-10 col-md-offset-1">
+<div class="row">
+	<div class="col-md-10 col-md-offset-1">
 
-	<ol class="breadcrumb">
-	  <li><a href="/">Echo</a></li>
-	  <li><a href="/events">Events</a></li>
-	</ol>
+		<ol class="breadcrumb">
+		  <li><a href="/">Echo</a></li>
+		  <li><a href="/events">Events</a></li>
+		</ol>
 
-	{# FIXME add search engine-friendly fallback content #}
-	<div id='calendar'></div>
-
+		{# FIXME add search engine-friendly fallback content #}
+		<div id='calendar'></div>
+	</div>
 </div>
 {% endblock %}
 

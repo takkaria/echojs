@@ -3,7 +3,12 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "prestart": "npm run sass:watch &",
+    "start": "nodemon ./bin/www",
+
+    "sass:basic": "sass -I bower_components/bootstrap-sass/assets/stylesheets/ scss:public/stylesheets",
+    "sass:watch": "npm run sass:basic -- --watch",
+    "sass": "npm run sass:basic -- --update"
   },
   "dependencies": {
     "body-parser": "~1.8.1",
