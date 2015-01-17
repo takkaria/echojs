@@ -336,50 +336,39 @@ router.get('/user/add', ensureAdmin, function(req, res) {
 
 router.post('/user/add', ensureAdmin, function(req, res) {
 	var b = req.body,
-		models = req.app.get('models'),
-		extra_errors = [];
-
-	if ((b.password === '')||(typeof(b.password) === 'undefined')){
-		extra_errors = [
-			{
-				path: 'password',
-				message: 'You must set a password'
-			}
-		];
-	}
-
-	function render_form(errors) {
-		return res.render('user_add', {
-			errors: errors,
-			user: req.user,
-			user_obj: b
-		});
-	}
+		models = req.app.get('models');
 
 	var user_obj = models.User.build(b);
-	validationResult = user_obj
+	user_obj
 		.validate()
-		.done(function(err, errors_){
-			console.log(err, errors_);
-			if (typeof(errors_) === 'undefined'){
-				console.log(b.password, user_obj.digest, user_obj.salt);
-				if (extra_errors.length > 0) {
-					return render_form(extra_errors);
-				}
-				user_obj.setPassword(b.password);
-				user_obj.save().then(function(u) {
-					req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added', 
-										u.id, u.id);
-					mailer.sendNewUserMail(u);
-					return res.redirect('/admin/user');
+		.done(function(err, errors_) {
+			var errors = typeof(errors_) === 'undefined' ? [] : errors_.errors;
+
+			if (b.password === '' || typeof(b.password) === 'undefined') {
+				errors = errors.concat([ {
+					path: 'password',
+					message: 'You must set a password'
+				} ]);
+			}
+
+			console.log(err, errors);
+			console.log(b.password, user_obj.digest, user_obj.salt);
+
+			if (errors.length > 0) {
+				return res.render('user_add', {
+					errors: errors,
+					user: req.user,
+					user_obj: b
 				});
-			} else {
-				var errors = errors_.errors;
-				if (extra_errors.length > 0) {
-					errors = errors.concat(extra_errors);
-				}
-				return render_form(errors);
-			};
+			}
+
+			user_obj.setPassword(b.password);
+			user_obj.save().then(function(u) {
+				req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added',
+									u.id, u.id);
+				mailer.sendNewUserMail(u);
+				return res.redirect('/admin/user');
+			});
 		});
 });
 
