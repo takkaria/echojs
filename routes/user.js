@@ -95,23 +95,16 @@ router.get('/password/reset', function(req, res) {
 
 router.post('/password/reset', function(req, res, next) {
 	var models = req.app.get('models');
-	models.User.find({where: {email: req.body.email}}).then(function(user){
-		if (user) {
-			user.resetPassword();
-			user.save().then(function(u) {
-				mailer.sendMail({
-					template: 'password_reset.html',
-					subject: 'Password Reset',
-					to: user.email,
-					context: {
-						user: u
-					}
-				});
-			});
-		}
+	models.User
+		.find({ where: { email: req.body.email } })
+		.then(function (user) {
+			if (user) {
+				user.resetPassword();
+				user.save().then(mailer.sendPasswordResetMail);
+			}
 
-		res.redirect('/user/password/reset/done')
-	});
+			res.redirect('/user/password/reset/done')
+		});
 });
 
 router.get('/password/reset/done', function(req, res, next) {

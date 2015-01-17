@@ -221,18 +221,11 @@ router.post('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) 
 	}
 	event_.set('state', 'approved');
 	event_.generateSlug();
-	event_.save().then(function(e){
+	event_.save().then(function(e) {
 		e.reload();  // XXX surely should use a promise here?
 		req.flash('success', 'Event <a href="%s">%s</a> approved', 
 							event_.absolute_url, event_.id);
-		mailer.sendMail({
-			template: 'event_approve.html',
-			subject: 'Event approved!',
-			to: event_.email,
-			context: {
-				event_: event_
-			}
-		});
+		mailer.sendEventApprovedMail(event_);
 		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
@@ -260,16 +253,10 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
 	event_.save().then(function(){
 		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
 							event_.absolute_url, event_.id);
-		mailer.sendMail({
-			template: 'event_reject.html',
-			subject: 'Sorry :(',
-			to: event_.email,
-			context: {
-				event_: event_
-				// FIXME add custom admin explanation from a form, e.g.
-				// message: req.body.message
-			}
-		});
+
+		// FIXME add custom admin explanation from a form, e.g.
+		// message: req.body.message
+		mailer.sendEventRejectedMail(event_);
 		res.redirect('/admin');
 	})
 	.catch(function(errors){
@@ -384,17 +371,10 @@ router.post('/user/add', ensureAdmin, function(req, res) {
 					return render_form(extra_errors);
 				}
 				user_obj.setPassword(b.password);
-				user_obj.save().then(function(u){
+				user_obj.save().then(function(u) {
 					req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added', 
 										u.id, u.id);
-					mailer.sendMail({
-						template: 'user_add.html',
-						subject: 'New account',
-						to: u.email,
-						context: {
-							user: u
-						}
-					});
+					mailer.sendNewUserMail(u);
 					return res.redirect('/admin/user');
 				});
 			} else {

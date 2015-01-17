@@ -87,34 +87,10 @@ router.post('/add', function(req, res) {
 
 			// FIXME should show a different message if it's approved already
 			req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
-			// owner "confirm"
-			mailer.sendMail({
-				template: 'event_submit.html',
-				subject: 'Event submitted',
-				to: event_.email,
-				context: {
-					event_: e_
-				}
-			});
 
-			// admin notification
-			models.User.findAll({
-				where: {notify: 1},
-				attributes: ['email']
-			}).then(function(emails){
-				emails = emails.map(function(value, i, array) {
-					return value.email;
-				});
-				debug(emails.join(','));
-				mailer.sendMail({
-					template: 'event_notify.html',
-					subject: 'Event submitted',
-					to: emails.join(','),
-					context: {
-						event_: e_
-					}
-				});
-			});
+			mailer.sendEventSubmittedMail(event_);
+			mailer.sendAdminsEventNotifyMail(models, event_);
+
 			return res.redirect(
 				(e_.state === 'approved')
 					? e_.absolute_url
