@@ -1,21 +1,10 @@
 {% extends "layout.html" %}
 {% import "formmacros.html" as form %}
 
-{% macro inputIcon(type) %}
-	<div class="input-group-addon"><i class="fa fa-fw {{ type }}"></i></div>
-{% endmacro %}
-
-{% block script %}
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.datetime').datetimepicker()
-	});
-</script>
-{% endblock %}
-
 {% block pageclass %}event_form{% endblock %}
 
 {% block leftcontent %}
+
 {% block breadcrumb %}
 <ol class="breadcrumb">
 	<li><a href="/">Echo</a></li>
@@ -96,6 +85,11 @@
 {% block script %}
 <script src="/bower_components/typeahead.js/dist/typeahead.bundle.min.js"></script>
 <script>
+
+$(function() {
+	$('.datetime').datetimepicker()
+});
+
 $(function() {
 	var locations = new Bloodhound({
 		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -148,14 +142,4 @@ $(function() {
 		.on("keypress", deselect);
 })
 </script>
-
-<style>
-.typeahead { width: 700px; }
-.tt-dropdown-menu { background-color: white; border: 1px solid #aaa; width: 500px; }
-.tt-dropdown-menu p { margin: 0; padding: 10px; }
-.tt-suggestion { }
-.tt-suggestion.tt-cursor { background-color: #ddd; }
-
-.tt-selected { background-color: #ccc !important; color: red; }
-</style>
 {% endblock %}

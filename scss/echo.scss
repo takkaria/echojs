@@ -85,6 +85,31 @@ footer { margin-bottom: 3em; }
 	}
 }
 
+// event_[add|edit].html
+
+.event_form {
+
+	// Some styling to get the input element to appear correctly
+	// This bit is just kind of gross but required cos of the way typeahead.js works :(
+	span.twitter-typeahead {
+		width: 100%;
+		display: table-cell !important;	// If we don't !important, it gets overriden by script
+
+		input#location { // This much specificity overrides Bootstrap
+			border-radius: $border-radius-base;
+			@include border-left-radius(0);
+		}
+	}
+
+	.tt-dropdown-menu {
+		background-color: white; border: 1px solid #aaa; width: 500px;
+		p { margin: 0; padding: 10px; }
+	}
+
+	.tt-suggestion.tt-cursor { background-color: #ddd; }
+	.tt-selected { background-color: lighten($brand-success, 40%) !important; }
+}
+
 // event_page.html
 .event h2 { margin-top: 0; }
 
