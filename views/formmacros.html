@@ -35,10 +35,40 @@
 		<input class="form-control long"
 			name="{{ opts.field }}"
 			type="text"
+			id="{{ opts.field }}"
 			{% if opts.fill %}     value="{{ opts.fill }}" {% endif %}
 			{% if opts.helpText %} aria-describedBy="{{ opts.field }}Help" {% endif %}
 		>
 		{{ iconEnd(opts) }}
+		{{ checkErrors(opts.field) }}
+		{{ helpText(opts) }}
+	</div>
+{% endmacro %}
+
+{% macro inputHidden(opts) %}
+	{# opts = { field, fill } #}
+
+	<input
+		name="{{ opts.field }}"
+		type="hidden"
+		id="{{ opts.field }}"
+		{% if opts.fill %}     value="{{ opts.fill }}" {% endif %}
+	>
+{% endmacro %}
+
+{% macro textarea(opts) %}
+	{# opts = { label, field, fill, helpText, rows } #}
+
+	<div class="form-group">
+		<label for="{{ opts.field }}">{{ opts.label }}</label>
+
+		<textarea class="form-control"
+			name="{{ opts.field }}"
+			id="{{ opts.field }}"
+			rows="{{ opts.rows || 5 }}"
+			{% if opts.helpText %} aria-describedBy="{{ opts.field }}Help" {% endif %}
+		>{{ opts.fill }}</textarea>
+
 		{{ checkErrors(opts.field) }}
 		{{ helpText(opts) }}
 	</div>
@@ -81,5 +111,5 @@
 {% endmacro %}
 
 {% macro inputSubmit(text) %}
-	<input class="btn btn-primary" type="submit" value="{{ text }}">
+	<input class="btn btn-primary btn-lg" type="submit" value="{{ text }}">
 {% endmacro %}

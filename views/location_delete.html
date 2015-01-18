@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+
+{% block title %}Delete location{% endblock %}
+{% block pageclass %}admin{% endblock %}
+
+{% block leftcontent %}
+<ol class="breadcrumb">
+	<li><a href="/">Echo</a></li>
+	<li><a href="/admin/locations">Locations</a></li>
+	<li>{{ loc.name }}
+	<li>Delete?
+</ol>
+
+<form method="POST" action="/admin/location/{{ loc.id }}/delete">
+	<div class="form-group">
+		<label>Are you sure?</label>
+		<button class="btn btn-danger" type="submit">Yes</button>
+		<a href="/admin/locations" class="btn btn-default">Back to locations</a>
+	</div>
+</form>
+{% endblock %}

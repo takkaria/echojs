@@ -72,6 +72,24 @@ router.get('/json', function(req, res) {
 	});
 });
 
+router.get('/json/locations', function(req, res) {
+	var models = req.app.get('models');
+	var sequelize = models.sequelize;
+
+	models.Location
+		.findAll({ attributes: [ "id", "name", "address" ] }, { raw: true })
+		.then(function(locations) {
+			req.header("Content-Type", "application/json");
+
+			locations.forEach(function(location) {
+				location.address = location.address.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1, ');
+				// FIXME: Maybe do this client-side
+			});
+
+			res.send(JSON.stringify(locations, null, " "));
+		});
+});
+
 router.get('/ical', function(req, res) {
 	var models = req.app.get('models');
 	var sequelize = models.sequelize;

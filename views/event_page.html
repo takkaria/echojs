@@ -40,18 +40,26 @@
 {% endif %}
 
 <h3>Location</h3>
-<p><i class="fa fa-fw fa-map-marker"></i> {{ event_.location }}<p>
-<div id="map-canvas"></div>
+{% if event_.location %}
+  <p><i class="fa fa-fw fa-map-marker"></i> <a href="/location/{{ event_.location.id }}">{{ event_.shortLocation }}</a></p>
+  <div id="map-canvas"></div>
+{% else %}
+  <p><i class="fa fa-fw fa-map-marker"></i> {{ event_.shortLocation }}</p>
+{% endif %}
+
 {% endblock %}
 
 {% block rightcontent %}
 {% endblock %}
 
 {% block script %}
+
+{% if event_.location %}
+
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyCIIJrpahlkTrn1e4wkIujyzqCEfK_C9_M"></script>
 <script>
   function initialize() {
-    var myLatlng = new google.maps.LatLng(53.484297,-2.273368);
+    var myLatlng = new google.maps.LatLng({{ event_.location.latitude }}, {{ event_.location.longitude }});
     var mapOptions = {
       zoom: 15,
       center: myLatlng
@@ -59,7 +67,7 @@
     var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
     var infowindow = new google.maps.InfoWindow({
-        content: "<div style='width: 200px;'><b>Working Class Movement Library</b><br>51 The Crescent<br>Salford<br>M5 4WX</div>",
+        content: "<div style='width: 200px;'><b>{{ event_.location.name }}</b><br>{{ event_.location.addressAsHTML() }}</div>",
         maxWidth: 500
     });
 
@@ -74,4 +82,7 @@
 
   google.maps.event.addDomListener(window, 'load', initialize);
 </script>
+
+{% endif %}
+
 {% endblock %}

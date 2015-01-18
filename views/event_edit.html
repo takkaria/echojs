@@ -1,26 +1,15 @@
 {% extends "layout.html" %}
 {% import "formmacros.html" as form %}
 
-{% macro inputIcon(type) %}
-	<div class="input-group-addon"><i class="fa fa-fw {{ type }}"></i></div>
-{% endmacro %}
-
-{% block script %}
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('.datetime').datetimepicker()
-	});
-</script>
-{% endblock %}
-
 {% block pageclass %}event_form{% endblock %}
 
 {% block leftcontent %}
+
 {% block breadcrumb %}
 <ol class="breadcrumb">
 	<li><a href="/">Echo</a></li>
 	<li><a href="/admin">Admin</a></li>
-	<li><a href="/admin/events/{{ event.id }}">{{ event.slug }}</a></li>
+	<li><a href="/admin/events/{{ event_.id }}">{{ event_.slug }}</a></li>
 	<li>Edit</li>
 </ol>
 {% endblock breadcrumb %}
@@ -32,17 +21,24 @@
 <form method="POST" action="{% block form_action %}/admin/event/{{ event_.id }}/edit{% endblock %}">
 	{{ form.inputText({ label: "Event name:", field: "title", fill: event_.title }) }}
 	{{ form.inputDateTime({ label: "Starts:", field: "startdt", fill: event_.startdt.format('YYYY/MM/DD hh:mm') }) }}
-	{% for error in errors %}
-	{% if error.path == 'startBeforeEnd' %}
-		<p class="alert alert-danger">{{ error.message }}
-	{% endif %}
-	{% endfor %}
+
+	{{ form.checkErrors("startBeforeEnd") }}
+
 	{{ form.inputDateTime({ 
 		label: "Ends:", 
 		field: "enddt", 
 		fill: event_.enddt.format('YYYY/MM/DD hh:mm') 
 	}) }}
-	{{ form.inputText({ label: "Location:", field: "location", fill: event_.location, icon: "fa-map-marker" }) }}
+
+	{{ form.inputText({
+		label: "Location:",
+		field: "location_text",
+		fill: event_.shortLocation,
+		icon: "fa-map-marker" }) }}
+	{{ form.inputHidden({ field: "location_id", fill: event_.location_id }) }}
+
+	{{ form.checkErrors("locationEmpty") }}
+
 	{{ form.inputText({ 
 		label: "What group or organisation is putting on the event?",
 		field: "host", 
@@ -54,7 +50,7 @@
 		<label class="title" for="blurb">Event description:</label>
 		<textarea class="form-control required" name="blurb" id="blurb" rows="8"
 			aria-describedby="blurbHelp">{{ event_.blurb }}</textarea>
-		{{ form.checkErorrs("blurb") }}
+		{{ form.checkErrors("blurb") }}
 		<p id="blurbHelp" class="help-block">
 			Please include information about booking if you have to book.<br>
 			Maximum 150 words.
@@ -88,4 +84,73 @@
 
 	{% block button %}{{ form.inputSubmit("Save changes") }}{% endblock %}
 </form>
+{% endblock %}
+
+
+{% block script %}
+<script src="/bower_components/typeahead.js/dist/typeahead.bundle.min.js"></script>
+<script>
+
+$(function() {
+	$('.datetime').datetimepicker()
+});
+
+$(function() {
+	var locations = new Bloodhound({
+		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+		queryTokenizer: Bloodhound.tokenizers.whitespace,
+		limit: 4,
+		prefetch: {
+			url: '/api/json/locations',
+		}
+	});
+
+	// kicks off the loading/processing of the 'prefetch' list
+	locations.initialize();
+
+	$('#location_text').typeahead({
+		hint: true,
+		highlight: true,
+		minLength: 1
+	}, {
+		name: 'locations',
+		displayKey: 'name',
+		// `ttAdapter` wraps the suggestion engine in an adapter that
+		// is compatible with the typeahead jQuery plugin
+		source: locations.ttAdapter(),
+		templates: {
+			'suggestion': function(suggestion) {
+				return '<p>' + suggestion.name + '<br><small>' + suggestion.address + '</small></p>';
+			}
+		}
+	});
+
+	// Set up event handlers to select a location ID & to deselect it
+	function select(evt, suggestion) {
+		$("#location_text").addClass("tt-selected");
+		$("#location_id").val(suggestion.id);
+	}
+
+	function deselect(evt) {
+		$("#location_text").removeClass("tt-selected");
+		$("#location_id").val("");
+	}
+
+	$('#location_text')
+		.on("typeahead:selected", select)
+		.on("typeahead:autocompleted", select)
+		.on("keydown", function(evt) {
+			// Backspace or Delete
+			if (evt.charCode == 0 &&
+				(evt.keyCode == 8 || evt.keyCode == 46)) deselect(evt);
+		})
+		.on("keypress", deselect);
+
+	// Work out if we already have an ID provided and update text field accordingly
+	if ($("#location_id").val() > 0) {
+		$("#location_text").addClass("tt-selected");
+	}
+
+});
+</script>
 {% endblock %}

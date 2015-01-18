@@ -1,3 +1,13 @@
+CREATE TABLE locations (
+	id INTEGER PRIMARY KEY,
+	name TEXT,
+	address TEXT,
+	description TEXT,
+
+	longitude REAL,
+	latitude REAL
+);
+
 CREATE TABLE events (
 	id INTEGER PRIMARY KEY,
 	slug TEXT,
@@ -7,6 +17,7 @@ CREATE TABLE events (
 	startdt DATETIME,
 	enddt DATETIME,
 	location TEXT,
+	location_id INTEGER,	/* Indexes into locations */
 	blurb TEXT,
 	url TEXT,
 	type TEXT,		/* ATM this can only be "film" */

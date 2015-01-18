@@ -1,0 +1,17 @@
+{% extends "location_edit.html" %}
+{% import "formmacros.html" as form %}
+
+{% block title %}Add location{% endblock %}
+
+{% block breadcrumb %}
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/admin">Admin</a></li>
+  <li><a href="/admin/locations">Locations</a></li>
+  <li>Add</li>
+</ol>
+{% endblock breadcrumb %}
+
+{% block form_action %}/admin/location/add{% endblock form_action %}
+
+{% block button %}{{ form.inputSubmit("Add location") }}{% endblock %}
