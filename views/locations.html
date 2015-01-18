@@ -1,42 +1,50 @@
 {% extends "layout.html" %}
 
 {% block title %}Locations{% endblock %}
-{% block pageclass %}admin{% endblock %}
+{% block pageclass %}admin locations{% endblock %}
 
-{% block leftcontent %}
-<ol class="breadcrumb">
-  <li><a href="/">Echo</a></li>
-  <li><a href="/admin">Admin</a></li>
-</ol>
+{% block content %}
+<div class="row">
+	<div class="col-md-10">
+		<ol class="breadcrumb">
+		  <li><a href="/">Echo</a></li>
+		  <li><a href="/admin">Admin</a></li>
+		</ol>
 
-<h2>Locations</h2>
-<a class="btn btn-default btn-primary" href="/admin/location/add">Add location...</a>
+		<h2>Locations</h2>
+		<a class="btn btn-default btn-primary" href="/admin/location/add">Add location...</a>
 
-<table class="table">
-	<tr>
-		<th>id</th>
-		<th>name</th>
-		<th>address</th>
-		<th>description</th>
-		<th>longitude</th>
-		<th>latitude</th>
-		<th>actions</th>
-	</tr>
-	{% for loc in locations %}
-	<tr>
-		<td><a href="/admin/location/{{ loc.id }}">{{ loc.id }}</a></td>
-		<td>{{ loc.name }}</td>
-		<td>{{ loc.address }}</td>
-		<td>{{ loc.description }}</td>
-		<td>{{ loc.longitude }}</td>
-		<td>{{ loc.latitude }}</td>
-		<td>
-			<a href="/admin/location/{{ loc.id }}/edit" class="btn btn-xs btn-primary">edit</a>
-			<a href="/admin/location/{{ loc.id }}/delete" class="btn btn-xs btn-warning">delete</a>
-		</td>
-	</tr>
-	{% endfor %}
-</table>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>id</th>
+					<th>name, address</th>
+					<th>description</th>
+					<th>long / lat</th>
+					<th>actions</th>
+				</tr>
+			</thead>
+			{% for loc in locations %}
+			<tr>
+				<th><a href="/admin/location/{{ loc.id }}">{{ loc.id }}</a></th>
+				<td>
+					<h4>{{ loc.name }}</h4>
+					{{ loc.addressAsHTML() }}
+				</td>
+				<td>{{ loc.descriptionAsHTML() }}</td>
+				<td>
+					{{ loc.longitude }}, {{ loc.latitude }}
+				</td>
+				<td>
+					<a href="/admin/location/{{ loc.id }}/edit" class="btn btn-xs btn-primary">edit</a>
+					<a href="/admin/location/{{ loc.id }}/delete" class="btn btn-xs btn-warning">delete</a>
+				</td>
+			</tr>
+			{% endfor %}
+		</table>
+
+	</div>
+</div>
 {% endblock %}
 
 {% block rightcontent %}
