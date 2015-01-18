@@ -33,11 +33,24 @@ footer { margin-bottom: 3em; }
 }
 
 // Generic effects we might want to re-use
-%box {
+.box {
 	border: 1px solid #eee;
 	// Shadow filched from Material Design
 	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
 	margin-bottom: 20px;
+
+	& > * { padding-left: 15px; padding-right: 15px; }
+
+	.foot {
+		background-color: #eee;
+		margin-bottom: 0; // We want this to extend to the bottom of the box
+		padding-top: 10px;
+		padding-bottom: 10px;
+	}
+
+	.limit {
+		min-height: $line-height-computed * 2;
+	}
 }
 
 // Separate from 'box' because it might not always be desirable
@@ -58,7 +71,7 @@ footer { margin-bottom: 3em; }
 	}
 
 	.add-yours {
-		@extend %box;
+		@extend .box;
 		@extend %boxhover;
 
 		// NB: Bootstrap applies also 10px bottom margin
@@ -69,18 +82,14 @@ footer { margin-bottom: 3em; }
 	}
 
 	.event-box {
-		@extend %box;
+		@extend .box;
 		@extend %boxhover;
-
-		& > * { padding-left: 15px; padding-right: 15px; }
 
 		.head { padding-top: 10px; color: #555; }
 		.foot {
 			i { margin-left: -20px; }
 
-			background-color: #eee;
-			margin-bottom: 0; // We want this to extend to the bottom of the box
-			padding: 10px 10px 10px 30px; // This 30px and the -20px below match up
+			padding-left: 30px; // This 30px and the -20px above match up
 		}
 	}
 }
