@@ -8,7 +8,8 @@
 
     "sass:basic": "sass -I bower_components/bootstrap-sass/assets/stylesheets/ scss:public/stylesheets",
     "sass:watch": "npm run sass:basic -- --watch",
-    "sass": "npm run sass:basic -- --update"
+    "sass": "npm run sass:basic -- --update",
+    "sass_compat": "sass -I bower_components/bootstrap-sass/assets/stylesheets/ scss:public/stylesheets --watch"
   },
   "dependencies": {
     "body-parser": "~1.8.1",
