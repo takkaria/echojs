@@ -131,3 +131,9 @@ div.img {
 
 // login.html
 #loginbox { margin-top: 2em; margin-bottom: 6em; }
+
+// locations.html
+.locations {
+	td:nth-child(2) { min-width: 11em; }
+	td h4 { margin-top: 0; }
+}
