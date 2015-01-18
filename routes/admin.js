@@ -95,13 +95,6 @@ router.get('/locations', ensureEditorOrAdmin, function(req, res) {
 	});
 });
 
-router.get('/location/:location_id', ensureEditorOrAdmin, function(req, res) {
-	res.render('location', {
-		user: req.user,
-		loc: req.loc,
-	});
-});
-
 router.get('/location/add', ensureEditorOrAdmin, function(req, res) {
 	res.render('location_add', {
 		user: req.user,
@@ -135,6 +128,13 @@ router.post('/location/add', ensureEditorOrAdmin, function(req, res) {
 				user: req.user
 			});
 		});
+});
+
+router.get('/location/:location_id', ensureEditorOrAdmin, function(req, res) {
+	res.render('location', {
+		user: req.user,
+		loc: req.loc,
+	});
 });
 
 router.get('/location/:location_id/edit', ensureEditorOrAdmin, function(req, res) {
