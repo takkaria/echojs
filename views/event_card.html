@@ -1,0 +1,8 @@
+<div class="event-box">
+	<p class="head">{{ event_.startdt.calendar() }}</p>
+
+	<h4><a href="{{ event_.absolute_url }}">{{ event_.title }}</a></h4>
+	<p class="limit">{{ event_.shortBlurb() }}...
+
+	<p class="foot"><small><i class="fa fa-fw fa-map-marker"></i> {{ event_.shortLocation }}</small>
+</div>

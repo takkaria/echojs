@@ -134,6 +134,15 @@ router.post('/add', function(req, res) {
 
 /* GET event by ID */
 router.get('/:id', function(req, res) {
+
+	// Serve XHR requests an event card
+	if (req.xhr) {
+		return res.render('event_card', {
+			event_: req.event_,
+			user: req.user
+		});
+	}
+
 	console.log(req.event_.absolute_url);
 	res.redirect(req.event_.absolute_url);
 });

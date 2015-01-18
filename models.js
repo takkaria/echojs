@@ -112,7 +112,7 @@ module.exports = function(debug) {
 
 			shortBlurb: function() {
 				// FIXME: This could be done with more finesse
-				return this.blurb.substr(0, 90);
+				return this.blurb.substr(0, 180);
 			},
 
 			generateSlug: function() {

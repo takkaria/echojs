@@ -9,6 +9,13 @@ $navbar-default-link-color: $navbar-default-color;
 
 @import "bootstrap";
 
+// Material Design shadow depths
+%shadow-depth-1 { box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16), 0 2px 5px 0 rgba(0, 0, 0, 0.26); }
+%shadow-depth-2 { box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19), 0 8px 17px 0 rgba(0, 0, 0, 0.2); }
+%shadow-depth-3 { box-shadow: 0 17px 50px 0 rgba(0, 0, 0, 0.19), 0 12px 15px 0 rgba(0, 0, 0, 0.24); }
+%shadow-depth-4 { box-shadow: 0 25px 55px 0 rgba(0, 0, 0, 0.21), 0 16px 28px 0 rgba(0, 0, 0, 0.22); }
+%shadow-depth-5 { box-shadow: 0 40px 77px 0 rgba(0, 0, 0, 0.22), 0 27px 24px 0 rgba(0, 0, 0, 0.2); }
+
 ////////// GLOBAL STYLES //////////
 
 h1, h2, h3, h4, h5, h6, nav { font-family: "Raleway"; }
@@ -35,8 +42,7 @@ footer { margin-bottom: 3em; }
 // Generic effects we might want to re-use
 .box {
 	border: 1px solid #eee;
-	// Shadow filched from Material Design
-	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+	@extend %shadow-depth-1;
 	margin-bottom: 20px;
 
 	& > * { padding-left: 15px; padding-right: 15px; }
@@ -61,6 +67,18 @@ footer { margin-bottom: 3em; }
 	}
 }
 
+.event-box {
+	@extend .box;
+	@extend %boxhover;
+
+	.head { padding-top: 10px; color: #555; }
+	.foot {
+		i { margin-left: -20px; }
+
+		padding-left: 30px; // This 30px and the -20px above match up
+	}
+}
+
 ////////// INDIVIDUAL PAGE STYLES //////////
 
 // index.html
@@ -80,18 +98,16 @@ footer { margin-bottom: 3em; }
 		a { color: #555; }
 		&:hover a { color: #337ab7; } // FIXME: colour should use the var for anchor colour
 	}
+}
 
-	.event-box {
-		@extend .box;
-		@extend %boxhover;
+// events.html
 
-		.head { padding-top: 10px; color: #555; }
-		.foot {
-			i { margin-left: -20px; }
-
-			padding-left: 30px; // This 30px and the -20px above match up
-		}
-	}
+.event_calendar #popup {
+	.event-box { @extend %shadow-depth-3; }
+	position: absolute;
+	width: 380px;
+	z-index: 99;
+	background-color: white;
 }
 
 // event_[add|edit].html
