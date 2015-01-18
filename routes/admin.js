@@ -70,6 +70,7 @@ router.get('/', ensureEditorOrAdmin, function(req, res) {
 		where: [
 			{ state: ["submitted", "imported"] }
 		],
+		include: [ models.Location ],
 		limit: 20,
 		order: "startdt ASC"
 	}).then(function(events_) {
