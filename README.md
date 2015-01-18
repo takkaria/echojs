@@ -1,7 +1,7 @@
 echojs
 ======
 
-A news & events aggregator (rewritten in Node)
+A news &amp; events aggregator (rewritten in Node).
 
 To get started, create the database:
 
@@ -14,4 +14,12 @@ then use bower and npm to fetch the dependencies:
 	
 and run the server:
 
-	$ bin/www
+	$ npm start
+
+`echojs` requires the [Sass][sass] CSS preprocessor; `npm start` will
+automatically try to launch `sass` with appropriate arguments. This only works
+with `npm >= 2.0.0` &ndash; if you're on an older version, you can execute `npm
+run sass_compat` (in a separate terminal, or with `&`) before running `nodemon`
+or `node app.js`.
+
+[sass]: http://sass-lang.com
