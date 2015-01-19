@@ -1,6 +1,8 @@
 echojs
 ======
 
+[![Build Status](https://travis-ci.org/takkaria/echojs.svg?branch=master)](https://travis-ci.org/takkaria/echojs)
+
 A news &amp; events aggregator (rewritten in Node).
 
 To get started, create the database:
