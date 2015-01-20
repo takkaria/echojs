@@ -10,8 +10,8 @@ function ensureAuthenticated(req, res, next) {
 }
 
 function ensureEditorOrAdmin(req, res, next) {
-	ensureAuthenticated(req, res, function(){
-		if((req.user.rights === 'admin')||(req.user.rights == 'editor')) { 
+	ensureAuthenticated(req, res, function() {
+		if (req.user.rights === 'admin' || req.user.rights == 'editor') {
 			return next()
 		}
 		req.flash('danger', 'Computer says no');
@@ -20,8 +20,8 @@ function ensureEditorOrAdmin(req, res, next) {
 }
 
 function ensureAdmin(req, res, next) {
-	ensureAuthenticated(req, res, function(){
-		if(req.user.rights === 'admin') { 
+	ensureAuthenticated(req, res, function() {
+		if (req.user.rights === 'admin') {
 			return next()
 		}
 		req.flash('danger', 'Computer says no');
@@ -203,36 +203,31 @@ router.get('/event/:event_id', ensureEditorOrAdmin, function(req, res) {
 	});
 });
 
-router.get('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) {
-	var event_ = req.event_;
-	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
+function canApproveOrReject(req, res, next) {
+	if (event_.state === 'approved' || event_.state === 'hidden') {
 		res.redirect('/admin/' + req.event_.id);
+	} else {
+		return next();
 	}
+}
+
+router.get('/event/:event_id/approve', ensureEditorOrAdmin, canApproveOrReject, function(req, res) {
+	var event_ = req.event_;
 	res.render('event_approve', {
 		event_: event_,
 		user: req.user
 	});
 });
 
-router.post('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) {
+router.post('/event/:event_id/approve', ensureEditorOrAdmin, canApproveOrReject, function(req, res) {
 	var event_ = req.event_;
-	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
-		res.redirect('/admin/' + req.event_.id);
-	}
 	event_.set('state', 'approved');
 	event_.generateSlug();
-	event_.save().then(function(e){
+	event_.save().then(function(e) {
 		e.reload();  // XXX surely should use a promise here?
 		req.flash('success', 'Event <a href="%s">%s</a> approved', 
 							event_.absolute_url, event_.id);
-		mailer.sendMail({
-			template: 'event_approve.html',
-			subject: 'Event approved!',
-			to: event_.email,
-			context: {
-				event_: event_
-			}
-		});
+		mailer.sendEventApprovedMail(event_);
 		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
@@ -240,36 +235,24 @@ router.post('/event/:event_id/approve', ensureEditorOrAdmin, function(req, res) 
 	});
 });
 
-router.get('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
+router.get('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, function(req, res) {
 	var event_ = req.event_;
-	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
-		res.redirect('/admin/' + req.event_.id);
-	}
 	res.render('event_reject', {
 		event_: req.event_,
 		user: req.user
 	});
 });
 
-router.post('/event/:event_id/reject', ensureEditorOrAdmin, function(req, res) {
+router.post('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, function(req, res) {
 	var event_ = req.event_;
-	if ((event_.state === 'approved')||(event_.state === 'hidden')) {
-		res.redirect('/admin/' + req.event_.id);
-	}
 	event_.set('state', 'hidden');
 	event_.save().then(function(){
 		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
 							event_.absolute_url, event_.id);
-		mailer.sendMail({
-			template: 'event_reject.html',
-			subject: 'Sorry :(',
-			to: event_.email,
-			context: {
-				event_: event_
-				// FIXME add custom admin explanation from a form, e.g.
-				// message: req.body.message
-			}
-		});
+
+		// FIXME add custom admin explanation from a form, e.g.
+		// message: req.body.message
+		mailer.sendEventRejectedMail(event_);
 		res.redirect('/admin');
 	})
 	.catch(function(errors){
@@ -353,57 +336,39 @@ router.get('/user/add', ensureAdmin, function(req, res) {
 
 router.post('/user/add', ensureAdmin, function(req, res) {
 	var b = req.body,
-		models = req.app.get('models'),
-		extra_errors = [];
-
-	if ((b.password === '')||(typeof(b.password) === 'undefined')){
-		extra_errors = [
-			{
-				path: 'password',
-				message: 'You must set a password'
-			}
-		];
-	}
-
-	function render_form(errors) {
-		return res.render('user_add', {
-			errors: errors,
-			user: req.user,
-			user_obj: b
-		});
-	}
+		models = req.app.get('models');
 
 	var user_obj = models.User.build(b);
-	validationResult = user_obj
+	user_obj
 		.validate()
-		.done(function(err, errors_){
-			console.log(err, errors_);
-			if (typeof(errors_) === 'undefined'){
-				console.log(b.password, user_obj.digest, user_obj.salt);
-				if (extra_errors.length > 0) {
-					return render_form(extra_errors);
-				}
-				user_obj.setPassword(b.password);
-				user_obj.save().then(function(u){
-					req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added', 
-										u.id, u.id);
-					mailer.sendMail({
-						template: 'user_add.html',
-						subject: 'New account',
-						to: u.email,
-						context: {
-							user: u
-						}
-					});
-					return res.redirect('/admin/user');
+		.done(function(err, errors_) {
+			var errors = typeof(errors_) === 'undefined' ? [] : errors_.errors;
+
+			if (b.password === '' || typeof(b.password) === 'undefined') {
+				errors = errors.concat([ {
+					path: 'password',
+					message: 'You must set a password'
+				} ]);
+			}
+
+			console.log(err, errors);
+			console.log(b.password, user_obj.digest, user_obj.salt);
+
+			if (errors.length > 0) {
+				return res.render('user_add', {
+					errors: errors,
+					user: req.user,
+					user_obj: b
 				});
-			} else {
-				var errors = errors_.errors;
-				if (extra_errors.length > 0) {
-					errors = errors.concat(extra_errors);
-				}
-				return render_form(errors);
-			};
+			}
+
+			user_obj.setPassword(b.password);
+			user_obj.save().then(function(u) {
+				req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added',
+									u.id, u.id);
+				mailer.sendNewUserMail(u);
+				return res.redirect('/admin/user');
+			});
 		});
 });
 
