@@ -7,6 +7,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
+var markedSwig = require('swig-marked');
 var passport = require('passport');
 
 var models = require('./models');
@@ -17,6 +18,7 @@ var event = require('./routes/event');
 var user = require('./routes/user');
 var admin = require('./routes/admin');
 var api = require('./routes/api');
+var about = require('./routes/about');
 
 var app = express();
 
@@ -26,6 +28,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
 swig.setDefaults({ cache: false }); // FIXME: turn off in production environment
+markedSwig.useFilter(swig);
+markedSwig.useTag(swig);
 
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -49,6 +53,7 @@ app.use('/events', events);
 app.use('/user', user);
 app.use('/admin', admin);
 app.use('/api', api);
+app.use('/about', about);
 
 app.set('models', models(false));
 
