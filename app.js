@@ -2,6 +2,7 @@ var express = require('express');
 var session = require('express-session');
 var flash = require('express-flash');
 var path = require('path');
+var compression = require('compression');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -31,6 +32,7 @@ swig.setDefaults({ cache: false }); // FIXME: turn off in production environment
 markedSwig.useFilter(swig);
 markedSwig.useTag(swig);
 
+app.use(compression())
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
