@@ -25,7 +25,7 @@
 </div>
 
 <div class="row">
-	<div class="leftcontent">
+	<div class="leftcontent" id="events">
 
 		<h2>Events</h2>
 
@@ -39,7 +39,7 @@
 				{% include "event_card.html" %}
 			</div>
 
-		{% if loop.index % 2 == 0 %}
+		{% if loop.index % 2 == 0 or loop.last %}
 		</div>
 		{% endif %}
 
@@ -81,7 +81,38 @@
 $(function() {
 	$(".box").on("click", function (evt) {
 		location.href = $(this).find("a").attr("href");
-	});
+	})
+
+	function resize() {
+		$("#events .row .event-box")
+				.css("height", "auto")
+				.find(".foot")
+				.css('margin-top', '0');
+
+		$("#events .row").each(function (idx, elem) {
+			var col1 = elem.children[0],
+				box1 = $(col1).find(".event-box"),
+				col2 = elem.children[1],
+				box2 = $(col2).find(".event-box")
+
+			if (!col1 || !col2 || !box1 || !box2)
+				return;
+
+			var h1 = box1.height();
+			var h2 = box2.height();
+
+			if (h1 > h2) {
+				box2.height(h1);
+				box2.find(".foot").css('margin-top', 10 + h1 - h2);
+			} else {
+				box1.height(h2);
+				box1.find(".foot").css('margin-top', 10 + h2 - h1);
+			}
+		});
+	}
+
+	resize();
+	$(window).resize(resize);
 });
 </script>
 {% endblock %}
