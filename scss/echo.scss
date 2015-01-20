@@ -154,3 +154,12 @@ div.img {
 	td:nth-child(2) { min-width: 11em; }
 	td h4 { margin-top: 0; }
 }
+
+// about.html
+.about {
+	#contents {
+		width: 15em; margin-top: 3em; border-top: 2px solid $primary-colour;
+		ul { margin-top: 1em; margin-left: 0; padding-left: 0; list-style-type: none; }
+		li { margin-bottom: 5px; margin-left: 10px; }
+	}
+}

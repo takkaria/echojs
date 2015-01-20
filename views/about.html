@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block title %}About{% endblock %}
+{% block pageclass %}about{% endblock %}
+
+{% block rightcontent %}
+
+<div data-spy="affix" id="contents">
+	<ul>
+		<li><a href="#why-s-it-been-started-">Why's it been started?</a>
+		<li><a href="#who-does-echo-include-">Who does Echo include?</a>
+		<li><a href="#getting-your-news-on-echo">Getting your news on Echo</a>
+		<li><a href="#embedding-our-calendar">Embedding our calendar</a>
+		<li><a href="#contact-us">Contact us</a>
+	</ul>
+</div>
+
+{% endblock %}
+
+
+{% block leftcontent %}
+
+{% marked %}
+
+# About Echo
+
+Echo is a non-profit political events and news site. Echo hopes to provide opportunities for struggle against oppression to grow by increasing participation in demonstrations, events, organised groups, and fundraisers.
+
+We also make and distribute a printed version.
+
+### Why's it been started?
+
+1. **It's important to link up**. It's hard to find out what 'political stuff' is going on right now. There are so many mailing lists, Facebook groups etc and not enough cross-pollination. It's much easier for people to find each other if there's a central portal, and linking up makes our movements stronger and makes it easier for new people to find out what's going on.
+
+2. **To avoid corporate dominance**. The Manchester political community is heavily dependent on Facebook to spread information and ideas. Facebook is highly individualistic, has no real tools for movement building and has a terrible track record on privacy. Echo is built using open-source software, avoids logging information about you and hopes to be responsive to the community it serves.
+
+### Who does Echo include?
+
+Echo has an anti-authoritarian and anti-oppression bent, which means that we primarily want to focus on groups and events that fall into the following categories:
+
+* anti-racism
+* feminism
+* queer
+* libertarian communism
+* anarchism
+* anti-capitalism
+* environmentalism
+* animal rights
+* progressive single issue campaigns (e.g. against the arms trade)
+
+This isn't exhaustive, though, so if you have something that you think fits vaguely in this area, give it a go. Also, if you have a problem with an event listed on the site, please contact us.
+
+We don't want to list every group's regular meetings here because they are often inaccessible to newcomers. Instead it would be great if groups wanted to put together introductory events periodically.
+
+### Getting your news on Echo
+
+If you want your website's news to appear here and it fits with the above ethos then please get in touch. If you're using a platform like Drupal or WordPress for your website then it will definitely be technically possible for us to sync it across. For other sites, we may or may not be able to do it. Either way, get in touch (email address below) and we'll work it out.
+
+### Embedding our calendar
+
+Embedding our calendar is as simple as putting the following code in your page:
+
+`<iframe src="http://echomanchester.net/embed" width="100%" height="800"
+style="border: none;"></iframe>`
+
+Please let us know if you do this or if you would like help doing this - we're happy to assist!
+
+## Contacting us
+
+To contact us, email support [at] echomanchester.net.
+
+{% endmarked %}
+
+{% endblock %}
