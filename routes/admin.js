@@ -204,7 +204,7 @@ router.get('/event/:event_id', ensureEditorOrAdmin, function(req, res) {
 });
 
 function canApproveOrReject(req, res, next) {
-	if (event_.state === 'approved' || event_.state === 'hidden') {
+	if (req.event_.state === 'approved' || req.event_.state === 'hidden') {
 		res.redirect('/admin/' + req.event_.id);
 	} else {
 		return next();
