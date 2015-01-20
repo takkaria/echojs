@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% import "formmacros.html" as form %}
 
 {% block title %}Reject event{% endblock %}
 {% block pageclass %}admin{% endblock %}
@@ -11,11 +12,66 @@
 	<li>Reject?</li>
 </ol>
 
-<form method="POST" action="/admin/event/{{ event_.id }}/reject">
+<h1>Rejecting event id {{ event_.id }}</h1>
+
+<form method="POST" action="/admin/event/{{ event_.id }}/reject" class="form">
+
 	<div class="form-group">
-		<label>Are you sure?</label>
-		<button class="btn btn-danger" type="submit">Yes</button>
-		<a href="/admin/{{ event_.id }}" class="btn btn-default">Back to event</a>
+		<label for="predefined">Use a predefined reason (will overwrite text below)</label>
+		<select id="predefined" class="form-control">
+			<option value="0" select>Regular group meeting</option>
+			<option value="1">Doesn't fit Echo</option>
+		</select>
 	</div>
+
+	<div class="form-group">
+		{{ form.textarea({ label: "Edit text", field: "reason", rows: 20 }) }}
+	</div>
+
+	<div class="pull-left"><a href="/admin/{{ event_.id }}" class="btn btn-default">Back to event</a></div>
+	<div class='pull-right'><button class="btn btn-danger push-right" type="submit">Reject</button></div>
+
 </form>
+
+<style>
+pre.reason { display: none; }
+</style>
+
+<pre class="reason" data-reason="0">
+Thanks for adding your event "{{ event_.title }}" to Echo Manchester. Unfortunately we've decided not to publish your event at this time, because we don't want to list regular group meetings.
+
+We don't want to list regular group organising meetings on Echo because in our experience, they are often inaccessible to newcomers. We're fine with them going on the site every so often but we'd prefer groups to put on events aimed at new people.
+
+We realise this might seem arbitrary or unfair to you. If you feel strongly that your event should go on the site, please reply and explain why and we'll reconsider. We're definitely open to having a conversation about it!
+
+We hope you understand our position and that this doesn't put you off posting future events.
+</pre>
+
+<pre class="reason" data-reason="1">
+Thanks for adding your event "{{ event_.title }}" to Echo Manchester.  Unfortunately we've decided not to publish your event at this time, because we don't feel that it fits within Echo's remit.
+
+We are sorry if this sounds harsh, we just want to keep our focus on what Echo was set up for (i.e. to provide opportunities for struggle against oppression to grow by increasing participation in demonstrations, events, organised groups, and fundraisers) so Echo's mission doesn't become diluted and its effectiveness lessened.
+
+We realise this might seem arbitrary or unfair to you. If you feel strongly that your event fits our ethos, please reply and explain why and we'll reconsider. Sometimes it's hard to judge from the little blurb/link and we might have missed out some crucial information!
+
+We hope you understand our position and that this doesn't put you off posting future events within our event guidelines.
+</pre>
+
+{% endblock %}
+
+{% block script %}
+<script type="text/javascript">
+$(function() {
+
+	function select(which) {
+		$("textarea").val($("pre.reason:eq(" + which + ")").text());
+	}
+
+	$("select").on("change", function(evt) {
+		select($(this).val());
+	})
+
+	select(0);
+});
+</script>
 {% endblock %}

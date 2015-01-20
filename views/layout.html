@@ -50,14 +50,18 @@
  
 <div class="container">
 
+{% macro checkMessages() %}
+	{% for type, message in messages %}
+		<div class="alert alert-{{ type }}">{{ message|safe }}</div>
+	{% endfor %}
+{% endmacro %}
+
 {% block content %}
 
 <div class="row">
 
 	<div class="leftcontent">
-	{% for type, message in messages %}
-		<div class="alert alert-{{ type }}">{{ message|safe }}</div>
-	{% endfor %}
+	{{ checkMessages() }}
 
 	{% block leftcontent %}{% endblock %}
 	</div>
