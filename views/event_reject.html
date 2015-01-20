@@ -60,11 +60,11 @@ We hope you understand our position and that this doesn't put you off posting fu
 {% endblock %}
 
 {% block script %}
-<script>
+<script type="text/javascript">
 $(function() {
 
 	function select(which) {
-		$("textarea").val($("pre.reason")[which].innerText);
+		$("textarea").val($("pre.reason:eq(" + which + ")").text());
 	}
 
 	$("select").on("change", function(evt) {
