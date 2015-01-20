@@ -6,6 +6,8 @@
     "prestart": "npm run sass:watch &",
     "start": "nodemon ./bin/www",
 
+    "build": "npm run sass",
+
     "test": "exit 0",
 
     "sass:basic": "sass -I bower_components/bootstrap-sass/assets/stylesheets/ scss:public/stylesheets",
