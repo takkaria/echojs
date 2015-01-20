@@ -20,7 +20,7 @@
     "express": "~4.9.0",
     "express-session": "~1.10.0",
     "feedparser": "^0.19.2",
-    "htmlstrip-native": "0.0.4",
+    "htmlstrip-native": "0.0.6",
     "ical": "^0.3.1",
     "marked": "^0.3.2",
     "moment": "^2.8.3",
