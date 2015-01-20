@@ -32,7 +32,6 @@ module.exports = function(debug) {
 			}
 		},
 		location_text: {
-			field: "location",
 			type: sequelize.TEXT,
 		},
 		blurb: {
