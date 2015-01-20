@@ -450,7 +450,7 @@ router.get('/user/:user_id/delete', ensureAdmin, function(req, res) {
 });
 
 router.post('/user/:user_id/delete', ensureAdmin, function(req, res) {
-	req.user.destroy().then(function(){
+	req.user_obj.destroy().then(function(){
 		req.flash('warning', 'User deleted');
 		return res.redirect('/admin');
 	});

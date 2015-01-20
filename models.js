@@ -16,7 +16,7 @@ module.exports = function(debug) {
 
 	var db = new sequelize('', '', '', {
 		dialect: 'sqlite',
-		storage: 'db.sqlite',
+		storage: process.env.DBPATH || 'db.sqlite',
 		logging: debug ? console.log : false,
 	});
 
