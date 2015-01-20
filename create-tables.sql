@@ -16,7 +16,7 @@ CREATE TABLE events (
 	title TEXT,
 	startdt DATETIME,
 	enddt DATETIME,
-	location TEXT,
+	location_text TEXT,
 	location_id INTEGER,	/* Indexes into locations */
 	blurb TEXT,
 	url TEXT,
