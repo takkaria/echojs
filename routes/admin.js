@@ -227,7 +227,7 @@ router.post('/event/:event_id/approve', ensureEditorOrAdmin, canApproveOrReject,
 		e.reload();  // XXX surely should use a promise here?
 		req.flash('success', 'Event <a href="%s">%s</a> approved', 
 							event_.absolute_url, event_.id);
-		mailer.sendEventApprovedMail(event_);
+		mailer.sendEventApprovedMail(event_, msg);
 		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
@@ -245,14 +245,25 @@ router.get('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, f
 
 router.post('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, function(req, res) {
 	var event_ = req.event_;
+	var msg = req.body.reason;
+
+	if (!msg) {
+		res.render('event_reject', {
+			event_: req.event_,
+			user: req.user,
+			errors: [ {
+				path: 'reason',
+				message: 'Please provide a reason.'
+			} ]
+		})
+		return;
+	}
+
 	event_.set('state', 'hidden');
-	event_.save().then(function(){
+	event_.save({ validate: false }).then(function() {
 		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
 							event_.absolute_url, event_.id);
-
-		// FIXME add custom admin explanation from a form, e.g.
-		// message: req.body.message
-		mailer.sendEventRejectedMail(event_);
+		mailer.sendEventRejectedMail(event_, msg);
 		res.redirect('/admin');
 	})
 	.catch(function(errors){
