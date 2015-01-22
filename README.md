@@ -25,3 +25,11 @@ run sass_compat` (in a separate terminal, or with `&`) before running `nodemon`
 or `node app.js`.
 
 [sass]: http://sass-lang.com
+
+env variables
+-------------
+
+These are things you can set in .env:
+
+* ```env```: ```development``` (turns on stack traces)
+* ```dbpath```: an alternate path to the sqlite database
