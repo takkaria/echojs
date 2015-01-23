@@ -227,7 +227,8 @@ router.post('/event/:event_id/approve', ensureEditorOrAdmin, canApproveOrReject,
 		e.reload();  // XXX surely should use a promise here?
 		req.flash('success', 'Event <a href="%s">%s</a> approved', 
 							event_.absolute_url, event_.id);
-		mailer.sendEventApprovedMail(event_, msg);
+		if (e.isImported())
+			mailer.sendEventApprovedMail(event_, msg);
 		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
@@ -247,7 +248,7 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, 
 	var event_ = req.event_;
 	var msg = req.body.reason;
 
-	if (!msg) {
+	if (event_.isImported() && !msg) {
 		res.render('event_reject', {
 			event_: req.event_,
 			user: req.user,
@@ -263,7 +264,8 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, 
 	event_.save({ validate: false }).then(function() {
 		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
 							event_.absolute_url, event_.id);
-		mailer.sendEventRejectedMail(event_, msg);
+		if (!event_.isImported())
+			mailer.sendEventRejectedMail(event_, msg);
 		res.redirect('/admin');
 	})
 	.catch(function(errors){

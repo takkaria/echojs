@@ -105,6 +105,9 @@ module.exports = function(debug) {
 		createdAt: false,
 		underscored: true,
 		instanceMethods: {
+			isImported: function() {
+				return this.importid ? true : false;
+			},
 			blurbAsHTML: function() {
 				return marked(this.blurb);
 			},
