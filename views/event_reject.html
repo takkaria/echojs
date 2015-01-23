@@ -12,9 +12,21 @@
 	<li>Reject?</li>
 </ol>
 
-<h1>Rejecting event id {{ event_.id }}</h1>
+<h1>Rejecting event id {{ event_.id }}
+{% if event_.isImported() %}
+	<small>IMPORTED EVENT</small>
+{% endif %}
+</h1>
 
 <form method="POST" action="/admin/event/{{ event_.id }}/reject" class="form">
+
+{% if event_.email %}
+
+	{{ form.inputCheckbox({
+		label: "Send a notification email",
+		field: "email",
+		checked: !event_.isImported() || data.email
+	}) }}
 
 	<div class="form-group">
 		<label for="predefined">Use a predefined reason (will overwrite text below)</label>
@@ -25,8 +37,14 @@
 	</div>
 
 	<div class="form-group">
-		{{ form.textarea({ label: "Edit text", field: "reason", rows: 20 }) }}
+		{{ form.textarea({ label: "Edit text", field: "reason", rows: 15 }) }}
 	</div>
+
+{% else %}
+
+	<p>This event has no email associated with it, so no rejection email will be sent.</p>
+
+{% endif %}
 
 	<div class="pull-left"><a href="/admin/{{ event_.id }}" class="btn btn-default">Back to event</a></div>
 	<div class='pull-right'><button class="btn btn-danger push-right" type="submit">Reject</button></div>
@@ -63,15 +81,22 @@ We hope you understand our position and that this doesn't put you off posting fu
 <script type="text/javascript">
 $(function() {
 
-	function select(which) {
-		$("textarea").val($("pre.reason:eq(" + which + ")").text());
-	}
+	// Allow user to select reasons
+	$("select")
+		.on("change", function(evt) {
+			var which = $(this).val();
+			$("textarea").val($("pre.reason:eq(" + which + ")").text());
+		})
+		.trigger("change");
 
-	$("select").on("change", function(evt) {
-		select($(this).val());
-	})
+	// Disable form inputs when not sending email
+	$("#email")
+		.on("change", function(evt) {
+			var sendEmail = $(evt.target).prop("checked");
+			$("#predefined, #reason").prop("disabled", !sendEmail);
+		})
+		.trigger("change");
 
-	select(0);
 });
 </script>
 {% endblock %}

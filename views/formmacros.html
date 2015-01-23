@@ -56,6 +56,23 @@
 	>
 {% endmacro %}
 
+{% macro inputCheckbox(opts) %}
+	{# opts = { label, field, checked } #}
+
+	<div class="checkbox">
+		<label for="{{ opts.field }}">
+			<input
+				type="checkbox"
+				name="{{ opts.field }}"
+				id="{{ opts.field }}"
+				{% if opts.checked %} checked {% endif %}
+			>
+			{{ opts.label }}
+		</label>
+	</div>
+
+{% endmacro %}
+
 {% macro textarea(opts) %}
 	{# opts = { label, field, fill, helpText, rows } #}
 

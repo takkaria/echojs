@@ -248,10 +248,13 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, 
 	var event_ = req.event_;
 	var msg = req.body.reason;
 
-	if (event_.isImported() && !msg) {
+	var sendEmail = req.body.email ? true : false;
+
+	if (sendEmail && !msg) {
 		res.render('event_reject', {
 			event_: req.event_,
 			user: req.user,
+			data: req.body,
 			errors: [ {
 				path: 'reason',
 				message: 'Please provide a reason.'
@@ -262,10 +265,12 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, 
 
 	event_.set('state', 'hidden');
 	event_.save({ validate: false }).then(function() {
-		req.flash('warning', 'Event <a href="%s">%s</a> hidden', 
-							event_.absolute_url, event_.id);
-		if (!event_.isImported())
+		if (sendEmail)
 			mailer.sendEventRejectedMail(event_, msg);
+
+		req.flash('warning', 'Event <a href="%s">%s</a> hidden%s',
+							event_.absolute_url, event_.id,
+							!sendEmail ? " (no email sent)": "");
 		res.redirect('/admin');
 	})
 	.catch(function(errors){
