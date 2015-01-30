@@ -4,10 +4,23 @@
 	<link href="/base.css" rel="stylesheet">
 </head>
 
-<body class="{% block pageclass %}normal{% endblock %}">
+<body>
+
+	<h1>Echo Manchester</h1>
+	<h2>{% block title %}{% endblock %}</h2>
+
+	<p>
+		Hi there,
+	</p>
+
 	{% block content %}{% endblock %}
-	<footer>
-	<p>&copy; Echo Manchester, 2014.  Licenced under the GNU AGPL v3, source code on <a href="//github.com/takkaria/echo">GitHub</a>.<br>
-	Found a bug? <a href="https://echomanchester.net/about#contact">Let us know</a>.
-	</footer>
+
+	<p>
+		Take care,
+	</p>
+
+	<p>
+		- The Echo Crew
+	</p>
+
 </body>

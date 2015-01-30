@@ -1,12 +1,8 @@
 {% extends "base.html" %}
 
-{% block content %}
-<h1>Echo Manchester</h1>
-<h2>Your submitted event has been approved</h2>
+{% block title %}Your submitted event has been approved{% endblock %}
 
-<p>
-	Hi there,
-</p>
+{% block content %}
 
 <p>
 	Your event, {{ event_.title }}, has been approved for display on Echo
@@ -14,15 +10,4 @@
 		the site</a>.
 </p>
 
-<p>
-	Thanks!
-</p>
-
-<p>
-	Take care,
-</p>
-
-<p>
-	- The Echo Crew
-</p>
 {% endblock %}
