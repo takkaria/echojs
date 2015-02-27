@@ -1,7 +1,7 @@
 var express = require('express'),
 	moment = require('moment'),
 	mailer = require('../lib/mailer'),
-	debug = require('debug')('user'),
+	debug = require('debug')('echo:user'),
 	passport = require('passport'),
 	router = express.Router();
 

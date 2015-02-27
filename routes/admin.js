@@ -1,6 +1,6 @@
 var express = require('express'),
 	moment = require('moment'),
-	debug = require('debug')('admin'),
+	debug = require('debug')('echo:admin'),
 	mailer = require('../lib/mailer'),
 	router = express.Router();
 
@@ -164,7 +164,7 @@ router.post('/location/:location_id/edit', ensureEditorOrAdmin, function(req, re
 			res.redirect('/admin/location/' + loc.id);
 		})
 		.catch(function(errors) {
-			console.log(errors);
+			debug(errors);
 			res.render('location_edit', {
 				errors: errors.errors,
 				user: req.user,
@@ -232,7 +232,7 @@ router.post('/event/:event_id/approve', ensureEditorOrAdmin, canApproveOrReject,
 		res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
-		console.log(errors);
+		debug(errors);
 	});
 });
 
@@ -274,7 +274,7 @@ router.post('/event/:event_id/reject', ensureEditorOrAdmin, canApproveOrReject, 
 		res.redirect('/admin');
 	})
 	.catch(function(errors){
-		console.log(errors);
+		debug(errors);
 	});
 });
 
@@ -322,7 +322,7 @@ router.post('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
 			res.redirect('/admin/event/' + event_.id);
 		})
 		.catch(function(errors) {
-			console.log(errors);
+			debug(errors);
 			res.render('event_edit', {
 				errors: errors.errors,
 				user: req.user,
@@ -369,8 +369,8 @@ router.post('/user/add', ensureAdmin, function(req, res) {
 				} ]);
 			}
 
-			console.log(err, errors);
-			console.log(b.password, user_obj.digest, user_obj.salt);
+			debug(err, errors);
+			debug(b.password, user_obj.digest, user_obj.salt);
 
 			if (errors.length > 0) {
 				return res.render('user_add', {

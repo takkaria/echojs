@@ -1,7 +1,7 @@
 var express = require('express'),
 	moment = require('moment'),
 	mailer = require('../lib/mailer'),
-	debug = require('debug')('event'),
+	debug = require('debug')('echo:event'),
 	router = express.Router();
 
 router.param('id', function(req, res, next, id) {
@@ -99,7 +99,7 @@ router.post('/add', function(req, res) {
 		});
 	})
 	.catch(function(errors) {
-		console.log(errors, event_, b);
+		debug(errors, event_, b);
 		res.render('event_add', {
 			event_: event_,
 			errors: errors.errors,
@@ -119,7 +119,7 @@ router.get('/:id', function(req, res) {
 		});
 	}
 
-	console.log(req.event_.absolute_url);
+	debug(req.event_.absolute_url);
 	res.redirect(req.event_.absolute_url);
 });
 

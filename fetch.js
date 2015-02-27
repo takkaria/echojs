@@ -1,10 +1,10 @@
-var ical = require('ical')
-var FeedParser = require('feedparser')
-var request = require('request')
+var ical = require('ical');
+var FeedParser = require('feedparser');
+var request = require('request');
 var htmlStrip = require('htmlstrip-native').html_strip
+var debug = require('debug')('echo:fetch');
 
-var Event, Post, Feed
-var debug = false
+var Event, Post, Feed;
 
 // = iCal ===================================================== //
 
@@ -19,8 +19,7 @@ function fetchICal(params) {
 		if (event != null) return;   /* Don't duplicate IDs */
 		if (transform) transform(item);
 
-		if (debug)
-			console.log("Adding new event: " + item.summary);
+		debug("Adding new event: " + item.summary);
 
 		Event.build({
 			title: item.summary.trim(),
@@ -34,8 +33,7 @@ function fetchICal(params) {
 		}).save();
 	}
 
-	if (debug)
-		console.log("Fetching iCal " + url);
+	debug("Fetching iCal " + url);
 
 	ical.fromURL(url, {}, function(err, data) {
 		for (var k in data) {
@@ -113,8 +111,7 @@ function addPost(data) {
 	// https://github.com/danmactough/node-feedparser#what-is-the-parsed-output-produced-by-feedparser
 	// may want to re-add summary, content or image parsing at some point
 
-	if (debug)
-		console.log("Adding new post: " + data.title);
+	debug("Adding new post: " + data.title);
 
 	// Build the post
 	Post.build({
@@ -138,8 +135,7 @@ function addPost(data) {
 		 .success(function(evt) {
 			if (evt != null) return;  // don't import twice
 
-			if (debug)
-				console.log("Adding new event: " + data.title);
+			debug("Adding new event: " + data.title);
 
 			Event.build({
 				title: data.title,
@@ -173,8 +169,7 @@ function fetchFeed(params) {
 		stream.pipe(feedparser);
 	});
 
-	if (debug)
-		console.log("Fetching feed " + url);
+	debug("Fetching feed " + url);
 
 	feedparser.on('readable', function() {
 		// This is where the action is!
@@ -202,9 +197,7 @@ function fetchFeed(params) {
 
 // = Exports ================================================== //
 
-module.exports = function(models, is_debug) {
-	if (is_debug) debug = true;
-
+module.exports = function(models) {
 	Event = models.Event
 	Post = models.Post
 	Feed = models.Feed

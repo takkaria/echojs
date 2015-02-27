@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-var debug = false
 var action = { type: "all" }
 var moment = require('moment')
 
@@ -26,7 +25,7 @@ function parse_options() {
 		else if (arg == "node")
 			next = "skip";
 		else if (arg == "--debug")
-			debug = true;
+			process.env.DEBUG = "echo:fetch"
 		else if (arg == "--ical")
 			next = "ical";
 		else if (arg == "--feed")
@@ -45,8 +44,8 @@ function parse_options() {
 
 parse_options();
 
-var models = require('../models')(debug)
-var fetch = require('../fetch')(models, debug)
+var models = require('../models')
+var fetch = require('../fetch')(models)
 
 Feed = models.Feed
 
