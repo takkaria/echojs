@@ -57,8 +57,6 @@ app.use('/admin', admin);
 app.use('/api', api);
 app.use('/about', about);
 
-app.set('models', models);
-
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
@@ -97,8 +95,6 @@ passport.use(new LocalStrategy({
         usernameField: 'email',
     },
     function(email, password, done) {
-    var models = app.get('models');
-    var sequelize = models.sequelize;
 
     models.User.find({
         where: [

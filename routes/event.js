@@ -1,12 +1,11 @@
-var express = require('express'),
-	moment = require('moment'),
-	mailer = require('../lib/mailer'),
-	debug = require('debug')('echo:event'),
-	router = express.Router();
+var express = require('express');
+var moment = require('moment');
+var mailer = require('../lib/mailer');
+var debug = require('debug')('echo:event');
+var router = express.Router();
+var models = require('../models');
 
 router.param('id', function(req, res, next, id) {
-	var models = req.app.get('models');
-
 	models.Event.findOne({
 		include: [ models.Location ],
 		where: {
@@ -20,8 +19,6 @@ router.param('id', function(req, res, next, id) {
 })
 
 router.param('slug', function(req, res, next, slug) {
-	var models = req.app.get('models');
-
 	models.Event.find({
 		include: [ models.Location ],
 		where: { slug: slug }
@@ -49,8 +46,7 @@ function defaultState(req) {
 
 /* POST event add */
 router.post('/add', function(req, res) {
-	var b = req.body,
-		models = req.app.get('models');
+	var b = req.body;
 
 	b.startdt = moment(b.startdt, 'YYYY/MM/DD hh:mm')
 	// strict mode to prevent blank enddt being taken as "now"

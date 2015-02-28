@@ -1,9 +1,8 @@
 var express = require('express');
 var router = express.Router();
+var models = require('../models');
 
 router.get('/newsletter', function(req, res) {
-	var models = req.app.get('models');
-
 	models.Event.groupByDays({
 		where: [
 			{ state: "approved" },
@@ -19,8 +18,6 @@ router.get('/newsletter', function(req, res) {
 });
 
 router.get('/leaflet', function(req, res) {
-	var models = req.app.get('models');
-
 	models.Event.findAll({
 		where: [
 			{ state: "approved" },

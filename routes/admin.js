@@ -1,8 +1,9 @@
-var express = require('express'),
-	moment = require('moment'),
-	debug = require('debug')('echo:admin'),
-	mailer = require('../lib/mailer'),
-	router = express.Router();
+var express = require('express');
+var moment = require('moment');
+var debug = require('debug')('echo:admin');
+var mailer = require('../lib/mailer');
+var router = express.Router();
+var models = require('../models');
 
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) { return next(); }
@@ -30,8 +31,6 @@ function ensureAdmin(req, res, next) {
 }
 
 router.param('event_id', function(req, res, next, event_id) {
-	var models = req.app.get('models');
-
 	models.Event.find({
 		include: [ models.Location ],
 		where: { id: event_id }
@@ -42,8 +41,6 @@ router.param('event_id', function(req, res, next, event_id) {
 })
 
 router.param('user_id', function(req, res, next, user_id) {
-	var models = req.app.get('models');
-
 	models.User.find({
 		where: { id: user_id }
 	}).then(function(user) {
@@ -53,8 +50,6 @@ router.param('user_id', function(req, res, next, user_id) {
 })
 
 router.param('location_id', function(req, res, next, loc_id) {
-	var models = req.app.get('models');
-
 	models.Location.find({
 		where: { id: loc_id }
 	}).then(function(loc) {
@@ -64,8 +59,6 @@ router.param('location_id', function(req, res, next, loc_id) {
 })
 
 router.get('/', ensureEditorOrAdmin, function(req, res) {
-	var models = req.app.get('models');
-
 	models.Event.findAll({
 		where: [
 			{ state: ["submitted", "imported"] }
@@ -84,8 +77,6 @@ router.get('/', ensureEditorOrAdmin, function(req, res) {
 /////////// LOCATIONS ///////////
 
 router.get('/locations', ensureEditorOrAdmin, function(req, res) {
-	var models = req.app.get('models');
-
 	models.Location.findAll({
 		limit: 20,
 	}).then(function(locations) {
@@ -105,7 +96,6 @@ router.get('/location/add', ensureEditorOrAdmin, function(req, res) {
 /* POST event add */
 router.post('/location/add', ensureEditorOrAdmin, function(req, res) {
 	var b = req.body,
-		models = req.app.get('models'),
 		location = {
 			name: b.name,
 			address: b.address,
@@ -334,8 +324,6 @@ router.post('/event/:event_id/edit', ensureEditorOrAdmin, function(req, res) {
 /////////// USERS ///////////
 
 router.get('/user', ensureAdmin, function(req, res) {
-	var models = req.app.get('models');
-
 	models.User.findAll({
 		limit: 20,
 	}).then(function(users) {
@@ -353,10 +341,9 @@ router.get('/user/add', ensureAdmin, function(req, res) {
 });
 
 router.post('/user/add', ensureAdmin, function(req, res) {
-	var b = req.body,
-		models = req.app.get('models');
-
+	var b = req.body;
 	var user_obj = models.User.build(b);
+
 	user_obj
 		.validate()
 		.done(function(err, errors_) {

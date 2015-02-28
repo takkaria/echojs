@@ -3,7 +3,8 @@ var express = require('express'),
 	mailer = require('../lib/mailer'),
 	debug = require('debug')('echo:user'),
 	passport = require('passport'),
-	router = express.Router();
+	router = express.Router(),
+	models = require('../models');
 
 function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) { return next(); }
@@ -11,8 +12,6 @@ function ensureAuthenticated(req, res, next) {
 }
 
 router.param('email', function(req, res, next, id) {
-	var models = req.app.get('models');
-
 	models.User.find({
 		where: { email: email }
 	}).then(function(user) {
@@ -94,7 +93,6 @@ router.get('/password/reset', function(req, res) {
 });
 
 router.post('/password/reset', function(req, res, next) {
-	var models = req.app.get('models');
 	models.User
 		.find({ where: { email: req.body.email } })
 		.then(function (user) {
@@ -112,7 +110,6 @@ router.get('/password/reset/done', function(req, res, next) {
 });
 
 router.get('/password/reset/:token', function(req, res, next) {
-	var models = req.app.get('models');
 	models.User.find({where: { pwreset: req.params.token}}).then(function(user){
 		if (user) {
 			res.render('password_reset_change', {user: user});
@@ -124,7 +121,6 @@ router.get('/password/reset/:token', function(req, res, next) {
 });
 
 router.post('/password/reset/:token', function(req, res, next) {
-	var models = req.app.get('models');
 	models.User.find({
 		where: {pwreset: req.params.token,}}).then(function(user){
 		if(req.body.new_password === ''){

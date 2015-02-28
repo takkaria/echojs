@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 
+var models = require('../models')
+
 var icalGenerator = require('../lib/ical-generator');
 var moment = require('moment');
 
@@ -45,9 +47,6 @@ function parseOpts(req) {
 }
 
 router.get('/json', function(req, res) {
-	var models = req.app.get('models');
-	var sequelize = models.sequelize;
-
 	var clauses = parseOpts(req);
 
 	// This particular kind of JSON output is designed to be suitable input
@@ -73,9 +72,6 @@ router.get('/json', function(req, res) {
 });
 
 router.get('/json/locations', function(req, res) {
-	var models = req.app.get('models');
-	var sequelize = models.sequelize;
-
 	models.Location
 		.findAll({ attributes: [ "id", "name", "address" ] }, { raw: true })
 		.then(function(locations) {
@@ -91,9 +87,6 @@ router.get('/json/locations', function(req, res) {
 });
 
 router.get('/ical', function(req, res) {
-	var models = req.app.get('models');
-	var sequelize = models.sequelize;
-
 	var clauses = parseOpts(req);
 
 	models.Event.findAll({

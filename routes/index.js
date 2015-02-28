@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var moment = require('moment');
+var models = require('../models');
 
 // Get rid of the times from moment.calendar() strings as we only want dates
 // See: http://momentjs.com/docs/#/customization/calendar/
@@ -17,9 +18,6 @@ moment.locale('en', {
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	var models = req.app.get('models');
-	var sequelize = models.sequelize;
-
 	models.Event.findAll({
 		include: [ models.Location ],
 		where: [
