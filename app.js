@@ -95,21 +95,21 @@ passport.use(new LocalStrategy({
         usernameField: 'email',
     },
     function(email, password, done) {
-
-    models.User.find({
-        where: [
-            { email: email },
-        ]
-    }).then(function(user) {
-        if (!user) {
-            return done(null, false, { message: 'Incorrect email.' });
-        }
-        if (!user.checkPassword(password)) {
-            return done(null, false, { message: 'Incorrect password.' });
-        }
-        return done(null, user);
-    });
-}));
+        models.User.find({
+            where: [
+                { email: email },
+            ]
+        }).then(function(user) {
+            if (!user) {
+                return done(null, false, { message: 'Incorrect email.' });
+            }
+            if (!user.checkPassword(password)) {
+                return done(null, false, { message: 'Incorrect password.' });
+            }
+            return done(null, user);
+        });
+    }
+));
 
 passport.serializeUser(function(user, done) {
   done(null, user.email);
@@ -121,9 +121,9 @@ passport.deserializeUser(function(email, done) {
         where: [
             { email: email },
         ]
-    }).then(function(user) {
-    done(null, user);
-  });
+        }).then(function(user) {
+            done(null, user);
+        });
 });
 
 module.exports = app;
