@@ -98,7 +98,13 @@ function findDate(base, text) {
 		d.setDate(parseInt(day));
 
 		var hours = parseInt(time);
-		if (/pm/.test(time)) hours += 12;
+
+		if (!/(am|pm)/.test(time)) {
+			if (hours > 0 || hours <= 6)
+				hours += 12;
+		} else if (/pm/.test(time)) {
+			hours += 12;
+		}
 
 		var minutes = parseInt(/[\.:](\d\d)/.sexec(time)[1]) || 0;
 
