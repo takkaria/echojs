@@ -116,7 +116,6 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(function(email, done) {
-    var models = app.get('models');
     models.User.find({
         where: [
             { email: email },
