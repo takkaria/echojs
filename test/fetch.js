@@ -1,5 +1,6 @@
 var expect = require("chai").expect;
 var fetch = require("../fetch");
+var models = require("../models");
 
 // Hideous monkey patching
 Date.prototype.toShortISOString = function() {
@@ -20,10 +21,18 @@ Date.prototype.toShortISOString = function() {
 describe("fetch", function() {
 	describe("#saveEvent", function() {
 
+		after(function(done) {
+			models.Event
+				.destroy({ where: { title: "TEST" } })
+				.done(function () {
+					done();
+				});
+		});
+
 		it("should not throw an error when asked to save an event", function(done) {
 
 			var data = {
-				summary: 'Dismantling Racism and Colonialism - Challenges for the BDS Movement',
+				summary: 'TEST',
 				start: new Date("Wed, 04 Mar 2015 18:00:00 GMT"),
 				end: new Date("Wed, 04 Mar 2015 20:00:00 GMT"),
 				location: 'Chester Street, Manchester, Greater Manchester, M1 5GD, United Kingdom',
