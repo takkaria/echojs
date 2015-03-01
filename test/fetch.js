@@ -18,6 +18,30 @@ Date.prototype.toShortISOString = function() {
 };
 
 describe("fetch", function() {
+	describe("#saveEvent", function() {
+
+		it("should not throw an error when asked to save an event", function(done) {
+
+			var data = {
+				summary: 'Dismantling Racism and Colonialism - Challenges for the BDS Movement',
+				start: new Date("Wed, 04 Mar 2015 18:00:00 GMT"),
+				end: new Date("Wed, 04 Mar 2015 20:00:00 GMT"),
+				location: 'Chester Street, Manchester, Greater Manchester, M1 5GD, United Kingdom',
+				description: 'Rania Masri will speak on the topic ‘Dismantling Racism and Colonialism',
+				url: 'http://www.psc-manchester.org.uk/event/tom-hurndall-tenth-memorial-lecture-speaker-rania-masri/',
+				uid: '1033-1425492000-1425499200@http://www.istandbyyou.org.uk',
+			}
+
+			fetch.saveEvent(data, function(err, errors_) {
+				console.log(err, errors_);
+				done(err);
+			}, function() {
+				done();
+			});
+
+		});
+	});
+
 	describe("#findDate", function() {
 		it("should ignore dates in the past", function() {
 			var result = fetch.findDate(

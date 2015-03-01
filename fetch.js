@@ -11,20 +11,11 @@ var debug = require('debug')('echo:fetch');
 
 // = iCal ===================================================== //
 
-function fetchICal(params) {
-	var url = params.url;
-	var filter = params.filter;
-	var transform = params.transform;
+function saveEvent(item, error, done) {
+	debug("Adding new event: " + item.summary);
 
-	function saveEvent(event) {
-		var item = this;
-
-		if (event != null) return;   /* Don't duplicate IDs */
-		if (transform) transform(item);
-
-		debug("Adding new event: " + item.summary);
-
-		Event.build({
+	Event
+		.build({
 			title: item.summary.trim(),
 			startdt: item.start,
 			enddt: item.end,
@@ -33,8 +24,16 @@ function fetchICal(params) {
 			url: item.url,
 			state: 'imported',
 			importid: item.uid
-		}).save();
-	}
+		})
+		.save({ validate: false })
+		.on('error', error)
+		.done(done);
+}
+
+function fetchICal(params, error) {
+	var url = params.url;
+	var filter = params.filter;
+	var transform = params.transform;
 
 	debug("Fetching iCal " + url);
 
@@ -47,8 +46,17 @@ function fetchICal(params) {
 
 			var item = data[k]; // bind locally
 
-			Event.find({ where: { importid: data[k].uid } })
-				 .success(saveEvent.bind(data[k]));
+			function save(event) {
+				if (event != null) return;   /* Don't duplicate IDs */
+				if (transform) transform(this);
+
+				saveEvent(this, error);
+			}
+
+			Event
+				.find({ where: { importid: data[k].uid } })
+				.success(save.bind(data[k]))
+				.on('error', error);
 		}
 	});
 }
@@ -209,5 +217,6 @@ function fetchFeed(params) {
 module.exports = {
 	ical: fetchICal,
 	feed: fetchFeed,
-	findDate: findDate
+	findDate: findDate,
+	saveEvent: saveEvent
 }

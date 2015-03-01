@@ -104,8 +104,15 @@ var calendars = [
 	}
 ];
 
+function eventError(error, list) {
+	console.log("Error: " + error.message);
+	if (list) {
+		console.log(list);
+	}	
+}
+
 if (action.type == "ical") {
-	fetch.ical({ url: action.url });
+	fetch.ical({ url: action.url }, eventError);
 } else if (action.type == "feed") {
 	fetch.feed({ url: action.url, error: console.log });
 } else {
@@ -119,6 +126,6 @@ if (action.type == "ical") {
 	});
 
 	calendars.forEach(function(data) {
-		fetch.ical(data);
+		fetch.ical(data, eventError);
 	})
 }
