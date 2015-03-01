@@ -1,10 +1,13 @@
+var models = require('./models');
+var Event = models.Event,
+	Post = models.Post,
+	Feed = models.Feed;
+
 var ical = require('ical');
 var FeedParser = require('feedparser');
 var request = require('request');
 var htmlStrip = require('htmlstrip-native').html_strip
 var debug = require('debug')('echo:fetch');
-
-var Event, Post, Feed;
 
 // = iCal ===================================================== //
 
@@ -197,76 +200,8 @@ function fetchFeed(params) {
 
 // = Exports ================================================== //
 
-module.exports = function(models) {
-	Event = models.Event
-	Post = models.Post
-	Feed = models.Feed
-
-	return {
-		ical: fetchICal,
-		feed: fetchFeed
-	}
+module.exports = {
+	ical: fetchICal,
+	feed: fetchFeed,
+	findDate: findDate
 }
-
-
-// = Testrunner =============================================== //
-
-function main() {
-	fs = require('fs')
-
-	text = fs.readFileSync('tests/fetch.json', 'utf8');
-	tests = JSON.parse(text);
-	
-	Date.prototype.toShortISOString = function() {
-		function pad(number) {
-			if (number < 10)
-				return '0' + number;
-			else
-				return number;
-		}
-		
-		return this.getUTCFullYear() +
-			'-' + pad( this.getUTCMonth() + 1 ) +
-			'-' + pad( this.getUTCDate() ) +
-			'T' + pad( this.getUTCHours() ) +
-			':' + pad( this.getUTCMinutes() );
-	};
-	
-	var data = {
-		total: 0,
-		passed: 0,
-	};
-	
-	console.log("Starting tests...");
-	
-	for (key in tests) {
-		if (!tests.hasOwnProperty(key)) {
-			// The current property is not a direct property of p
-			continue;
-		}
-		
-		data.total++;
-		
-		var test = tests[key];
-		var base = new Date(test.today);
-
-		var date = findDate(base, test.content);
-	
-		if (date)
-			date = date.toShortISOString();
-
-		if (date == test.result) {
-			data.passed++;
-		} else {
-			console.log("Test '" + key + "' failed:");
-			console.log("- content  '" + test.content + "'");
-			console.log("- expected '" + test.result + "'");
-			console.log("- got      '" + date + "'");
-		}
-	}
-	
-	console.log("Tests finished. " + data.passed + "/" + data.total + " passed.");
-}
-
-if (require.main == module)
-	main()

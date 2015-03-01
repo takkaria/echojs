@@ -44,10 +44,8 @@ function parse_options() {
 
 parse_options();
 
-var models = require('../models')
-var fetch = require('../fetch')(models)
-
-Feed = models.Feed
+var fetch = require('../fetch')
+var Feed = require('../models').Feed
 
 // ============================================================ //
 
