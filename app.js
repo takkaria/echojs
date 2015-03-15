@@ -10,6 +10,7 @@ var bodyParser = require('body-parser');
 var swig = require('swig');
 var markedSwig = require('swig-marked');
 var passport = require('passport');
+var paginate = require('express-paginate');
 
 var models = require('./models');
 
@@ -46,6 +47,7 @@ app.use(session({
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(paginate.middleware());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 

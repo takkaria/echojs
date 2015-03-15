@@ -59,17 +59,20 @@ router.param('location_id', function(req, res, next, loc_id) {
 })
 
 router.get('/', ensureEditorOrAdmin, function(req, res) {
-	models.Event.findAll({
+	models.Event.findAndCountAll({
 		where: [
 			{ state: ["submitted", "imported"] }
 		],
 		include: [ models.Location ],
-		limit: 20,
+		limit: req.query.limit,
+		offset: req.query.limit * req.query.page,
 		order: "startdt ASC"
-	}).then(function(events_) {
+	}).then(function(result) {
 		res.render('admin', {
 			user: req.user,
-			events_: events_
+			events_: result.rows,
+			pageCount: Math.floor(result.count / req.query.limit),
+			itemCount: result.count
 		});
 	});
 });
