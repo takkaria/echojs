@@ -55,7 +55,7 @@ function fetchICal(params, error) {
 
 			Event
 				.find({ where: { importid: data[k].uid } })
-				.success(save.bind(data[k]))
+				.then(save.bind(data[k]))
 				.on('error', error);
 		}
 	});
@@ -149,7 +149,7 @@ function addPost(data) {
 		return;
 
 	Event.find({ where: { importid: data.guid } })
-		 .success(function(evt) {
+		 .then(function(evt) {
 			if (evt != null) return;  // don't import twice
 
 			debug("Adding new event: " + data.title);
@@ -203,7 +203,7 @@ function fetchFeed(params) {
 				throw new Error("Feed item with no ID");
 
 			Post.find({ where: { id: item.guid } })
-				.success(function(post) {
+				.then(function(post) {
 					if (post != null) return;	// Don't duplicate posts
 					addPost(item);
 				});

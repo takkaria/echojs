@@ -53,7 +53,7 @@ var Feed = require('../models').Feed
 // ============================================================ //
 
 function feedError(error) {
-	Feed.find({ where: { id: this.id } }).success(function (feed) {
+	Feed.find({ where: { id: this.id } }).then(function (feed) {
 		feed.updateAttributes({ errors: error.message });
 	});
 }
@@ -119,7 +119,7 @@ if (action.type == "ical") {
 } else if (action.type == "feed") {
 	fetch.feed({ url: action.url, error: console.log });
 } else {
-	Feed.findAll().success(function (e) {
+	Feed.findAll().then(function (e) {
 		e.forEach(function(feed) {
 			fetch.feed({
 				url: feed.id,
