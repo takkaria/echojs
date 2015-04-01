@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+var dotenv = require('dotenv');
+dotenv.load();
+
 var action = { type: "all" }
 var moment = require('moment')
 
