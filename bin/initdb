@@ -3,7 +3,8 @@
 var fs = require('fs');
 var dotenv = require('dotenv');
 
-dotenv.load();
+if (fs.existsSync('.env'))
+	dotenv.load();
 
 var dbpath = process.env.DBPATH || 'db.sqlite';
 
