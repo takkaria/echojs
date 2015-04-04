@@ -124,7 +124,7 @@ function findDate(base, text) {
 	return null;
 }
 
-function addPost(data) {
+function addPost(data, error) {
 	// https://github.com/danmactough/node-feedparser#what-is-the-parsed-output-produced-by-feedparser
 	// may want to re-add summary, content or image parsing at some point
 
@@ -132,12 +132,14 @@ function addPost(data) {
 
 	// Build the post
 	Post.build({
-		id: data.guid,
-		title: data.title,
-		link: data.link,
-		date: data.pubDate,
-		feed_id: data.meta.xmlurl,
-	}).save();
+			id: data.guid,
+			title: data.title,
+			link: data.link,
+			date: data.pubDate,
+			feed_id: data.meta.xmlurl,
+		})
+		.save()
+		.on('error', error);
 
 	// Check if it's like an event
 	var date = findDate(data.pubDate, data.description);
@@ -155,16 +157,18 @@ function addPost(data) {
 			debug("Adding new event: " + data.title);
 
 			Event.build({
-				title: data.title,
-				startdt: date,
-				url: data.link,
-				blurb: htmlStrip(data.description, {
-					include_script: false,
-					include_style: false,
-				}),
-				state: 'imported',
-				importid: data.guid
-			}).save();
+					title: data.title,
+					startdt: date,
+					url: data.link,
+					blurb: htmlStrip(data.description, {
+						include_script: false,
+						include_style: false,
+					}),
+					state: 'imported',
+					importid: data.guid
+				})
+				.save({ validate: false })
+				.on('error', error);
 		 });
 }
 
@@ -205,7 +209,7 @@ function fetchFeed(params) {
 			Post.find({ where: { id: item.guid } })
 				.then(function(post) {
 					if (post != null) return;	// Don't duplicate posts
-					addPost(item);
+					addPost(item, onerror);
 				});
 		}
 	});
