@@ -11,14 +11,7 @@ var dbpath = process.env.DBPATH || 'db.sqlite';
 if (!fs.existsSync(dbpath)) {
 	var sqlite3 = require('sqlite3');
 	var db = new sqlite3.Database(dbpath);
-
-	var sql = fs.readFileSync('create-tables.sql', { encoding: 'utf-8' }).split(/\n\n\n/);
-
-	db.serialize(function() {
-		for (var i = 0; i < sql.length; i++) {
-			db.run(sql[i]);
-		}
-	});
-
+	var sql = fs.readFileSync('create-tables.sql', { encoding: 'utf-8' });
+	db.exec(sql);
 	db.close();
 }
