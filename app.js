@@ -1,5 +1,6 @@
 var express = require('express');
 var session = require('express-session');
+var SequelizeStore = require('connect-session-sequelize')(session.Store);
 var flash = require('express-flash');
 var path = require('path');
 var compression = require('compression');
@@ -39,10 +40,18 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+var store = new SequelizeStore({
+    db: models.db
+});
+store.sync();
+
 app.use(session({
     secret: 'keyboard cat',
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: true,
+    store: store,
+    proxy: true // if you do SSL outside of node
 }));
 app.use(flash());
 app.use(passport.initialize());
