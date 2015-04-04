@@ -26,8 +26,8 @@ function saveEvent(item, error, done) {
 			importid: item.uid
 		})
 		.save({ validate: false })
-		.on('error', error)
-		.done(done);
+		.then(done)
+		.on('error', error);
 }
 
 function fetchICal(params, error) {
