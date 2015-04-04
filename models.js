@@ -1,4 +1,3 @@
-var fs = require('fs');
 var sequelize = require('sequelize');
 var debug = require('debug')('echo:models');
 
