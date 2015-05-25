@@ -4,12 +4,8 @@ var express = require('express'),
 	debug = require('debug')('echo:user'),
 	passport = require('passport'),
 	router = express.Router(),
-	models = require('../models');
-
-function ensureAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) { return next(); }
-  res.redirect('/user/login?next=' + encodeURIComponent(req.originalUrl))
-}
+	models = require('../models'),
+	ensure = require('../lib/ensure');
 
 router.param('email', function(req, res, next, id) {
 	models.User.find({
@@ -43,11 +39,11 @@ router.post('/login', function(req, res, next) {
 	})(req, res, next);
 });
 
-router.get('/password/change', ensureAuthenticated, function(req, res) {
+router.get('/password/change', ensure.authenticated, function(req, res) {
 	res.render('password_change', {user: req.user});
 });
 
-router.post('/password/change', ensureAuthenticated, function(req, res, next) {
+router.post('/password/change', ensure.authenticated, function(req, res, next) {
 	passport.authenticate('local', function(err, user, info) {
 		if (err) { return next(err); }
 		if (!user) { return res.render('password_change', {
@@ -83,7 +79,7 @@ router.post('/password/change', ensureAuthenticated, function(req, res, next) {
 	})(req, res, next);
 });
 
-router.get('/logout', ensureAuthenticated, function(req, res){
+router.get('/logout', ensure.authenticated, function(req, res){
 	req.logout();
 	res.redirect('/');
 });
