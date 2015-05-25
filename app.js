@@ -13,6 +13,7 @@ var markedSwig = require('swig-marked');
 var passport = require('passport');
 var paginate = require('express-paginate');
 
+
 var models = require('./models');
 
 var routes = require('./routes/index');
@@ -24,6 +25,14 @@ var api = require('./routes/api');
 var about = require('./routes/about');
 
 var app = express();
+
+// "global" view variables
+require('dotenv').load();
+app.locals.site = process.env.HOST + (
+  typeof process.env.PORT === 'undefined'
+  ? ''
+  : process.env.PORT
+)
 
 // view engine setup
 app.engine('html', swig.renderFile);
