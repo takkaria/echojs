@@ -20,10 +20,8 @@ router.get('/', ensure.editorOrAdmin, function(req, res) {
 	});
 });
 
-router.post('/add', ensure.editorOrAdmin, function(req, res) {
-	var url = req.body.url;
-
-	new Promise(function(resolve, reject) {
+function getFeedMeta(url) {
+	return new Promise(function(resolve, reject) {
 		request(url)
 			.on('error', function(err) {
 				reject(err);
@@ -55,26 +53,30 @@ router.post('/add', ensure.editorOrAdmin, function(req, res) {
 					reject(new Error('No metadata found.'));
 				});
 		})
-	})
-	.then(function(meta) {
-
-		models.Feed.build({
-				id: meta.xmlurl,
-				site_url: meta.link,
-				title: meta.title,
-			})
-			.save()
-			.then(function () {
-				req.flash("success", "Feed '%s' created", meta.title);
-				res.redirect("/admin/feeds");
-			})
-
-	})
-	.catch(function(err) {
-		debug(err);
-		req.flash("warning", err.message);
-		res.redirect("/admin/feeds");
 	});
+}
+
+router.post('/add', ensure.editorOrAdmin, function(req, res) {
+	var url = req.body.url;
+
+	getFeedMeta(url)
+		.then(function(meta) {
+			models.Feed.build({
+					id: meta.xmlurl,
+					site_url: meta.link,
+					title: meta.title,
+				})
+				.save()
+				.then(function () {
+					req.flash("success", "Feed '%s' created", meta.title);
+					res.redirect("/admin/feeds");
+				});
+		})
+		.catch(function(err) {
+			debug(err);
+			req.flash("warning", err.message);
+			res.redirect("/admin/feeds");
+		});
 
 });
 
