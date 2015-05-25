@@ -27,7 +27,9 @@ function saveEvent(item, error, done) {
 		})
 		.save({ validate: false })
 		.then(done)
-		.on('error', error);
+		.catch(function (e) {
+			error(e);
+		});
 }
 
 function fetchICal(params, error) {

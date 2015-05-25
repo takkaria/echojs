@@ -20,7 +20,6 @@ Date.prototype.toShortISOString = function() {
 
 describe("fetch", function() {
 	describe("#saveEvent", function() {
-
 		after(function(done) {
 			models.Event
 				.destroy({ where: { title: "TEST" } })
@@ -30,7 +29,6 @@ describe("fetch", function() {
 		});
 
 		it("should not throw an error when asked to save an event", function(done) {
-
 			var data = {
 				summary: 'TEST',
 				start: new Date("Wed, 04 Mar 2015 18:00:00 GMT"),
@@ -42,12 +40,11 @@ describe("fetch", function() {
 			}
 
 			fetch.saveEvent(data, function(err, errors_) {
-				console.log(err, errors_);
-				done(err);
+				if (err) throw err;
+				done();
 			}, function() {
 				done();
 			});
-
 		});
 	});
 

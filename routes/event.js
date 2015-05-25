@@ -75,8 +75,8 @@ router.post('/add', function(req, res) {
 		e_.generateSlug();
 
 		// If we have an ID that works, erase the text
-		if (e.location_id) {
-			e.location_text = null;
+		if (e_.location_id) {
+			e_.location_text = null;
 		}
 
 		e_.save().then(function(e_) {
