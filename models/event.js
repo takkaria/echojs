@@ -100,7 +100,9 @@ module.exports = function(db) {
 
 			shortBlurb: function() {
 				// FIXME: This could be done with more finesse
-				return this.blurb.substr(0, 180);
+				if (this.blurb.length >= 180)
+					return this.blurb.substr(0, 179) + '… <i>(read more)</i>';
+				return this.blurb;
 			},
 
 			generateSlug: function() {
