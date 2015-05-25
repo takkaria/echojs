@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+{% import "formmacros.html" as form %}
+
+{% block title %}Add location{% endblock %}
+{% block pageclass %}admin location_add{% endblock %}
+
+{% block leftcontent %}
+
+{% block breadcrumb %}
+	<ol class="breadcrumb">
+	  <li><a href="/">Echo</a></li>
+	  <li><a href="/admin">Admin</a></li>
+	  <li><a href="/admin/locations">Feeds</a></li>
+	  <li>{{ feed.title }}
+	</ol>
+{% endblock %}
+
+{% if errors %}
+<p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
+{% endif %}
+
+<form method="POST" action="/admin/feeds/edit">
+	{{ form.inputHidden({ field: "id", fill: feed.id }) }}
+
+	{{ form.inputText({ label: "Feed name:", field: "title", fill: feed.title }) }}
+	{{ form.inputText({ label: "Feed URL:", field: "feed_url", fill: feed.id }) }}
+	{{ form.inputText({ label: "Site URL:", field: "site_url", fill: feed.site_url }) }}
+
+	{% block button %}{{ form.inputSubmit("Save changes") }}{% endblock %}
+</form>
+
+{% endblock %}

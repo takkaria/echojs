@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prestart": "npm run sass:watch &",
-    "start": "DEBUG=echo:* nodemon ./bin/www",
+    "start": "DEBUG=echo:admin nodemon ./bin/www",
     "build": "npm run sass",
     "test": "bin/initdb && mocha",
     "sass:basic": "sass -I bower_components/ scss:public/stylesheets",

@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% import "formmacros.html" as form %}
+
+{% block title %}Feeds{% endblock %}
+{% block pageclass %}admin{% endblock %}
+
+{% block content %}
+
+<div>
+
+	{% block breadcrumb %}
+	<ol class="breadcrumb">
+		<li><a href="/">Echo</a></li>
+		<li><a href="/admin">Admin</a></li>
+		<li>Feeds</li>
+	</ol>
+	{% endblock breadcrumb %}
+
+	{% if errors %}
+	<p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
+	{% endif %}
+
+	<h2>Add a new feed</h2>
+
+	<form method="POST" action="/admin/feeds/add">
+		{{ form.inputText({ label: "URL:", field: "url" }) }}
+		{{ form.inputSubmit("Add") }}
+	</form>
+
+	<h2>Edit existing feed info</h2>
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Feed</th>
+				<th>Actions</th>
+				<th>Errors</th>
+			</tr>
+		</thead>
+
+		{% for feed in feeds %}
+		<tr>
+			<td>
+				<h4>{{ feed.title }}</h4>
+				<p>{{ feed.site_url }}<br>
+				{{ feed.id}}</p>
+			</td>
+			<td>
+
+				<form method="POST" action="/admin/feeds/delete">
+					{{ form.inputHidden({ field: "id", fill: feed.id }) }}
+					{{ form.inputSubmit("Delete") }}
+				</form>
+
+				<form method="GET" action="/admin/feeds/edit">
+					{{ form.inputHidden({ field: "id", fill: feed.id }) }}
+					{{ form.inputSubmit("Edit") }}
+				</form>
+
+			<td>{{ feed.errors }}</td>
+		</tr>
+		{% endfor %}
+
+	</table>
+
+</div>
+{% endblock %}

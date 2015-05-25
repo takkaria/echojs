@@ -26,5 +26,6 @@ router.get('/', ensure.editorOrAdmin, function(req, res) {
 router.use('/user', require('./admin/user'));
 router.use('/event', require('./admin/event'));
 router.use('/locations', require('./admin/location'));
+router.use('/feeds', require('./admin/feeds'));
 
 module.exports = router;
