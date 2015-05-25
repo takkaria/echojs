@@ -3,7 +3,14 @@ var router = express.Router();
 var models = require('../../models');
 var debug = require('debug')('echo:admin');
 var mailer = require('../../lib/mailer');
-var ensure = require("../../lib/ensure");
+var ensure = require('../../lib/ensure');
+
+var Promise = require('promise');
+
+var request = require('request');
+var discover = require('feed-discover');
+var FeedParser = require('feedparser');
+var request = require('request');
 
 router.get('/', ensure.editorOrAdmin, function(req, res) {
 	models.Feed.findAll().then(function(result) {
@@ -11,6 +18,64 @@ router.get('/', ensure.editorOrAdmin, function(req, res) {
 			feeds: result
 		});
 	});
+});
+
+router.post('/add', ensure.editorOrAdmin, function(req, res) {
+	var url = req.body.url;
+
+	new Promise(function(resolve, reject) {
+		request(url)
+			.on('error', function(err) {
+				reject(err);
+			})
+			.on('end', function() {
+				reject(new Error("No feed found."));
+			})
+			.pipe(discover(url))
+			.on('data', function(feed) {
+				resolve(feed.toString());
+			});
+	})
+	.then(function(feed_url) {
+		var feedparser = new FeedParser();
+
+		request(feed_url)
+			.on('response', function (res) {
+				if (res.statusCode != 200)
+					throw new Error('Bad status code: ' + res.statusCode);
+				this.pipe(feedparser);
+			});
+
+		return new Promise(function(resolve, reject) {
+			feedparser
+				.on('meta', function(meta) {
+					resolve(meta);
+				})
+				.on('end', function() {
+					reject(new Error('No metadata found.'));
+				});
+		})
+	})
+	.then(function(meta) {
+
+		models.Feed.build({
+				id: meta.xmlurl,
+				site_url: meta.link,
+				title: meta.title,
+			})
+			.save()
+			.then(function () {
+				req.flash("success", "Feed '%s' created", meta.title);
+				res.redirect("/admin/feeds");
+			})
+
+	})
+	.catch(function(err) {
+		debug(err);
+		req.flash("warning", err.message);
+		res.redirect("/admin/feeds");
+	});
+
 });
 
 router.get('/edit', ensure.editorOrAdmin, function(req, res) {
