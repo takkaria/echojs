@@ -127,6 +127,12 @@
 	</div>
 {% endmacro %}
 
-{% macro inputSubmit(text) %}
-	<input class="btn btn-primary btn-lg" type="submit" value="{{ text }}">
+{% macro inputSubmit(text, Class) %}
+	<input
+	{% if Class %}
+		class="btn {{Class}}"
+	{% else %}
+		class="btn btn-primary btn-lg"
+	{% endif %}
+		type="submit" value="{{ text }}">
 {% endmacro %}

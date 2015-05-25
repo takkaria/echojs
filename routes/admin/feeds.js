@@ -47,4 +47,25 @@ router.post('/edit', ensure.editorOrAdmin, function(req, res) {
 	});
 });
 
+router.post('/delete', ensure.editorOrAdmin, function(req, res) {
+	var b = req.body;
+
+	function onerror(errors) {
+		req.flash("danger", errors);
+		res.redirect("/admin/feeds");
+	}
+
+	models.Feed.findById(b.id).then(function(feed) {
+		models.Post.destroy({ where: { feed_id: b.id }}).then(function() {
+
+			feed.destroy()
+				.then(function() {
+					req.flash('success', "Feed %s deleted.", result.title);
+					res.redirect('/admin/feeds');
+				}).catch(onerror);
+
+		}).catch(onerror);
+	});
+});
+
 module.exports = router;

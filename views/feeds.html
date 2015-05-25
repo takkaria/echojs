@@ -34,29 +34,26 @@
 			<tr>
 				<th>Feed</th>
 				<th>Actions</th>
+				<th>Feed URL</th>
 				<th>Errors</th>
 			</tr>
 		</thead>
 
 		{% for feed in feeds %}
 		<tr>
+			<th><a href="{{ feed.site_url }}">{{ feed.title }}</a></th>
 			<td>
-				<h4>{{ feed.title }}</h4>
-				<p>{{ feed.site_url }}<br>
-				{{ feed.id}}</p>
+				<form method="GET" action="/admin/feeds/edit" style="display: inline-block;">
+					{{ form.inputHidden({ field: "id", fill: feed.id }) }}
+					{{ form.inputSubmit("Edit", "btn-xs btn-primary") }}
+				</form>
+
+				<form method="POST" action="/admin/feeds/delete" style="display: inline-block;">
+					{{ form.inputHidden({ field: "id", fill: feed.id }) }}
+					{{ form.inputSubmit("Delete", "btn-xs btn-danger") }}
+				</form>
 			</td>
-			<td>
-
-				<form method="POST" action="/admin/feeds/delete">
-					{{ form.inputHidden({ field: "id", fill: feed.id }) }}
-					{{ form.inputSubmit("Delete") }}
-				</form>
-
-				<form method="GET" action="/admin/feeds/edit">
-					{{ form.inputHidden({ field: "id", fill: feed.id }) }}
-					{{ form.inputSubmit("Edit") }}
-				</form>
-
+			<td>{{ feed.id }}</td>
 			<td>{{ feed.errors }}</td>
 		</tr>
 		{% endfor %}
