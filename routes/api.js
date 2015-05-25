@@ -47,33 +47,35 @@ function parseOpts(req) {
 }
 
 router.get('/json', function(req, res) {
-	var clauses = parseOpts(req);
+	var clauses = parseOpts(req),
+		_events = [];
 
 	// This particular kind of JSON output is designed to be suitable input
 	// to FullCalendar.
 
 	models.Event.findAll({
-		where: clauses.join(" AND "),
+		where: [clauses.join(" AND "), []],
 		// XXX could we SELECT enddt AS end here instead of rewriting it later?
 		attributes: [ "id", "title", "startdt", "enddt", "location_text", "blurb", "url", "cost" ],
 		order: "startdt ASC",
-	}, { raw: true }).then(function(events) {
+	}).then(function(events) {
 		req.header("Content-Type", "application/json");
 
-		events.forEach(function(event) {
-			event.start = event.startdt;
-			event.end = event.enddt;
-			event.startdt = undefined;
-			event.enddt = undefined;
+		events.forEach(function(_e) {
+			_events.push({
+				id: _e.id, title: _e.title, start: _e.startdt, end: _e.enddt,
+				location_text: _e.location_text, blurb: _e.blurb, url: _e.url, 
+				cost: _e.cost
+			});
 		});
 
-		res.send(JSON.stringify(events, null, " "));
+		res.send(JSON.stringify(_events, " "));
 	});
 });
 
 router.get('/json/locations', function(req, res) {
 	models.Location
-		.findAll({ attributes: [ "id", "name", "address" ] }, { raw: true })
+		.findAll({ attributes: [ "id", "name", "address" ] })
 		.then(function(locations) {
 			req.header("Content-Type", "application/json");
 
@@ -90,10 +92,10 @@ router.get('/ical', function(req, res) {
 	var clauses = parseOpts(req);
 
 	models.Event.findAll({
-		where: clauses.join(" AND "),
-		attributes: [ "id", "title", "startdt", "enddt", "location", "blurb", "url", "cost", "host" ],
+		where: [clauses.join(" AND "), []],
+		attributes: [ "id", "title", "startdt", "enddt", "location_text", "blurb", "url", "cost", "host" ],
 		order: "startdt ASC",
-	}, { raw: true }).then(function(events) {
+	}).then(function(events) {
 
 		var cal = icalGenerator();
 

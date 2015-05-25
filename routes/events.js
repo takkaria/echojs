@@ -6,7 +6,7 @@ router.get('/newsletter', function(req, res) {
 	models.Event.groupByDays({
 		where: [
 			{ state: "approved" },
-			"(startdt >= date('now', 'start of day') OR date('now') <= enddt)"
+			["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
 		],
 		order: "startdt ASC"
 	}, function(ordered) {
@@ -21,7 +21,7 @@ router.get('/leaflet', function(req, res) {
 	models.Event.findAll({
 		where: [
 			{ state: "approved" },
-			"(startdt >= date('now', 'start of day') OR date('now') <= enddt)"
+			["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
 		],
 		order: "startdt ASC"
 	}).then(function(events) {

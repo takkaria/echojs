@@ -22,16 +22,16 @@ router.get('/', function(req, res) {
 		include: [ models.Location ],
 		where: [
 			{ state: "approved" },
-			"(startdt >= date('now', 'start of day') OR date('now') <= enddt)"
+			["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
 		],
 		limit: 10,
 		order: "startdt ASC"
 	}).then(function(events) {
 		models.Post.findAll({
 			include: [ models.Feed ],
-			where: "hidden IS NOT 1 AND date >= date('now', '-3 months') AND ( " +
+			where: ["hidden IS NOT 1 AND date >= date('now', '-3 months') AND ( " +
 				"SELECT COUNT(p2.feed_id) FROM post_info AS p2 " +
-				"WHERE p2.feed_id = post.feed_id AND p2.date > post.date) == 0",
+				"WHERE p2.feed_id = post.feed_id AND p2.date > post.date) == 0", []],
 			order: "date DESC"
 		}).then(function(posts) {
 			res.render('index', {
