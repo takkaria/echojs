@@ -27,7 +27,7 @@ function GET(url, cb) {
 
 function POST(url, form, cb) {
 	return request.post({
-		url: url,
+		url: "http://localhost:" + app.get('port') + url,
 		form: form
 	}, cb);
 }
@@ -64,7 +64,7 @@ function checkStatus(code) {
 /////////////////////////////// Event page checks
 
 (function() {
-	var models = require('../models')(true);
+	var models = require('../models');
 
 	GET('/event/add', checkStatus(200));
 /*	POST('/event/add', {
