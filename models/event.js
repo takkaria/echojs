@@ -61,10 +61,6 @@ module.exports = function(db) {
 		startdt: {
 			type: sequelize.DATE,
 			get: function() { return moment(this.getDataValue('startdt')); },
-			allowNull: false,
-			validate: {
-				notEmpty: true
-			}
 		},
 		enddt: {
 			type: sequelize.DATE,
@@ -73,6 +69,7 @@ module.exports = function(db) {
 				return (d.isValid() ? d : null);
 			}
 		},
+		allday: {type: sequelize.BOOLEAN },
 
 		state: {
 			type: sequelize.ENUM,

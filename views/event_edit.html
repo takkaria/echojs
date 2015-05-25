@@ -20,6 +20,15 @@
 
 <form method="POST" action="{% block form_action %}/admin/event/{{ event_.id }}/edit{% endblock %}">
 	{{ form.inputText({ label: "Event name:", field: "title", fill: event_.title }) }}
+
+	<div class="form-group">
+		<label>All day?</label>
+		<div class="radio">
+			<input type="checkbox" name="allday" id="allday"
+				{% if event_.allday %}checked="checked"{% endif %}>
+			</div>
+		</div>
+
 	{{ form.inputDateTime({ label: "Starts:", field: "startdt", fill: event_.startdt.format('YYYY/MM/DD hh:mm') }) }}
 
 	{{ form.checkErrors("startBeforeEnd") }}
@@ -86,71 +95,85 @@
 </form>
 {% endblock %}
 
-
 {% block script %}
 <script src="/bower_components/typeahead.js/dist/typeahead.bundle.min.js"></script>
 <script>
 
-$(function() {
-	$('.datetime').datetimepicker()
-});
-
-$(function() {
-	var locations = new Bloodhound({
-		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-		queryTokenizer: Bloodhound.tokenizers.whitespace,
-		limit: 4,
-		prefetch: {
-			url: '/api/json/locations',
-		}
-	});
-
-	// kicks off the loading/processing of the 'prefetch' list
-	locations.initialize();
-
-	$('#location_text').typeahead({
-		hint: true,
-		highlight: true,
-		minLength: 1
-	}, {
-		name: 'locations',
-		displayKey: 'name',
-		// `ttAdapter` wraps the suggestion engine in an adapter that
-		// is compatible with the typeahead jQuery plugin
-		source: locations.ttAdapter(),
-		templates: {
-			'suggestion': function(suggestion) {
-				return '<p>' + suggestion.name + '<br><small>' + suggestion.address + '</small></p>';
+	$(function() {
+		var locations = new Bloodhound({
+			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+			queryTokenizer: Bloodhound.tokenizers.whitespace,
+			limit: 4,
+			prefetch: {
+				url: '/api/json/locations',
 			}
+		});
+
+		// kicks off the loading/processing of the 'prefetch' list
+		locations.initialize();
+
+		$('#location_text').typeahead({
+			hint: true,
+			highlight: true,
+			minLength: 1
+		}, {
+			name: 'locations',
+			displayKey: 'name',
+			// `ttAdapter` wraps the suggestion engine in an adapter that
+			// is compatible with the typeahead jQuery plugin
+			source: locations.ttAdapter(),
+			templates: {
+				'suggestion': function(suggestion) {
+					return '<p>' + suggestion.name + '<br><small>' + suggestion.address + '</small></p>';
+				}
+			}
+		});
+
+		// Set up event handlers to select a location ID & to deselect it
+		function select(evt, suggestion) {
+			$("#location_text").addClass("tt-selected");
+			$("#location_id").val(suggestion.id);
 		}
+
+		function deselect(evt) {
+			$("#location_text").removeClass("tt-selected");
+			$("#location_id").val("");
+		}
+
+		$('#location_text')
+			.on("typeahead:selected", select)
+			.on("typeahead:autocompleted", select)
+			.on("keydown", function(evt) {
+				// Backspace or Delete
+				if (evt.charCode == 0 &&
+					(evt.keyCode == 8 || evt.keyCode == 46)) deselect(evt);
+			})
+			.on("keypress", deselect);
+
+		// Work out if we already have an ID provided and update text field accordingly
+		if ($("#location_id").val() > 0) {
+			$("#location_text").addClass("tt-selected");
+		}
+
+		var dtps = [];
+		
+		$('.date input').each(function(i,e){
+			dtps.push($(e).datetimepicker().data('DateTimePicker'));
+		});
+
+		$('#allday').change(function(e){
+				dtps.forEach(function(el, i, a) {
+					if (typeof el === 'undefined') {
+						return false;
+					}
+
+					if ($(e.target).is(':checked')){
+						el.format('YYYY/MM/DD');
+					} else {
+						el.format('YYYY/MM/DD hh:mm';
+					}
+				});
+		});
 	});
-
-	// Set up event handlers to select a location ID & to deselect it
-	function select(evt, suggestion) {
-		$("#location_text").addClass("tt-selected");
-		$("#location_id").val(suggestion.id);
-	}
-
-	function deselect(evt) {
-		$("#location_text").removeClass("tt-selected");
-		$("#location_id").val("");
-	}
-
-	$('#location_text')
-		.on("typeahead:selected", select)
-		.on("typeahead:autocompleted", select)
-		.on("keydown", function(evt) {
-			// Backspace or Delete
-			if (evt.charCode == 0 &&
-				(evt.keyCode == 8 || evt.keyCode == 46)) deselect(evt);
-		})
-		.on("keypress", deselect);
-
-	// Work out if we already have an ID provided and update text field accordingly
-	if ($("#location_id").val() > 0) {
-		$("#location_text").addClass("tt-selected");
-	}
-
-});
 </script>
 {% endblock %}
