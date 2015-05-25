@@ -5,7 +5,6 @@ var marked = require('marked');
 var slug = require('slug');
 
 module.exports = function(db) {
-
 	return db.define('event', {
 		id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
 		slug: { type: sequelize.TEXT },
@@ -94,6 +93,11 @@ module.exports = function(db) {
 			blurbAsHTML: function() {
 				return marked(this.blurb);
 			},
+			isMultiDay: function() {
+				if (!this.enddt)
+					return false
+				return this.enddt.subtract(this.startdt).days > 0;
+			},
 
 			shortBlurb: function(readMore) {
 				if (readMore === undefined)
@@ -131,38 +135,69 @@ module.exports = function(db) {
 		},
 		classMethods: {
 			groupByDays: function(options, callback) {
-				this.findAll(options).then(function(events) {
-					// This will look like
-					// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
-					var ordered = [];
-					var chunk;
-					var last;
+				var max,
+					Event = this;
 
-					// Group events by date
-					events.forEach(function(event) {
-						var date = event.startdt.format("YYYY-MM-DD");
+				Event.max('enddt').then(function(_max){
+					max = _max;
 
-						// Create a new grouping ('chunk') for a different date
-						if (date != last) {
-							chunk = {};
-							chunk.date = moment(date);
-							chunk.longDate = chunk.date.format("dddd, Do MMMM YYYY");
-							chunk.events = [];
+					Event.findAll(options).then(function(events){
+						// This will look like
+						// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
+						var ordered = {},
+							chunk,
+							last,
+							ongoing = [],
+							list = [],
+							one_day_past = moment().subtract(1, 'days');
 
-							if (chunk.date.diff(moment(), 'days') < 7)
-								chunk.shortDate = chunk.date.calendar();
+						for (var d = moment(); d.isBefore(max); d.add(1, 'days')) {
+							var chunk = {
+								date: d,
+								longDate: d.format("dddd, Do MMMM YYYY"),
+								events: []
+							}
 
-							ordered.push(chunk);
+							if (d.diff(moment(), 'days') < 7){
+								chunk.shortDate = d.calendar();
+							}
 
-							// Remember date for next iteration
-							last = date;
+							ordered[d.format('YYYY-MM-DD')] = chunk;
 						}
 
-						// Add event to current chunk
-						chunk.events.push(event);
-					});
+						// Group events by date
+						events.forEach(function(e) {
+							// Add event to current chunk
+							if ((!e.isMultiDay())
+									&&(e.startdt.isAfter(one_day_past))){
+								return ordered[e.startdt.format('YYYY-MM-DD')].events.push(e);
+							}
 
-					return callback(ordered);
+							if(e.enddt.diff(e.startdt, 'days') > 7){
+								return ongoing.push(e);
+							}
+
+							for (
+										var d_ = e.startdt.isBefore(one_day_past) ? moment() : e.startdt;
+										d_.isBefore(max); d_.add(1, 'days')
+									){
+								ordered[d_.format('YYYY-MM-DD')].events.push(e);
+							}
+						});
+
+						for (var key in ordered){
+							if (ordered[key].events.length > 0)
+								list.push(ordered[key]);
+						}
+
+						list.push({
+							longDate: 'Ongoing',
+							events: ongoing,
+							is_ongoing: true
+						});
+
+						return callback(list);
+					});
 				});
 			}
 		},
@@ -181,5 +216,4 @@ module.exports = function(db) {
 			}
 		}
 	});
-
 }

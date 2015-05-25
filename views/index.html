@@ -41,20 +41,26 @@
 
 		<h2>Events</h2>
 
-		{% for event_ in events %}
+		{% for chunk in events %}
+				<h3>{% if chunk.shortDate %}
+					{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small>
+				{% else %}
+					{{ chunk.longDate }}
+				{% endif %}</h3>
 
-		{% if loop.index % 2 == 1 %}
-		<div class="row">
-		{% endif %}
+			{% for event_ in chunk.events %}
+				{% if loop.index % 2 == 1 %}
+				<div class="row">
+				{% endif %}
 
-			<div class="col-md-6">
-				{% include "event_card.html" %}
-			</div>
+					<div class="col-md-6">
+						{% include "event_card.html" %}
+					</div>
 
-		{% if loop.index % 2 == 0 or loop.last %}
-		</div>
-		{% endif %}
-
+				{% if loop.index % 2 == 0 or loop.last %}
+				</div>
+				{% endif %}
+			{% endfor %}
 		{% endfor %}
 
 		<div class="row">

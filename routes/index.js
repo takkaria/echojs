@@ -18,15 +18,15 @@ moment.locale('en', {
 
 /* GET home page. */
 router.get('/', function(req, res) {
-	models.Event.findAll({
+	models.Event.groupByDays({
 		include: [ models.Location ],
 		where: [
 			{ state: "approved" },
 			["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
 		],
-		limit: 10,
-		order: "startdt ASC"
-	}).then(function(events) {
+		order: "startdt ASC",
+		limit: 10
+	}, function(events) {
 		models.Post.findAll({
 			include: [ models.Feed ],
 			where: ["hidden IS NOT 1 AND date >= date('now', '-3 months') AND ( " +

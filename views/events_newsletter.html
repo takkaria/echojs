@@ -1,6 +1,6 @@
 {% extends "layout_simple.html" %}
 
-{% block title %}Leaflet{% endblock %}
+{% block title %}Newsletter{% endblock %}
 
 {% block content %}
 <p>
@@ -15,7 +15,14 @@
 	{% endif %}</b><br>
 
 	{% for event in chunk.events %}
+		{% if not chunk.is_ongoing %}
 		<i>{{ event.startdt.format("ha") }}</i>
+		{% else %}
+		<i>
+			{{ event.startdt.format("ha Do MMM") }} -
+			{{ event.enddt.format("ha Do MMM") }}
+		</i>
+		{% endif %}
 		<a href="https://echomanchester.net{{ event.absolute_url }}">{{ event.title }}</a>
 		{% if not loop.last %}<br>{% endif %}
 	{% endfor %}
