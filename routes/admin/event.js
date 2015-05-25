@@ -44,12 +44,13 @@ router.post('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, func
 	event_.set('state', 'approved');
 	event_.generateSlug();
 	event_.save().then(function(e) {
-		e.reload();  // XXX surely should use a promise here?
-		req.flash('success', 'Event <a href="%s">%s</a> approved', 
-							event_.absolute_url, event_.id);
-		if (e.isImported())
-			mailer.sendEventApprovedMail(event_, msg);
-		res.redirect(e.absolute_url);
+		e.reload().then(function() {
+			req.flash('success', 'Event <a href="%s">%s</a> approved',
+								event_.absolute_url, event_.id);
+			if (!e.isImported())
+				mailer.sendEventApprovedMail(event_, msg);
+			res.redirect(e.absolute_url);
+		})
 	})
 	.catch(function(errors){
 		debug(errors);

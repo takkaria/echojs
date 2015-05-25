@@ -40,7 +40,9 @@ app.engine('html', swig.renderFile);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
-swig.setDefaults({ cache: false }); // FIXME: turn off in production environment
+if (app.get('env') === 'development')
+    swig.setDefaults({ cache: false });
+
 markedSwig.useFilter(swig);
 markedSwig.useTag(swig);
 

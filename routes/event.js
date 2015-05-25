@@ -80,18 +80,17 @@ router.post('/add', function(req, res) {
 		}
 
 		e_.save().then(function(e_) {
+			if (e_.state === 'approved') {
+				req.flash('success', 'Event added and approved.');
+				return res.redirect(e_.absolute_url);
+			}
 
-			// FIXME should show a different message if it's approved already
 			req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
 
 			mailer.sendEventSubmittedMail(event_);
 			mailer.sendAdminsEventNotifyMail(models, event_);
 
-			return res.redirect(
-				(e_.state === 'approved')
-					? e_.absolute_url
-					: '/events'
-			);
+			return res.redirect('/events');
 		});
 	})
 	.catch(function(errors) {

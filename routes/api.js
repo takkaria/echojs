@@ -55,7 +55,6 @@ router.get('/json', function(req, res) {
 
 	models.Event.findAll({
 		where: [clauses.join(" AND "), []],
-		// XXX could we SELECT enddt AS end here instead of rewriting it later?
 		attributes: [ "id", "title", "startdt", "enddt", "location_text", "blurb", "url", "cost" ],
 		order: "startdt ASC",
 	}).then(function(events) {
