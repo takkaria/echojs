@@ -7,10 +7,10 @@
     "start": "DEBUG=echo:* nodemon ./bin/www",
     "build": "npm run sass",
     "test": "bin/initdb && mocha",
-    "sass:basic": "sass -I bower_components/bootstrap-sass/assets/stylesheets/ scss:public/stylesheets",
+    "sass:basic": "sass -I bower_components/ scss:public/stylesheets",
     "sass:watch": "npm run sass:basic -- --watch",
     "sass": "npm run sass:basic -- --update",
-    "sass_compat": "sass -I bower_components/bootstrap-sass/assets/stylesheets/ scss:public/stylesheets --watch"
+    "sass_compat": "sass -I bower_components/ scss:public/stylesheets --watch"
   },
   "devDependencies": {
     "mocha": "~2.1.0"

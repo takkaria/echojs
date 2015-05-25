@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<title>Echo Manchester</title>
+
+<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway:700,500">
+<link rel="stylesheet" type="text/css" href="/bower_components/fullcalendar/dist/fullcalendar.min.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/embed.css">
+<link rel="stylesheet" href="/bower_components/fontawesome/css/font-awesome.min.css " />
+
+<script src="/bower_components/jquery/dist/jquery.min.js"></script>
+<script src="/bower_components/moment/min/moment.min.js"></script>
+<script src="/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+
+<div id="calendar"></div>
+
+<script>
+$(document).ready(function() {
+
+	// This detects clicks outside the popup and closes the window
+	$(document).click(function(e) {
+		var box = $("#popup");
+		if (box && box.offset() && (
+					e.pageX < box.offset().left ||
+					e.pageX > box.offset().left+box.outerWidth() ||
+					e.pageY < box.offset().top ||
+					e.pageY > box.offset().top+box.outerHeight()
+				)) {
+			box.detach();
+		}
+
+		return true;
+	});
+
+	// Fetch and show an event card
+	function showEvent(event_, ev) {
+		var id = event_.id;
+
+		// Clean up previous boxes
+		$("#popup").detach();
+
+		// Create a new box
+		var html = '<div id="popup"></div>';
+		$('body').append(html);
+
+		// Request the info
+		$("#popup").hide().load("/event/" + id, function() {
+			var info = $("#popup");
+			info.css('top', ev.pageY + "px");
+
+			/* Don't overflow the page */
+			if (ev.pageX + info.outerWidth() > $(window).width())
+				info.css('left', $(window).width() - info.outerWidth() - 10);
+			else
+				info.css('left', ev.pageX + "px");
+
+			/* Don't overflow the heightwise either */
+			if (ev.pageY + info.outerHeight() > $(document).height())
+				info.css('top', $(document).height() - info.outerHeight() - 10);
+			else
+				info.css('top', ev.pageY + "px");
+
+			info.on("click", function (evt) {
+				location.href = $(this).find("a").attr("href");
+			});
+
+			$("#popup .close").click(function() {
+				$("#popup").detach();
+			});
+
+			info.show();
+		});
+
+		return false;
+	}
+
+	// If the URL is just '/events' then we start at today's date
+	var start = moment();
+
+	$('#calendar').fullCalendar({
+		events: '/api/json',
+		defaultDate: start,
+		fixedWeekCount: false,
+		firstDay: 1,	// Start on Monday
+		timeFormat: 'h(:mm)a',
+
+		header: {
+			left: '',
+			center: 'title',
+			right: 'prev,next today',
+		},
+
+		eventBackgroundColor: "#eee",
+		eventBorderColor: "#ccc",
+		eventTextColor: "black",
+
+		loading: function(isLoading, view) {
+			if (!isLoading) return;
+		},
+		eventClick: showEvent
+	});
+
+	$('.fc-left').html('<img src="/images/miniecho.png" height="30" title="Powered by Echo Manchester"></a> <form method="GET" action="http://echomanchester.net/event/add" target="_blank"><input type="hidden" name="embed"><button class="fc-prev-button fc-button fc-state-default">add an event</a></form>');
+
+});
+</script>
