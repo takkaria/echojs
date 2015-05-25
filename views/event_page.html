@@ -2,6 +2,20 @@
 
 {% block title %}{{ event_.title }}{% endblock %}
 {% block pageclass %}event{% endblock %}
+{% block meta %}
+
+  <meta property="og:site_name" content="Echo Manchester">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@EchoManchester">
+
+  <meta property="og:title" content="{{ event_.title }}">
+  <meta name="twitter:title" content="{{ event_.title }}">
+
+  <meta name="twitter:description" content="{{ event_.shortBlurb(false) }}">
+  <meta property="og:description" content="{{ event_.shortBlurb(false) }}">
+
+{% endblock %}
 
 {% block leftcontent %}
 <ol class="breadcrumb">

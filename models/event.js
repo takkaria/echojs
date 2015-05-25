@@ -98,10 +98,13 @@ module.exports = function(db) {
 				return marked(this.blurb);
 			},
 
-			shortBlurb: function() {
+			shortBlurb: function(readMore) {
+				if (readMore === undefined)
+					readMore = true;
+
 				// FIXME: This could be done with more finesse
 				if (this.blurb.length >= 180)
-					return this.blurb.substr(0, 179) + '… <i>(read more)</i>';
+					return this.blurb.substr(0, 179) + (readMore ? '… <i>(read more)</i>' : '...');
 				return this.blurb;
 			},
 
