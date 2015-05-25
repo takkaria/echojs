@@ -15,6 +15,7 @@ var request = require('request');
 router.get('/', ensure.editorOrAdmin, function(req, res) {
 	models.Feed.findAll().then(function(result) {
 		res.render('feeds', {
+			user: req.user,
 			feeds: result
 		});
 	});
@@ -85,6 +86,7 @@ router.get('/edit', ensure.editorOrAdmin, function(req, res) {
 
 	models.Feed.findById(q.id).then(function(result) {
 		res.render('feed_edit', {
+			user: req.user,
 			feed: result
 		});
 	});
@@ -107,6 +109,7 @@ router.post('/edit', ensure.editorOrAdmin, function(req, res) {
 			})
 			.catch(function (errors) {
 				res.render('feed_edit', {
+					user: req.user,
 					errors: errors.errors,
 					feed: result
 				});
