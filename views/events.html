@@ -99,17 +99,31 @@ $(document).ready(function() {
 		eventBorderColor: "#ccc",
 		eventTextColor: "black",
 
-		loading: function(isLoading, view) {
-			if (!isLoading) return;
-			history.pushState(view.intervalStart.toISOString(),
-				null,
-				"/events/" + view.intervalStart.format("YYYY/MMM").toLowerCase());
-		},
-		eventClick: showEvent
+		eventClick: showEvent,
+		viewRender: function(view, element) {
+			var viewdate = view.intervalStart;
+			var urldate = moment(location.pathname, "YYYY/MMM");
+
+			// if not valid it means we're at /events, with no date in the path, so
+			// default to the current month
+			if (!urldate.isValid())
+				urldate = moment();
+
+			// Only push state if the URL doesn't match the view
+			// This means that we don't push new state when the browser tells us
+			// to navigate backwards, only when the user clicks something.
+			if (viewdate.format("YYYY-MM") != urldate.format("YYYY-MM")) {
+				console.log("pushing now: ", view.intervalStart.toISOString());
+				history.pushState(view.intervalStart.toISOString(),
+					null,
+					"/events/" + view.intervalStart.format("YYYY/MMM").toLowerCase());
+			}
+		}
 	})
 
 	window.addEventListener('popstate', function(e) {
-		$('#calendar').fullCalendar('gotoDate', history.state);
+		// No state indicates the current month
+		$('#calendar').fullCalendar('gotoDate', history.state || moment().toISOString());
 	});
 
 });
