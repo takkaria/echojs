@@ -33,6 +33,10 @@
   {% if user.rights === 'admin' or user.rights === 'editor' %}
   <a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-primary">edit</a>
   {% endif %}
+
+  {% if user.rights === 'admin' or user.rights === 'editor' %}
+    <span class="btn btn-xs btn-info">status '{{ event_.state }}'</span>
+  {% endif %}
 </h2>
 
 {% if event_.host %}
