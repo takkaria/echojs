@@ -1,9 +1,8 @@
 {% extends "layout.html" %}
 {% import "formmacros.html" as form %}
 
+{% block title %}Edit event {{ event_.id }}{% endblock %}
 {% block pageclass %}event_form{% endblock %}
-
-{% block leftcontent %}
 
 {% block breadcrumb %}
 <ol class="breadcrumb">
@@ -12,7 +11,11 @@
 	<li><a href="/admin/event/{{ event_.id }}">{{ event_.slug }}</a></li>
 	<li>Edit</li>
 </ol>
-{% endblock breadcrumb %}
+{% endblock %}
+
+{% block leftcontent %}
+
+<h2>{% block title %}{% endblock %}</h2>
 
 {% if errors %}
 <p class="alert alert-danger"><b>There were problems validating your form.</b>	Please see below for more details.

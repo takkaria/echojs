@@ -3,9 +3,7 @@
 {% block title %}Radical Events &amp; News{% endblock %}
 {% block pageclass %}index{% endblock %}
 
-{% block content %}
-
-<div class="row">
+{% block subnav %}
 	<div class="leftcontent">
 		<h2>About Echo</h2>
 
@@ -16,78 +14,77 @@
 			fundraisers. <a href="/about">read more &hellip;</a></p>
 	</div>
 	<div class="rightcontent">
-		<h2>Subscribe</h2>
-
-		<p>We now have a monthly newsletter!</p>
+		<h2>Subscribe to our newsletter</h2>
 
 		<form class="form-inline" action="https://docs.google.com/forms/d/114oUUpYGh0vox28-_wuEh7asoXyHa9zr8yb2B_zqJLE/formResponse" method="POST" target="_new">
 			<div class="form-group">
-				<input class="form-control" type="email" name="entry.557563294" placeholder="Enter email address" style="width: 12em;">
+				<input class="form-control" type="email" name="entry.557563294" placeholder="Enter email address" style="width: 14em;">
 			</div>
 			<button class="btn btn-primary" type="submit">Subscribe</button>
 		</form>
 
-		<p>
+		<p style="margin-top: 5px;">
 			You can also subscribe to our 
-			<a href="https://www.google.com/calendar/render?cid={{ ("http://" + site + "/api/ical")|url_encode }}">
-				feed on Google Calendar
-			</a>.
+			<a href="https://www.google.com/calendar/render?cid={{ ("http://" + site + "/api/ical")|url_encode }}">feed on Google Calendar</a>.
 		</p>
 	</div>
-</div>
+{% endblock %}
 
-<div class="row">
-	<div class="leftcontent" id="events">
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="leftcontent" id="events">
 
-		<h2>Events</h2>
+			<h2>Events</h2>
 
-		{% for chunk in events %}
-				<h3>{% if chunk.shortDate %}
-					{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small>
-				{% else %}
-					{{ chunk.longDate }}
-				{% endif %}</h3>
+			{% for chunk in events %}
+					<h3>{% if chunk.shortDate %}
+						{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small>
+					{% else %}
+						{{ chunk.longDate }}
+					{% endif %}</h3>
 
-			{% for event_ in chunk.events %}
-				{% if loop.index % 2 == 1 %}
-				<div class="row">
-				{% endif %}
+				{% for event_ in chunk.events %}
+					{% if loop.index % 2 == 1 %}
+					<div class="row">
+					{% endif %}
 
-					<div class="col-md-6">
-						{% include "event_card.html" %}
+						<div class="col-md-6">
+							{% include "event_card.html" %}
+						</div>
+
+					{% if loop.index % 2 == 0 or loop.last %}
 					</div>
-
-				{% if loop.index % 2 == 0 or loop.last %}
-				</div>
-				{% endif %}
+					{% endif %}
+				{% endfor %}
 			{% endfor %}
-		{% endfor %}
 
-		<div class="row">
-			<div class="col-md-6">
-				<div class="box add-yours">
-					<p><a href="/event/add"><i class="fa fa-plus"></i> Add your event</a></p>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="box add-yours">
+						<p><a href="/event/add"><i class="fa fa-plus"></i> Add your event</a></p>
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="box add-yours">
+						<p><a href="/events">See more events <i class="fa fa-angle-right"></i></a></p>
+					</div>
 				</div>
 			</div>
 
-			<div class="col-md-6">
-				<div class="box add-yours">
-					<p><a href="/events">See more events <i class="fa fa-angle-right"></i></a></p>
-				</div>
-			</div>
+		</div> <!-- leftcontent -->
+
+		<div class="rightcontent">
+			<h2>News</h2>
+
+			{% for post in posts %}
+				{% if loop.first %}<ul class="news">{% endif %}
+				<li><b>{{ post.feed.title }}</b> <small>({{ post.date.fromNow() }})</small><br>
+				<a href="{{ post.link }}">{{ post.title }}</a>
+				{% if loop.last %}</ul>{% endif %}
+			{% endfor %}
 		</div>
-
-	</div> <!-- leftcontent -->
-
-	<div class="rightcontent">
-		<h2>News</h2>
-
-		{% for post in posts %}
-			{% if loop.first %}<ul class="news">{% endif %}
-			<li><b>{{ post.feed.title }}</b> <small>({{ post.date.fromNow() }})</small><br>
-			<a href="{{ post.link }}">{{ post.title }}</a>
-			{% if loop.last %}</ul>{% endif %}
-		{% endfor %}
 	</div>
 </div>
 

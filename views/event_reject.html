@@ -4,14 +4,16 @@
 {% block title %}Reject event{% endblock %}
 {% block pageclass %}admin{% endblock %}
 
-{% block leftcontent %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
 	<li><a href="/">Echo</a></li>
 	<li><a href="/admin">Admin</a></li>
 	<li><a href="/admin/event/{{ event_.id }}">{{ event_.id }}</a></li>
 	<li>Reject?</li>
 </ol>
+{% endblock %}
 
+{% block leftcontent %}
 <h1>Rejecting event id {{ event_.id }}
 {% if event_.isImported() %}
 	<small>IMPORTED EVENT</small>

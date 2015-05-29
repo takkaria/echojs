@@ -3,12 +3,14 @@
 {% block title %}Users{% endblock %}
 {% block pageclass %}admin{% endblock %}
 
-{% block leftcontent %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
   <li><a href="/">Echo</a></li>
   <li><a href="/admin">Admin</a></li>
 </ol>
+{% endblock %}
 
+{% block leftcontent %}
 <h2>Users</h2>
 
 <a href="/admin/user/add" class="btn btn-lg btn-primary">Add user</a>

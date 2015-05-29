@@ -3,68 +3,71 @@
 {% block title %}Administrative dashboard{% endblock %}
 {% block pageclass %}admin{% endblock %}
 
-{% block content %}
-<div>
-
-	<ol class="breadcrumb">
-		<li><a href="/">Echo</a></li>
-		<li><a href="/admin">Admin</a></li>
-	</ol>
-
-	{{ checkMessages() }}
-
-	<h2>Administration</h2>
-	<p>
-		Welcome to the admin area. Have fun!
-	</p>
-
-	<h3>Events awaiting moderation</h3>
-
-	<table class="table">
-		<tr>
-			<th>id</th>
-			<th>title</th>
-			<th>start</th>
-			<th>end</th>
-			<th>location</th>
-			<th>host</th>
-			<th>url</th>
-			<th>state</th>
-			<th>actions</th>
-		</tr>
-		{% for event in events_ %}
-		<tr>
-			<td><a href="/admin/event/{{ event.id }}">{{ event.id }}</a></td>
-			<td>{{ event.title }}</td>
-			<td>{{ event.startdt.format("YYYY-MM-DD ha") }}</td>
-			<td>{% if event.enddt.isValid() %}
-				{{ event.enddt.format("YYYY-MM-DD ha") }}
-			{% else %}
-				<i>(not set)</i>
-			{% endif %}</td>
-			<td>{{ event.shortLocation }}</td>
-			<td>{{ event.host }}</td>
-			<td>{{ event.url }}</td>
-			<td>{{ event.state }}</td>
-			<td>
-				<a href="/admin/event/{{ event.id }}/edit" class="btn btn-xs btn-info">
-					edit
-				</a>
-				<a href="/admin/event/{{ event.id }}/approve" class="btn btn-xs btn-success">
-					approve
-				</a>
-				<a href="/admin/event/{{ event.id }}/reject" class="btn btn-xs btn-warning">
-					reject
-				</a>
-			</td>
-		</tr>
-		{% endfor %}
-	</table>
-
-	{% include "_paginate.html" %}
-
-</div>
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li><a href="/">Echo</a></li>
+	<li><a href="/admin">Admin</a></li>
+</ol>
 {% endblock %}
 
-{% block rightcontent %}
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="fullwidth">
+
+			{{ checkMessages() }}
+
+			<h2>Administration</h2>
+			<p>
+				Welcome to the admin area. Have fun!
+			</p>
+
+			<h3>Events awaiting moderation</h3>
+
+			<table class="table">
+				<tr>
+					<th>id</th>
+					<th>title</th>
+					<th>start</th>
+					<th>end</th>
+					<th>location</th>
+					<th>host</th>
+					<th>url</th>
+					<th>state</th>
+					<th>actions</th>
+				</tr>
+				{% for event in events_ %}
+				<tr>
+					<td><a href="/admin/event/{{ event.id }}">{{ event.id }}</a></td>
+					<td>{{ event.title }}</td>
+					<td>{{ event.startdt.format("YYYY-MM-DD ha") }}</td>
+					<td>{% if event.enddt.isValid() %}
+						{{ event.enddt.format("YYYY-MM-DD ha") }}
+					{% else %}
+						<i>(not set)</i>
+					{% endif %}</td>
+					<td>{{ event.shortLocation }}</td>
+					<td>{{ event.host }}</td>
+					<td>{{ event.url }}</td>
+					<td>{{ event.state }}</td>
+					<td>
+						<a href="/admin/event/{{ event.id }}/edit" class="btn btn-xs btn-info">
+							edit
+						</a>
+						<a href="/admin/event/{{ event.id }}/approve" class="btn btn-xs btn-success">
+							approve
+						</a>
+						<a href="/admin/event/{{ event.id }}/reject" class="btn btn-xs btn-warning">
+							reject
+						</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+
+			{% include "_paginate.html" %}
+
+		</div>
+	</div>
+</div>
 {% endblock %}

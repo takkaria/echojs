@@ -4,61 +4,66 @@
 {% block title %}Feeds{% endblock %}
 {% block pageclass %}admin{% endblock %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li><a href="/">Echo</a></li>
+	<li><a href="/admin">Admin</a></li>
+	<li>Feeds</li>
+</ol>
+{% endblock %}
+
 {% block content %}
 
-<div>
+<div class="container">
+	<div class="row">
+		<div class="fullwidth">
+			{{ checkMessages() }}
 
-	<ol class="breadcrumb">
-		<li><a href="/">Echo</a></li>
-		<li><a href="/admin">Admin</a></li>
-		<li>Feeds</li>
-	</ol>
+			{% if errors %}
+			<p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
+			{% endif %}
 
-	{{ checkMessages() }}
+			<h2>Add a new feed</h2>
 
-	{% if errors %}
-	<p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
-	{% endif %}
+			<form method="POST" action="/admin/feeds/add">
+				{{ form.inputText({ label: "URL:", field: "url" }) }}
+				{{ form.inputSubmit("Add") }}
+			</form>
 
-	<h2>Add a new feed</h2>
+			<h2>Edit existing feed info</h2>
 
-	<form method="POST" action="/admin/feeds/add">
-		{{ form.inputText({ label: "URL:", field: "url" }) }}
-		{{ form.inputSubmit("Add") }}
-	</form>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>Feed</th>
+						<th>Actions</th>
+						<th>Feed URL</th>
+						<th>Errors</th>
+					</tr>
+				</thead>
 
-	<h2>Edit existing feed info</h2>
+				{% for feed in feeds %}
+				<tr>
+					<th><a href="{{ feed.site_url }}">{{ feed.title }}</a></th>
+					<td>
+						<form method="GET" action="/admin/feeds/edit" style="display: inline-block;">
+							{{ form.inputHidden({ field: "id", fill: feed.id }) }}
+							{{ form.inputSubmit("Edit", "btn-xs btn-primary") }}
+						</form>
 
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>Feed</th>
-				<th>Actions</th>
-				<th>Feed URL</th>
-				<th>Errors</th>
-			</tr>
-		</thead>
+						<form method="POST" action="/admin/feeds/delete" style="display: inline-block;">
+							{{ form.inputHidden({ field: "id", fill: feed.id }) }}
+							{{ form.inputSubmit("Delete", "btn-xs btn-danger") }}
+						</form>
+					</td>
+					<td>{{ feed.id }}</td>
+					<td>{{ feed.errors }}</td>
+				</tr>
+				{% endfor %}
 
-		{% for feed in feeds %}
-		<tr>
-			<th><a href="{{ feed.site_url }}">{{ feed.title }}</a></th>
-			<td>
-				<form method="GET" action="/admin/feeds/edit" style="display: inline-block;">
-					{{ form.inputHidden({ field: "id", fill: feed.id }) }}
-					{{ form.inputSubmit("Edit", "btn-xs btn-primary") }}
-				</form>
+			</table>
 
-				<form method="POST" action="/admin/feeds/delete" style="display: inline-block;">
-					{{ form.inputHidden({ field: "id", fill: feed.id }) }}
-					{{ form.inputSubmit("Delete", "btn-xs btn-danger") }}
-				</form>
-			</td>
-			<td>{{ feed.id }}</td>
-			<td>{{ feed.errors }}</td>
-		</tr>
-		{% endfor %}
-
-	</table>
-
+		</div>
+	</div>
 </div>
 {% endblock %}

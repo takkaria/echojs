@@ -3,14 +3,16 @@
 {% block title %}Delete user{% endblock %}
 {% block pageclass %}admin{% endblock %}
 
-{% block leftcontent %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
   <li><a href="/">Echo</a></li>
   <li><a href="/admin">User</a></li>
 	<li>{{ user_obj.id }}</li>
 	<li>Delete?</li>
 </ol>
+{% endblock %}
 
+{% block leftcontent %}
 <form method="POST" action="/admin/user/{{ user_obj.id }}/delete">
 	<div class="form-group">
 		<label>Are you sure?</label>

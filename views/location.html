@@ -3,12 +3,14 @@
 {% block title %}{{ loc.name }}{% endblock %}
 {% block pageclass %}location{% endblock %}
 
-{% block leftcontent %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
   <li><a href="/">Echo</a></li>
   <li><a href="/admin/locations">Locations</a></li>
 </ol>
+{% endblock %}
 
+{% block leftcontent %}
 <h2>
   {{ loc.name }}
 

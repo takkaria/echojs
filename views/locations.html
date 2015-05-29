@@ -3,46 +3,50 @@
 {% block title %}Locations{% endblock %}
 {% block pageclass %}admin locations{% endblock %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li><a href="/">Echo</a></li>
+	<li><a href="/admin">Admin</a></li>
+</ol>
+{% endblock %}
+
 {% block content %}
-<div class="row">
-	<div class="col-md-10">
-		<ol class="breadcrumb">
-		  <li><a href="/">Echo</a></li>
-		  <li><a href="/admin">Admin</a></li>
-		</ol>
+<div class="container">
+	<div class="row">
+		<div class="col-md-10">
+			<h2>Locations</h2>
+			<a class="btn btn-default btn-primary" href="/admin/location/add">Add location...</a>
 
-		<h2>Locations</h2>
-		<a class="btn btn-default btn-primary" href="/admin/location/add">Add location...</a>
-
-		<table class="table table-striped">
-			<thead>
+			<table class="table table-striped">
+				<thead>
+					<tr>
+						<th>id</th>
+						<th>name, address</th>
+						<th>description</th>
+						<th>long / lat</th>
+						<th>actions</th>
+					</tr>
+				</thead>
+				{% for loc in locations %}
 				<tr>
-					<th>id</th>
-					<th>name, address</th>
-					<th>description</th>
-					<th>long / lat</th>
-					<th>actions</th>
+					<th><a href="/admin/location/{{ loc.id }}">{{ loc.id }}</a></th>
+					<td>
+						<h4>{{ loc.name }}</h4>
+						{{ loc.addressAsHTML() }}
+					</td>
+					<td>{{ loc.descriptionAsHTML() }}</td>
+					<td>
+						{{ loc.longitude }}, {{ loc.latitude }}
+					</td>
+					<td>
+						<a href="/admin/location/{{ loc.id }}/edit" class="btn btn-xs btn-primary">edit</a>
+						<a href="/admin/location/{{ loc.id }}/delete" class="btn btn-xs btn-warning">delete</a>
+					</td>
 				</tr>
-			</thead>
-			{% for loc in locations %}
-			<tr>
-				<th><a href="/admin/location/{{ loc.id }}">{{ loc.id }}</a></th>
-				<td>
-					<h4>{{ loc.name }}</h4>
-					{{ loc.addressAsHTML() }}
-				</td>
-				<td>{{ loc.descriptionAsHTML() }}</td>
-				<td>
-					{{ loc.longitude }}, {{ loc.latitude }}
-				</td>
-				<td>
-					<a href="/admin/location/{{ loc.id }}/edit" class="btn btn-xs btn-primary">edit</a>
-					<a href="/admin/location/{{ loc.id }}/delete" class="btn btn-xs btn-warning">delete</a>
-				</td>
-			</tr>
-			{% endfor %}
-		</table>
+				{% endfor %}
+			</table>
 
+		</div>
 	</div>
 </div>
 {% endblock %}

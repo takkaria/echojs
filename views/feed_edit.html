@@ -4,15 +4,16 @@
 {% block title %}Add location{% endblock %}
 {% block pageclass %}admin location_add{% endblock %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/admin">Admin</a></li>
+  <li><a href="/admin/locations">Feeds</a></li>
+  <li>{{ feed.title }}</li>
+</ol>
+{% endblock %}
+
 {% block leftcontent %}
-
-	<ol class="breadcrumb">
-	  <li><a href="/">Echo</a></li>
-	  <li><a href="/admin">Admin</a></li>
-	  <li><a href="/admin/locations">Feeds</a></li>
-	  <li>{{ feed.title }}
-	</ol>
-
 	{% if errors %}
 	<p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
 	{% endif %}

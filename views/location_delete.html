@@ -3,14 +3,15 @@
 {% block title %}Delete location{% endblock %}
 {% block pageclass %}admin{% endblock %}
 
-{% block leftcontent %}
+{% block breadcrumb %}
 <ol class="breadcrumb">
 	<li><a href="/">Echo</a></li>
 	<li><a href="/admin/locations">Locations</a></li>
-	<li>{{ loc.name }}
-	<li>Delete?
+	<li>{{ loc.name }}</li>
+	<li>Delete?</li>
 </ol>
 
+{% block leftcontent %}
 <form method="POST" action="/admin/location/{{ loc.id }}/delete">
 	<div class="form-group">
 		<label>Are you sure?</label>

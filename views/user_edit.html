@@ -4,7 +4,6 @@
 {% block title %}Edit user{% endblock %}
 {% block pageclass %}admin user_form{% endblock %}
 
-{% block leftcontent %}
 {% block breadcrumb %}
 <ol class="breadcrumb">
   <li><a href="/">Echo</a></li>
@@ -13,7 +12,9 @@
 	<li>{{ user_obj.id }}</a></li>
 	<li>Edit</li>
 </ol>
-{% endblock breadcrumb %}
+{% endblock %}
+
+{% block leftcontent %}
 
 {% if errors %}
 <p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.

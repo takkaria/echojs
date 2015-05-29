@@ -4,27 +4,31 @@
 {% block title %}Login{% endblock %}
 {% block pageclass %}login{% endblock %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb">
+	<li><a href="/">Echo</a></li>
+	<li><a href="/user/login">Login</a></li>
+</ol>
+{% endblock %}
+
 {% block content %}
-<div class="row">
-	<div class="col-md-6 col-md-offset-3" id="loginbox">
-		<ol class="breadcrumb">
-			<li><a href="/">Echo</a></li>
-			<li><a href="/user/login">Login</a></li>
-		</ol>
+<div class="container">
+	<div class="row">
+		<div class="col-md-6 col-md-offset-3" id="loginbox">
+			<form action="/user/login" method="post">
+				<input type="hidden" name="next" value="{{ next }}">
+				{{ form.inputText({ label: "Email:", field: "email" }) }}
+				{{ form.inputPassword({ label: "Password:", field: "password" }) }}
 
-		<form action="/user/login" method="post">
-			<input type="hidden" name="next" value="{{ next }}">
-			{{ form.inputText({ label: "Email:", field: "email" }) }}
-			{{ form.inputPassword({ label: "Password:", field: "password" }) }}
+				<p class="pull-left">
+					<a href="/user/password/reset">Forgot password?</a>
+				</p>
 
-			<p class="pull-left">
-				<a href="/user/password/reset">Forgot password?</a>
-			</p>
-
-			<div class="text-right">
-				{{ form.inputSubmit("Log in") }}
-			</div>
-		</form>
+				<div class="text-right">
+					{{ form.inputSubmit("Log in") }}
+				</div>
+			</form>
+		</div>
 	</div>
 </div>
 {% endblock %}

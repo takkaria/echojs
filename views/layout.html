@@ -49,8 +49,6 @@
 	</div><!--/.navbar-collapse -->
 </div>
 </nav>
- 
-<div class="container">
 
 {% macro checkMessages() %}
 	{% for type, message in messages %}
@@ -58,20 +56,35 @@
 	{% endfor %}
 {% endmacro %}
 
+<div class="jumbotron">
+	<div class="container">
+		<div class="row">
+			{% block subnav %}
+
+			<div class="leftcontent">
+				{% block breadcrumb %}{% endblock %}
+			</div>
+
+			{% endblock %}
+		</div>
+	</div>
+</div>
+
 {% block content %}
 
-<div class="row">
+<div class="container">
+	<div class="row">
 
-	<div class="leftcontent">
-	{{ checkMessages() }}
+		<div class="leftcontent">
+		{{ checkMessages() }}
 
-	{% block leftcontent %}{% endblock %}
+		{% block leftcontent %}{% endblock %}
+		</div>
+
+		<div class="rightcontent">
+		{% block rightcontent %}{% endblock %}
+		</div>
 	</div>
-
-	<div class="rightcontent">
-	{% block rightcontent %}{% endblock %}
-	</div>
-
 </div>
 
 {% endblock %}
