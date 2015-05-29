@@ -32,35 +32,40 @@ function saveEvent(item, error, done) {
 		});
 }
 
-function fetchICal(params, error) {
-	var url = params.url;
-	var filter = params.filter;
-	var transform = params.transform;
+function useICalData(err, data) {
+	/* XXX This doesn't check for errors */
 
-	debug("Fetching iCal " + url);
+	/* "this" set using .bind(), below */
+	var error = this.error;
+	var filter = this.filter;
+	var transform = this.transform;
 
-	ical.fromURL(url, {}, function(err, data) {
-		for (var k in data) {
+	for (var k in data) {
 
-			if (!data.hasOwnProperty(k)) continue;
-			if (!data[k].start || data[k].start < new Date()) continue;
-			if (filter && filter(data[k])) continue;
+		if (!data.hasOwnProperty(k)) continue;
+		if (!data[k].start || data[k].start < new Date()) continue;
+		if (filter && filter(data[k])) continue;
 
-			var item = data[k]; // bind locally
+		var item = data[k]; // bind locally
 
-			function save(event) {
-				if (event != null) return;   /* Don't duplicate IDs */
-				if (transform) transform(this);
+		function save(event) {
+			if (event != null) return;   /* Don't duplicate IDs */
+			if (transform) transform(this);
 
-				saveEvent(this, error);
-			}
-
-			Event
-				.find({ where: { importid: data[k].uid } })
-				.then(save.bind(data[k]))
-				.on('error', error);
+			saveEvent(this, error);
 		}
-	});
+
+		Event
+			.find({ where: { importid: data[k].uid } })
+			.then(save.bind(data[k]))
+			.catch(error);
+	}
+}
+
+function fetchICal(params) {
+	debug("Fetching iCal " + params.url);
+
+	ical.fromURL(params.url, {}, useICalData.bind(params));
 }
 
 
@@ -224,5 +229,9 @@ module.exports = {
 	ical: fetchICal,
 	feed: fetchFeed,
 	findDate: findDate,
-	saveEvent: saveEvent
+	saveEvent: saveEvent,
+
+	test: {
+		useICalData: useICalData
+	}
 }
