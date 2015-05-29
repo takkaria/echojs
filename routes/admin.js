@@ -11,7 +11,7 @@ router.get('/', ensure.editorOrAdmin, function(req, res) {
 		],
 		include: [ models.Location ],
 		limit: req.query.limit,
-		offset: req.query.limit * req.query.page,
+		offset: req.query.limit * (req.query.page - 1),
 		order: "startdt ASC"
 	}).then(function(result) {
 		res.render('admin', {
