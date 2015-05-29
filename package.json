@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prestart": "npm run sass:watch &",
-    "start": "DEBUG=echo:admin nodemon ./bin/www",
+    "start": "DEBUG=echo:* nodemon ./bin/www",
     "build": "npm run sass",
     "test": "bin/initdb && mocha",
     "upgrade": "git pull && npm install && npm test",
