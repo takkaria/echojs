@@ -48,7 +48,7 @@ router.post('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, func
 			req.flash('success', 'Event <a href="%s">%s</a> approved',
 								event_.absolute_url, event_.id);
 			if (!e.isImported())
-				mailer.sendEventApprovedMail(event_, msg);
+				mailer.sendEventApprovedMail(event_);
 			res.redirect(e.absolute_url);
 		})
 	})

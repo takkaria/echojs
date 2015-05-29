@@ -6,9 +6,9 @@
 
 {% block leftcontent %}
 <ol class="breadcrumb">
-  <li><a href="/">Echo</a></li>
-  <li><a href="/admin">Admin</a></li>
-	<li><a href="/admin/{{ event_.id }}">{{ event_.id }}</a></li>
+	<li><a href="/">Echo</a></li>
+	<li><a href="/admin">Admin</a></li>
+	<li><a href="/admin/event/{{ event_.id }}">{{ event_.id }}</a></li>
 	<li>Reject?</li>
 </ol>
 
@@ -46,7 +46,7 @@
 
 {% endif %}
 
-	<div class="pull-left"><a href="/admin/{{ event_.id }}" class="btn btn-default">Back to event</a></div>
+	<div class="pull-left"><a href="/admin/event/{{ event_.id }}" class="btn btn-default">Back to event</a></div>
 	<div class='pull-right'><button class="btn btn-danger push-right" type="submit">Reject</button></div>
 
 </form>
