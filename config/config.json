@@ -1,10 +1,6 @@
 {
   "development": {
-    "storage": "db.sqlite",
-    "dialect": "sqlite"
-  },
-  "development": {
-    "storage": "db.sqlite",
+    "storage": "/var/www/echomanchester.net/public/db/echo.sqlite",
     "dialect": "sqlite"
   },
   "production": {
