@@ -7,6 +7,7 @@
     "start": "DEBUG=echo:admin nodemon ./bin/www",
     "build": "npm run sass",
     "test": "bin/initdb && mocha",
+    "upgrade": "git pull && npm install && npm test",
     "sass:basic": "sass -I bower_components/ scss:public/stylesheets",
     "sass:watch": "npm run sass:basic -- --watch",
     "sass": "npm run sass:basic -- --update",
