@@ -55,16 +55,14 @@ router.get('/json', function(req, res) {
 
 	models.Event.findAll({
 		where: [clauses.join(" AND "), []],
-		attributes: [ "id", "title", "startdt", "enddt", "location_text", "blurb", "url", "cost" ],
+		attributes: [ "id", "title", "startdt", "enddt" ],
 		order: "startdt ASC",
 	}).then(function(events) {
 		req.header("Content-Type", "application/json");
 
 		events.forEach(function(_e) {
 			_events.push({
-				id: _e.id, title: _e.title, start: _e.startdt, end: _e.enddt,
-				location_text: _e.location_text, blurb: _e.blurb, url: _e.url, 
-				cost: _e.cost
+				id: _e.id, title: _e.title, start: _e.startdt, end: _e.enddt
 			});
 		});
 
