@@ -146,7 +146,7 @@ function addPost(data, error) {
 			feed_id: data.meta.xmlurl,
 		})
 		.save()
-		.on('error', error);
+		.catch(error);
 
 	// Check if it's like an event
 	var date = findDate(data.pubDate, data.description);
@@ -175,7 +175,7 @@ function addPost(data, error) {
 					importid: data.guid
 				})
 				.save({ validate: false })
-				.on('error', error);
+				.catch(error);
 		 });
 }
 
