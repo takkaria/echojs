@@ -5,7 +5,7 @@
 
 {% block subnav %}
 	<div class="leftcontent">
-		<h2>About Echo</h2>
+		<h4>About Echo</h4>
 
 		<p>
 			Echo is a non-profit political events and news site. Echo hopes to provide
@@ -14,7 +14,7 @@
 			fundraisers. <a href="/about">read more &hellip;</a></p>
 	</div>
 	<div class="rightcontent">
-		<h2>Subscribe to our newsletter</h2>
+		<h4>Subscribe to our newsletter</h4>
 
 		<form class="form-inline" action="https://docs.google.com/forms/d/114oUUpYGh0vox28-_wuEh7asoXyHa9zr8yb2B_zqJLE/formResponse" method="POST" target="_new">
 			<div class="form-group">
@@ -45,17 +45,11 @@
 					{% endif %}</h3>
 
 				{% for event_ in chunk.events %}
-					{% if loop.index % 2 == 1 %}
 					<div class="row">
-					{% endif %}
-
-						<div class="col-md-6">
+						<div class="col-md-9">
 							{% include "event_card.html" %}
 						</div>
-
-					{% if loop.index % 2 == 0 or loop.last %}
 					</div>
-					{% endif %}
 				{% endfor %}
 			{% endfor %}
 

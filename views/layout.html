@@ -29,11 +29,11 @@
 		<ul class="nav navbar-nav">
 			<li><a href="/about">About</a>
 			<li><a href="/events">Calendar</a>
-			<li><a href="/event/add">Add event</a>
+			<li><a href="/event/add">Add your event</a>
 			{% if user %}
 			<li class="dropdown">
 				<a href="/admin" class="dropdown-toggle" data-toggle="dropdown"
-					role="button" aria-expanded="false">⚙ <span class="caret"></span></a>
+					role="button" aria-expanded="false"><i class="fa fa-cog" style="font-size: 18px;"></i> <span class="caret"></span></a>
 				<ul class="dropdown-menu" role="menu">
 					<li><a href="/admin/">Manage events</a></li>
 					<li><a href="/admin/locations">Manage locations</a></li>
@@ -46,6 +46,7 @@
 				</ul>
 			{% endif %}
 		</ul>
+
 	</div><!--/.navbar-collapse -->
 </div>
 </nav>
