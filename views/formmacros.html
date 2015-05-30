@@ -26,13 +26,13 @@
 {% endmacro %}
 
 {% macro inputText(opts) %}
-	{# opts = { label, field, fill, icon, helpText } #}
+	{# opts = { label, field, fill, icon, class, helpText } #}
 
 	<div class="form-group">
 		<label for="{{ opts.field }}">{{ opts.label }}</label>
 
 		{{ iconStart(opts) }}
-		<input class="form-control long"
+		<input class="form-control long {{ opts.class }}"
 			name="{{ opts.field }}"
 			type="text"
 			id="{{ opts.field }}"
@@ -120,7 +120,7 @@
 			<input class="required form-control" type="text" id="i_{{ opts.field }}"
 				placeholder="click to pick" data-date-format="YYYY/MM/DD hh:mm" id="{{opts.field}}"
 				name="{{opts.field}}" value="{{ opts.fill }}">
-			<span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+			<span class="input-group-addon"><span class="fa fa-calendar"></span></span>
 		</div>
 
 		{{ checkErrors(opts.field) }}

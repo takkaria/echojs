@@ -22,25 +22,37 @@
 {% endif %}
 
 <form method="POST" action="{% block form_action %}/admin/event/{{ event_.id }}/edit{% endblock %}">
-	{{ form.inputText({ label: "Event name:", field: "title", fill: event_.title }) }}
+	{{ form.inputText({
+		label: "Event name:",
+		field: "title",
+		fill: event_.title,
+		class: "input-lg" }) }}
 
-	<div class="form-group">
-		<label>All day?</label>
-		<div class="radio">
-			<input type="checkbox" name="allday" id="allday"
-				{% if event_.allday %}checked="checked"{% endif %}>
-			</div>
+	<div class="row date-input">
+		<div class="col-md-6">
+			{{ form.inputDateTime({
+				label: "Starts:",
+				field: "startdt",
+				fill: event_.startdt.format('YYYY/MM/DD hh:mm') }) }}
 		</div>
 
-	{{ form.inputDateTime({ label: "Starts:", field: "startdt", fill: event_.startdt.format('YYYY/MM/DD hh:mm') }) }}
+		<div class="col-md-6">
+			{{ form.inputDateTime({
+				label: "Ends:",
+				field: "enddt",
+				fill: event_.enddt.format('YYYY/MM/DD hh:mm') }) }}
+		</div>
+	</div>
 
 	{{ form.checkErrors("startBeforeEnd") }}
 
-	{{ form.inputDateTime({ 
-		label: "Ends:", 
-		field: "enddt", 
-		fill: event_.enddt.format('YYYY/MM/DD hh:mm') 
-	}) }}
+	<div class="checkbox">
+		<label>
+			<input type="checkbox" name="allday" id="allday"
+				{% if event_.allday %}checked="checked"{% endif %}>
+			This event lasts all day
+		</label>
+	</div>
 
 	{{ form.inputText({
 		label: "Location:",
@@ -84,7 +96,7 @@
 				{% if event_.cost != 'free' %}checked="checked"{% endif %}> It costs
 			</label>
 			<input type="text" name="cost_fee" id="cost_fee"
-				style="width: 220px;" placeholder="how much?">
+				style="width: 220px; display: inline-block; margin-left: 0.5em;" class="form-control" placeholder="how much?">
 
 			{{ form.checkErorrs("cost_fee") }}
 		</div>
@@ -159,12 +171,32 @@
 		}
 
 		var dtps = [];
-		
-		$('.date input').each(function(i,e){
-			dtps.push($(e).datetimepicker().data('DateTimePicker'));
+		var icons = {
+			time:     'fa fa-clock-o',
+			date:     'fa fa-calendar',
+			up:       'fa fa-arrow-up',
+			down:     'fa fa-arrow-down',
+			previous: 'fa fa-chevron-left',
+			next:     'fa fa-chevron-right',
+			today:    'fa fa-crosshairs',
+			clear:    'fa fa-chevron-trash-o',
+			close:    'fa fa-remove'
+		};
+
+		$('.date').each(function(i, e) {
+			var dtp = $(e).find("input")
+					.datetimepicker({ icons: icons })
+					.data('DateTimePicker');
+
+			$(e).find("span.input-group-addon").click(function() {
+				dtp.show();
+				return false;
+			});
+
+			dtps.push(dtp);
 		});
 
-		$('#allday').change(function(e){
+		$('#allday').change(function(e) {
 				dtps.forEach(function(el, i, a) {
 					if (typeof el === 'undefined') {
 						return false;

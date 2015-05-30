@@ -32,9 +32,7 @@ $breadcrumb-color:              #666;
 	h2 { font-size: $font-size-h3; }
 
 	margin-bottom: 0;
-//$line-height-computed;
 }
-
 
 .breadcrumb { padding-left: 0; margin-bottom: 0; }
 
@@ -98,6 +96,13 @@ footer p { margin-bottom: 0; font-size: 85%; }
 // event_[add|edit].html
 
 .event_form {
+
+	// This is to stop excess whitespace
+	@media (min-width: $screen-md-min) {
+		.date-input .form-group {
+			margin-bottom: 0;
+		}
+	}
 
 	// Some styling to get the input element to appear correctly
 	// This bit is just kind of gross but required cos of the way typeahead.js works :(
