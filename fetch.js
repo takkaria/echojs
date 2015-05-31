@@ -100,6 +100,12 @@ function findDate(base, text) {
 	if (time && day && month) {
 		var d = new Date();
 
+		// 'day' is in form 23rd, parseInt will just look at numbers
+		// we do this first because otherwise if base is '31 May' and
+		// text is '28 Feb' and month is set first, the transition will be
+		// (31 May).setMonth(Feb) -> 3 Mar
+		d.setDate(parseInt(day));
+
 		// Months in JS are 0-11, not 1-12
 		d.setMonth(monthToInt(month) - 1);
 
@@ -108,9 +114,6 @@ function findDate(base, text) {
 			d.setYear(base.getFullYear() + 1);
 		else
 			d.setYear(base.getFullYear());
-
-		// 'day' is in form 23rd, parseInt will just look at numbers
-		d.setDate(parseInt(day));
 
 		var hours = parseInt(time);
 
