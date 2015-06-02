@@ -5,7 +5,16 @@
 {% block content %}
 {% for event in events %}
 <p>
-	{{ event.startdt.format("dddd, Do MMMM, h:mma") }}<br>
+	{{ event.startdt.format("dddd, Do MMMM, h:mma") }}
+	{% if event.enddt %}
+	{{ event.isMultiDay() }}
+	{% if event.isMultiDay() %}
+	- {{ event.enddt.format("dddd, Do MMMM, h:mma") }}
+	{% else %}
+	- {{ event.enddt.format("h:mma") }}
+	{% endif %}
+	{% endif %}
+	<br>
 
 	<b>{{ event.title }}</b>
 	<i>{{ event.location }}</i>

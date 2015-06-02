@@ -96,7 +96,7 @@ module.exports = function(db) {
 			isMultiDay: function() {
 				if (!this.enddt)
 					return false
-				return this.enddt.subtract(this.startdt).days > 0;
+				return (this.enddt.subtract(this.startdt).days() > 0);
 			},
 
 			shortBlurb: function(readMore) {
