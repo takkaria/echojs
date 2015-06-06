@@ -99,5 +99,15 @@ describe("fetch", function() {
 			expect(result.toShortISOString()).to.equal("2014-11-02T18:00");
 		});
 
+/*
+		it("should deal with dates in summer time correctly", function() {
+			var result = fetch.findDate(
+				new Date("2015-06-05T00:00"),
+				"on Thursday 25th June, 2pm"
+			);
+
+			expect(result.toShortISOString()).to.equal("2015-06-25T14:00");
+		});
+*/
 	});
 });
