@@ -4,6 +4,7 @@ var mailer = require('../lib/mailer');
 var debug = require('debug')('echo:event');
 var router = express.Router();
 var models = require('../models');
+var async = require('async');
 
 router.param('id', function(req, res, next, id) {
 	models.Event.findOne({
@@ -121,10 +122,50 @@ router.get('/:id', function(req, res) {
 
 /* GET event by slug */
 router.get('/:year/:month/:slug', function(req, res) {
-	res.render('event_page', {
-		event_: req.event_,
-		user: req.user
-	});
+	var event_ = req.event_;
+
+	async.parallel({
+			location: function findOtherEventsByLocation(cb) {
+				var params = [];
+				if (event_.location_id)
+					params.push({ location_id: req.event_.location_id });
+				if (event_.location_text)
+					params.push({ location_text: req.event_.location_text });
+
+				models.Event.findAll({
+					where: [
+						{ id: { $ne: event_.id } },
+						{ $or: params },
+						["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
+					],
+					order: "startdt"
+				}).then(function(evs) {
+					cb(null, evs);
+				});
+			},
+
+			host: function findOtherEventsByHost(cb) {
+				models.Event.findAll({
+					where: [
+						{ id: { $ne: event_.id } },
+						{ host: event_.host },
+						["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
+					],
+					order: "startdt"
+				}).then(function(evs) {
+					cb(null, evs);
+				});
+			}
+		},
+
+		function(err, results) {
+			res.render('event_page', {
+				event_: req.event_,
+				user: req.user,
+				otherEventsLocation: results.location,
+				otherEventsHost: results.host
+			});
+		});
 });
 
 module.exports = router;

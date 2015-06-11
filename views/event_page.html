@@ -70,8 +70,23 @@
 
 {% endblock %}
 
+
+{% macro listEvents(header, list) %}
+{% if list.length > 0 %}
+  <h4>{{ header }}</h4>
+  <ul>
+    {% for event_ in list %}
+      <li><a href="{{ event_.absolute_url }}">{{ event_.title }}</a> ({{ event_.startdt.format("DD MMM") }})
+    {% endfor %}
+  </ul>
+{% endif %}
+{% endmacro %}
+
 {% block rightcontent %}
+  {{ listEvents("Upcoming events with this host", otherEventsHost) }}
+  {{ listEvents("Upcoming events at this location", otherEventsLocation) }}
 {% endblock %}
+
 
 {% block script %}
 
