@@ -26,7 +26,12 @@ function saveEvent(item, error, done) {
 			importid: item.uid
 		})
 		.save({ validate: false })
-		.then(done)
+		.then(function (e_) {
+			// Must be called post-save to get ID property
+			e_.generateSlug();
+			e_.save({ validate: false })
+				.then(done);
+		})
 		.catch(function (e) {
 			error(e);
 		});
