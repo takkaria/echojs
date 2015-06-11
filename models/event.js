@@ -64,11 +64,14 @@ module.exports = function(db) {
 		enddt: {
 			type: sequelize.DATE,
 			get: function() {
-				var d = moment(this.getDataValue('enddt'));
-				return (d.isValid() ? d : null);
+				var val = this.getDataValue('enddt');
+				if (val) {
+					var d = moment(val);
+					return (d.isValid() ? d : null);
+				}
 			}
 		},
-		allday: {type: sequelize.BOOLEAN },
+		allday: { type: sequelize.BOOLEAN },
 
 		state: {
 			type: sequelize.ENUM,
@@ -95,8 +98,8 @@ module.exports = function(db) {
 			},
 			isMultiDay: function() {
 				if (!this.enddt)
-					return false
-				return (this.enddt.subtract(this.startdt).days() > 0);
+					return false;
+				return !this.startdt.isSame(this.enddt, 'day');
 			},
 
 			shortBlurb: function(readMore) {
