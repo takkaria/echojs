@@ -222,7 +222,7 @@ module.exports = function(db) {
 		},
 		validate: {
 			startBeforeEnd: function() {
-				if (this.enddt !== null && this.enddt.diff(this.startdt) < 0) {
+				if (this.enddt && this.enddt.diff(this.startdt) < 0) {
 					throw new Error("Event can't finish after it starts!")
 				}
 			},
