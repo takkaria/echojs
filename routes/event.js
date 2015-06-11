@@ -68,11 +68,12 @@ router.post('/add', function(req, res) {
 		state: defaultState(req)
 	});
 
-	event_.setLocation(b.location_id);
-
 	event_.save().then(function(e_) {
 		// Must be called post-save to get ID property
 		e_.generateSlug();
+		if (b.location_id) {
+			event_.setLocation(b.location_id);
+		}
 
 		// If we have an ID that works, erase the text
 		if (e_.location_id) {
