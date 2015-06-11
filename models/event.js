@@ -181,7 +181,7 @@ module.exports = function(db) {
 							}
 
 							for (var d_ = e.startdt.isBefore(one_day_past) ? moment() : e.startdt;
-									d_.isBefore(max);
+									d_.isBefore(e.enddt);
 									d_.add(1, 'days')) {
 								ordered[d_.format('YYYY-MM-DD')].events.push(e);
 							}
