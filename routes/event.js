@@ -132,29 +132,37 @@ router.get('/:year/:month/:slug', function(req, res) {
 				if (event_.location_text)
 					params.push({ location_text: req.event_.location_text });
 
-				models.Event.findAll({
-					where: [
-						{ id: { $ne: event_.id } },
-						{ $or: params },
-						["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
-					],
-					order: "startdt"
-				}).then(function(evs) {
-					cb(null, evs);
-				});
+				if (params.length == 0) {
+					cb(null, null);
+				} else {
+					models.Event.findAll({
+						where: [
+							{ id: { $ne: event_.id } },
+							{ $or: params },
+							["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
+						],
+						order: "startdt"
+					}).then(function(evs) {
+						cb(null, evs);
+					});
+				}
 			},
 
 			host: function findOtherEventsByHost(cb) {
-				models.Event.findAll({
-					where: [
-						{ id: { $ne: event_.id } },
-						{ host: event_.host },
-						["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
-					],
-					order: "startdt"
-				}).then(function(evs) {
-					cb(null, evs);
-				});
+				if (!event_.host) {
+					cb(null, null);
+				} else {
+					models.Event.findAll({
+						where: [
+							{ id: { $ne: event_.id } },
+							{ host: event_.host },
+							["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
+						],
+						order: "startdt"
+					}).then(function(evs) {
+						cb(null, evs);
+					});
+				}
 			}
 		},
 
