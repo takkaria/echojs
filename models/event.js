@@ -4,6 +4,14 @@ var moment = require('moment');
 var marked = require('marked');
 var slug = require('slug');
 
+moment.locale('en-shortDate', {
+	calendar: {
+		sameDay:  '[Today]',
+		nextDay:  '[Tomorrow]',
+		nextWeek: 'dddd'
+	}
+});
+
 module.exports = function(db) {
 	return db.define('event', {
 		id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
@@ -154,14 +162,14 @@ module.exports = function(db) {
 							list = [],
 							one_day_past = moment().subtract(1, 'days');
 
-						for (var d = moment(); d.isBefore(max); d.add(1, 'days')) {
+						for (var d = moment().locale('en-shortDate'); d.isBefore(max); d.add(1, 'days')) {
 							var chunk = {
 								date: d,
 								longDate: d.format("dddd, Do MMMM YYYY"),
 								events: []
 							}
 
-							if (d.diff(moment(), 'days') < 7){
+							if (d.diff(moment(), 'days') < 7) {
 								chunk.shortDate = d.calendar();
 							}
 
