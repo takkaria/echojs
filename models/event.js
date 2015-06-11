@@ -1,6 +1,7 @@
 var sequelize = require('sequelize');
 var url = require('url');
 var moment = require('moment');
+var ModifiedRenderer = require('../lib/marked-mod-render');
 var marked = require('marked');
 var slug = require('slug');
 
@@ -102,7 +103,9 @@ module.exports = function(db) {
 				return this.importid ? true : false;
 			},
 			blurbAsHTML: function() {
-				return marked(this.blurb);
+				return marked(this.blurb, {
+					renderer: ModifiedRenderer // new marked.Renderer
+				});
 			},
 			isMultiDay: function() {
 				if (!this.enddt)
@@ -114,10 +117,16 @@ module.exports = function(db) {
 				if (readMore === undefined)
 					readMore = true;
 
+				// Copy blurb so we don't alter the event object itself
+				var altered = this.blurb.slice(0);
+
 				// FIXME: This could be done with more finesse
-				if (this.blurb.length >= 180)
-					return this.blurb.substr(0, 179) + (readMore ? '… <i>(read more)</i>' : '...');
-				return this.blurb;
+				if (altered >= 180) {
+					altered = altered.substr(0, 179) + (readMore ? '… <i>(read more)</i>' : '...');
+				}
+
+				// Split up any long strings of characters without a space
+				return altered.replace(/([\S]{40})/g, '$1&shy;');
 			},
 
 			generateSlug: function() {
