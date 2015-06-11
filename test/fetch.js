@@ -109,5 +109,6 @@ describe("fetch", function() {
 			expect(result.toShortISOString()).to.equal("2015-06-25T14:00");
 		});
 */
+
 	});
 });
