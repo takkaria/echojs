@@ -141,10 +141,10 @@ module.exports = function(db) {
 				var max,
 					Event = this;
 
-				Event.max('enddt').then(function(_max){
+				Event.max('enddt').then(function(_max) {
 					max = _max;
 
-					Event.findAll(options).then(function(events){
+					Event.findAll(options).then(function(events) {
 						// This will look like
 						// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
 						var ordered = {},
@@ -171,24 +171,23 @@ module.exports = function(db) {
 						// Group events by date
 						events.forEach(function(e) {
 							// Add event to current chunk
-							if ((!e.isMultiDay())
-									&&(e.startdt.isAfter(one_day_past))){
+							if (!e.isMultiDay()
+									&& e.startdt.isAfter(one_day_past)) {
 								return ordered[e.startdt.format('YYYY-MM-DD')].events.push(e);
 							}
 
-							if(e.enddt.diff(e.startdt, 'days') > 7){
+							if (e.enddt.diff(e.startdt, 'days') > 7){
 								return ongoing.push(e);
 							}
 
-							for (
-										var d_ = e.startdt.isBefore(one_day_past) ? moment() : e.startdt;
-										d_.isBefore(max); d_.add(1, 'days')
-									){
+							for (var d_ = e.startdt.isBefore(one_day_past) ? moment() : e.startdt;
+									d_.isBefore(max);
+									d_.add(1, 'days')) {
 								ordered[d_.format('YYYY-MM-DD')].events.push(e);
 							}
 						});
 
-						for (var key in ordered){
+						for (var key in ordered) {
 							if (ordered[key].events.length > 0)
 								list.push(ordered[key]);
 						}
