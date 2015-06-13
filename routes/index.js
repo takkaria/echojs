@@ -26,7 +26,8 @@ router.get('/', function(req, res) {
 		],
 		order: "startdt ASC",
 		limit: 10
-	}, function(events) {
+	}, function(err, events) {
+		// XXX Handle errors
 		models.Post.findAll({
 			include: [ models.Feed ],
 			where: ["hidden IS NOT 1 AND date >= date('now', '-3 months') AND ( " +

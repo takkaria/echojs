@@ -36,39 +36,61 @@ describe("Event", function() {
 
 	describe("::groupByDays", function() {
 
-		var realMax;
-		var realFindAll;
+		var originalMax,
+		    originalFindAll,
+		    originalGetCurrentTime;
 
-		var testEvents = [
-			Event.build(),
-			Event.build()
-		];
-		var testEventMax = "end";
+		var testData = {
+			events: [],
+			eventMax: 0,
+			currentTime: undefined
+		}
 
 		before(function() {
-			realMax = Event.max;
-			realFindAll = Event.findAll;
+			originalMax = Event.max;
+			originalFindAll = Event.findAll;
+			originalGetCurrentTime = Event._getCurrentTime;
 
-			Event.findAll = utils.mockPromise(testEvents);
-			Event.max = utils.mockPromise(testEventMax);
+			Event.findAll         = utils.mockPromise(function() { return testData.events; });
+			Event.max             = utils.mockPromise(function() { return testData.eventMax; });
+			Event._getCurrentTime = function() { return moment(testData.currentTime); };
 		});
 
 		after(function() {
-			Event.max = realMax;
-			Event.findAll = realFindAll;
+			Event.max = originalMax;
+			Event.findAll = originalFindAll;
+			Event._getCurrentTime = originalGetCurrentTime;
 		});
 
 		it("should mock up OK", function(done) {
-
 			Event.max('enddt').then(function(max) {
-				expect(max).to.equal(testEventMax);
+				expect(max).to.equal(testData.eventMax);
 
 				Event.findAll().then(function(events) {
-					expect(events).to.equal(testEvents);
+					expect(events).to.equal(testData.events);
 					done();
 				});
 			});
+		});
 
+		it("should not crash for multiday events on a different calendar date but less 24 hours in the past", function(done) {
+
+			testData.currentTime = "2015-06-13T11:00:00.000+0100";
+			testData.eventMax = "2015-06-14T23:00:00.000+0100";
+			testData.events = [
+				Event.build({
+					title: 'Test data 1',
+					startdt: "2015-06-12T13:00:00.000+0100",
+					enddt: "2015-06-14T23:00:00.000+0100",
+					allday: null
+				})
+			];
+
+			Event.groupByDays(null, function (err, list) {
+				if (err) throw err;
+				expect(list).to.not.equal(null);
+				done();
+			});
 		});
 
 	});

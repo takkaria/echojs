@@ -4,6 +4,7 @@ var moment = require('moment');
 var ModifiedRenderer = require('../lib/marked-mod-render');
 var marked = require('marked');
 var slug = require('slug');
+var async = require('async');
 
 moment.locale('en-shortDate', {
 	calendar: {
@@ -154,69 +155,90 @@ module.exports = function(db) {
 			}
 		},
 		classMethods: {
-			groupByDays: function(options, callback) {
-				var max,
-					Event = this;
+			// This probably isn't the best place for this but I'm not sure where is -AS
+			// Used for unit tests
+			_getCurrentTime: function _getCurrentTime() {
+				return moment();
+			},
 
-				Event.max('enddt').then(function(_max) {
-					max = _max;
-
-					Event.findAll(options).then(function(events) {
-						// This will look like
-						// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
-						var ordered = {},
-							chunk,
-							last,
-							ongoing = [],
-							list = [],
-							one_day_past = moment().subtract(1, 'days');
-
-						for (var d = moment().locale('en-shortDate'); d.isBefore(max); d.add(1, 'days')) {
-							var chunk = {
-								date: d,
-								longDate: d.format("dddd, Do MMMM YYYY"),
-								events: []
-							}
-
-							if (d.diff(moment(), 'days') < 7) {
-								chunk.shortDate = d.calendar();
-							}
-
-							ordered[d.format('YYYY-MM-DD')] = chunk;
-						}
-
-						// Group events by date
-						events.forEach(function(e) {
-							// Add event to current chunk
-							if (!e.isMultiDay()
-									&& e.startdt.isAfter(one_day_past)) {
-								return ordered[e.startdt.format('YYYY-MM-DD')].events.push(e);
-							}
-
-							if (e.enddt.diff(e.startdt, 'days') > 7){
-								return ongoing.push(e);
-							}
-
-							for (var d_ = e.startdt.isBefore(one_day_past) ? moment() : e.startdt;
-									d_.isBefore(e.enddt);
-									d_.add(1, 'days')) {
-								ordered[d_.format('YYYY-MM-DD')].events.push(e);
-							}
-						});
-
-						for (var key in ordered) {
-							if (ordered[key].events.length > 0)
-								list.push(ordered[key]);
-						}
-
-						list.push({
-							longDate: 'Ongoing',
-							events: ongoing,
-							is_ongoing: true
-						});
-
-						return callback(list);
+			// Should probably go in a toolbox somewhere
+			_asyncPromise: function _asyncPromise(promise) {
+				return function(cb) {
+					promise.then(function(result) {
+						cb(null, result);
+					}).catch(function(err) {
+						cb(err);
 					});
+				};
+			},
+
+			groupByDays: function(options, callback) {
+				var Event = this;
+
+				async.parallel({
+					max:    Event._asyncPromise(Event.max('enddt')),
+					events: Event._asyncPromise(Event.findAll(options))
+				}, function(err, data) {
+					if (err)
+						return callback(err, null);
+
+					var max = data.max;
+					var events = data.events;
+
+					// This will look like
+					// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
+					var ordered = {},
+						chunk,
+						last,
+						ongoing = [],
+						list = [],
+						one_day_past = Event._getCurrentTime().subtract(1, 'days');
+
+					for (var d = Event._getCurrentTime().locale('en-shortDate'); d.isBefore(max); d.add(1, 'days')) {
+						var chunk = {
+							date: d,
+							longDate: d.format("dddd, Do MMMM YYYY"),
+							events: []
+						}
+
+						if (d.diff(Event._getCurrentTime(), 'days') < 7) {
+							chunk.shortDate = d.calendar();
+						}
+
+						ordered[d.format('YYYY-MM-DD')] = chunk;
+					}
+
+					// Group events by date
+					events.forEach(function(e) {
+						// Add event to current chunk
+						if (!e.isMultiDay()
+								&& e.startdt.isAfter(one_day_past)) {
+							return ordered[e.startdt.format('YYYY-MM-DD')].events.push(e);
+						}
+
+						if (e.enddt.diff(e.startdt, 'days') > 7) {
+							return ongoing.push(e);
+						}
+
+						for (var d_ = e.startdt.isBefore(one_day_past) ? Event._getCurrentTime() : moment(e.startdt);
+								d_.isBefore(e.enddt);
+								d_.add(1, 'days')) {
+							ordered[d_.format('YYYY-MM-DD')].events.push(e);
+						}
+					});
+
+					for (var key in ordered) {
+						if (ordered[key].events.length > 0)
+							list.push(ordered[key]);
+					}
+
+					list.push({
+						longDate: 'Ongoing',
+						events: ongoing,
+						is_ongoing: true
+					});
+
+					callback(err, list);
 				});
 			}
 		},
