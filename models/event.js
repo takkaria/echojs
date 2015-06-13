@@ -220,9 +220,7 @@ module.exports = function(db) {
 							return ongoing.push(e);
 						}
 
-						for (var d_ = e.startdt.isBefore(one_day_past) ? Event._getCurrentTime() : moment(e.startdt);
-								d_.isBefore(e.enddt);
-								d_.add(1, 'days')) {
+						for (var d_ = Event._getCurrentTime(); d_.isBefore(e.enddt); d_.add(1, 'days')) {
 							ordered[d_.format('YYYY-MM-DD')].events.push(e);
 						}
 					});
