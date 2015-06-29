@@ -112,6 +112,7 @@
 
 {% block script %}
 <script src="/bower_components/typeahead.js/dist/typeahead.bundle.min.js"></script>
+<script src="/bower_components/Countable/Countable.js"></script>
 <script>
 
 	$(function() {
@@ -209,6 +210,9 @@
 				}
 			});
 		}).trigger('change');
+		Countable.live($('#blurb')[0], function(counter) {
+				$('#wordcount').text(counter.words);
+		});
 	});
 </script>
 {% endblock %}
