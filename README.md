@@ -2,6 +2,7 @@ echojs
 ======
 
 [![Build Status](https://travis-ci.org/takkaria/echojs.svg?branch=master)](https://travis-ci.org/takkaria/echojs)
+[![Code Climate](https://codeclimate.com/github/takkaria/echojs/badges/gpa.svg)](https://codeclimate.com/github/takkaria/echojs)
 
 A news &amp; events aggregator (rewritten in Node).
 
