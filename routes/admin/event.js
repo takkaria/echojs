@@ -32,15 +32,18 @@ function canApproveOrReject(req, res, next) {
 }
 
 router.get('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, function(req, res) {
-	var event_ = req.event_;
+	var event_ = req.event_,
+		next = req.query.next ? req.query.next : '';
 	res.render('event_approve', {
 		event_: event_,
-		user: req.user
+		user: req.user,
+		next: next
 	});
 });
 
 router.post('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, function(req, res) {
-	var event_ = req.event_;
+	var event_ = req.event_,
+		next_ = req.body.next_;
 	event_.set('state', 'approved');
 	event_.generateSlug();
 	event_.save().then(function(e) {
@@ -49,7 +52,7 @@ router.post('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, func
 								event_.absolute_url, event_.id);
 			if (!e.isImported())
 				mailer.sendEventApprovedMail(event_);
-			res.redirect(e.absolute_url);
+			next_ ? res.redirect(next_) : res.redirect(e.absolute_url);
 		})
 	})
 	.catch(function(errors){
@@ -58,15 +61,18 @@ router.post('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, func
 });
 
 router.get('/:event_id/reject', ensure.editorOrAdmin, canApproveOrReject, function(req, res) {
-	var event_ = req.event_;
+	var event_ = req.event_,
+		next = req.query.next ? req.query.next : '';
 	res.render('event_reject', {
 		event_: req.event_,
-		user: req.user
+		user: req.user,
+		next: next
 	});
 });
 
 router.post('/:event_id/reject', ensure.editorOrAdmin, canApproveOrReject, function(req, res) {
-	var event_ = req.event_;
+	var event_ = req.event_,
+		next_ = req.body.next_;
 	var msg = req.body.reason;
 
 	var sendEmail = req.body.email ? true : false;
@@ -92,7 +98,7 @@ router.post('/:event_id/reject', ensure.editorOrAdmin, canApproveOrReject, funct
 		req.flash('warning', 'Event <a href="%s">%s</a> hidden%s',
 							event_.absolute_url, event_.id,
 							!sendEmail ? " (no email sent)": "");
-		res.redirect('/admin');
+		next_ ? res.redirect(next_) : res.redirect(e.absolute_url);
 	})
 	.catch(function(errors){
 		debug(errors);
