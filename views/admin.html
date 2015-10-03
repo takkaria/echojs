@@ -27,28 +27,28 @@
 			<table class="table">
 				<tr>
 					<th>id</th>
-					<th>title</th>
-					<th>start</th>
-					<th>end</th>
-					<th>location</th>
-					<th>host</th>
-					<th>url</th>
+					<th>event</th>
+					<th>times</th>
+					<th class="blurb">blurb</th>
 					<th>state</th>
 					<th>actions</th>
 				</tr>
 				{% for event in events_ %}
 				<tr>
 					<td><a href="/admin/event/{{ event.id }}">{{ event.id }}</a></td>
-					<td>{{ event.title }}</td>
-					<td>{{ event.startdt.format("YYYY-MM-DD ha") }}</td>
-					<td>{% if event.enddt.isValid() %}
-						{{ event.enddt.format("YYYY-MM-DD ha") }}
-					{% else %}
-						<i>(not set)</i>
-					{% endif %}</td>
-					<td>{{ event.shortLocation }}</td>
-					<td>{{ event.host }}</td>
-					<td>{{ event.url }}</td>
+					<td>
+						<p><b>{{ event.title }}</b>
+						<p>host: {{ event.host }}
+						<p>location: {{ event.shortLocation }}
+						<p>url: {{ event.url }}</td>
+					<td class="date">
+						from {{ event.startdt.format("YYYY-MM-DD ha") }}<br>
+						to {% if event.enddt.isValid() %}
+							{{ event.enddt.format("YYYY-MM-DD ha") }}
+						{% else %}
+							<i>(not set)</i>
+						{% endif %}</td>
+					<td class="blurb">{{ event.blurbAsHTML() }}</td>
 					<td>{{ event.state }}</td>
 					<td>
 						<a href="/admin/event/{{ event.id }}/edit" class="btn btn-xs btn-info">
