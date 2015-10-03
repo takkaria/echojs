@@ -23,19 +23,7 @@ router.get('/:event_id', ensure.editorOrAdmin, function(req, res) {
 	});
 });
 
-router.get('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
-	var event_ = req.event_,
-		next = req.query.next ? req.query.next : '';
-	res.render('event_approve', {
-		event_: event_,
-		user: req.user,
-		next: next
-	});
-});
-
-router.post('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
-	var event_ = req.event_,
-		next_ = req.body.next_;
+function approveEvent(req, res, event_, next_) {
 	event_.set('state', 'approved');
 	event_.generateSlug();
 	event_.save().then(function(e) {
@@ -51,6 +39,29 @@ router.post('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
 	.catch(function(errors){
 		debug(errors);
 	});
+}
+
+router.get('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
+	var event_ = req.event_,
+		next = req.query.next ? req.query.next : '',
+		instant = req.query.instant ? true : false;
+
+	if (instant) {
+		approveEvent(req, res, event_, next);
+	} else {
+		res.render('event_approve', {
+			event_: event_,
+			user: req.user,
+			next: next
+		});
+	}
+});
+
+router.post('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
+	var event_ = req.event_,
+		next = req.body.next;
+
+	approveEvent(req, res, event, next);
 });
 
 router.get('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
