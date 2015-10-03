@@ -23,15 +23,7 @@ router.get('/:event_id', ensure.editorOrAdmin, function(req, res) {
 	});
 });
 
-function canApproveOrReject(req, res, next) {
-	if (req.event_.state === 'approved' || req.event_.state === 'hidden') {
-		res.redirect('/admin/' + req.event_.id);
-	} else {
-		return next();
-	}
-}
-
-router.get('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, function(req, res) {
+router.get('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
 	var event_ = req.event_,
 		next = req.query.next ? req.query.next : '';
 	res.render('event_approve', {
@@ -41,15 +33,16 @@ router.get('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, funct
 	});
 });
 
-router.post('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, function(req, res) {
+router.post('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
 	var event_ = req.event_,
 		next_ = req.body.next_;
 	event_.set('state', 'approved');
 	event_.generateSlug();
 	event_.save().then(function(e) {
 		e.reload().then(function() {
-			req.flash('success', 'Event <a href="%s">%s</a> approved',
-								event_.absolute_url, event_.id);
+			req.flash('success',
+					'Event <a href="%s">%s</a> approved. <a href="/admin/event/%s/reject">Hide event instead?</a>',
+					event_.absolute_url, event_.id, event_.id);
 			if (!e.isImported())
 				mailer.sendEventApprovedMail(event_);
 			next_ ? res.redirect(next_) : res.redirect(e.absolute_url);
@@ -60,7 +53,7 @@ router.post('/:event_id/approve', ensure.editorOrAdmin, canApproveOrReject, func
 	});
 });
 
-router.get('/:event_id/reject', ensure.editorOrAdmin, canApproveOrReject, function(req, res) {
+router.get('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 	var event_ = req.event_,
 		next = req.query.next ? req.query.next : '';
 	res.render('event_reject', {
@@ -70,7 +63,7 @@ router.get('/:event_id/reject', ensure.editorOrAdmin, canApproveOrReject, functi
 	});
 });
 
-router.post('/:event_id/reject', ensure.editorOrAdmin, canApproveOrReject, function(req, res) {
+router.post('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 	var event_ = req.event_,
 		next_ = req.body.next_;
 	var msg = req.body.reason;
@@ -95,10 +88,11 @@ router.post('/:event_id/reject', ensure.editorOrAdmin, canApproveOrReject, funct
 		if (sendEmail)
 			mailer.sendEventRejectedMail(event_, msg);
 
-		req.flash('warning', 'Event <a href="%s">%s</a> hidden%s',
-							event_.absolute_url, event_.id,
-							!sendEmail ? " (no email sent)": "");
-		next_ ? res.redirect(next_) : res.redirect(e.absolute_url);
+		req.flash('warning', 'Event <a href="%s">%s</a> hidden%s. <a href="/admin/event/%s/approve">Show event instead?</a>',
+				event_.absolute_url, event_.id,
+				!sendEmail ? " (no email sent)": "",
+				event_.id);
+		next_ ? res.redirect(next_) : res.redirect(event_.absolute_url);
 	})
 	.catch(function(errors){
 		debug(errors);
@@ -144,7 +138,7 @@ router.post('/:event_id/edit', ensure.editorOrAdmin, function(req, res) {
 	e
 		.save({ validate: false })
 		.then(function(event_) {
-			req.flash('success', 'Event <a href="/admin/event/%s">%s</a> edited',
+			req.flash('success', 'Event <a href="/admin/event/%s">%s</a> edited.',
 								event_.id, event_.slug);
 			res.redirect('/admin/event/' + event_.id);
 		})
