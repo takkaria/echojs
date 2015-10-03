@@ -33,8 +33,10 @@
  
 <h2>
   {{ event_.title }}
+
   {% if user.rights === 'admin' or user.rights === 'editor' %}
   <a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-primary">edit</a>
+  <span class="btn btn-xs btn-info">status '{{ event_.state }}'</span>
   {% endif %}
 
   {% if user.rights === 'admin' or user.rights === 'editor' %}
@@ -50,6 +52,13 @@
         un-approve
       </a>
     {% endif %}
+
+    {% if event_.state == "hidden" %}
+      <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
+        approve
+      </a>
+    {% endif %}
+
   {% endif %}
 </h2>
 
