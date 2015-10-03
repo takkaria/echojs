@@ -3,6 +3,13 @@
 {% block title %}About{% endblock %}
 {% block pageclass %}about{% endblock %}
 
+{% block breadcrumb %}
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li>About</li>
+</ol>
+{% endblock %}
+
 {% block rightcontent %}
 
 <div data-spy="affix" id="contents">
@@ -12,6 +19,7 @@
 		<li><a href="#getting-your-news-on-echo">Getting your news on Echo</a>
 		<li><a href="#embedding-our-calendar">Embedding our calendar</a>
 		<li><a href="#source-code-and-license">Source code and licence</a>
+		<li><a href="#privacy">Privacy</a>
 		<li><a href="#contact-us">Contact us</a>
 	</ul>
 </div>
@@ -66,6 +74,16 @@ style="border: none;"></iframe>`
 
 Please let us know if you do this or if you would like help doing this - we're happy to assist!
 
+## Privacy
+
+We don't keep records of your IP address and by default we use secure HTTP to transfer data to your computer.
+
+We do set a few cookies on your computer when you visit our site.  One is for our statistics so we can track how and how many people are using the site, but we anonymise your IP address before it gets stored in our database.  If you object to this tracking, you can set the '[Do Not Track][dnt]' preference in your browser and we'll respect that preference.  However a lot of sites don't, and if you don't want to be tracked all around the web we recommend you use a tracking blocker such as [Ghostery][ghostery].
+
+We set another cookie to keep track of your browsing session but this doesn't carry any identifying information and is just used to make the site more functional.
+
+If you have concerns about your privacy when using this site, please get in touch.
+
 ## Source code and license
 
 Echo is licensed under the [GNU AGPL v3][agplv3], which means that it's free software - you're free to take it, modify it, and use it yourself.  We develop in public using GitHub and our repository is at [takkaria/echojs][github].
@@ -77,8 +95,10 @@ If you're interested in developing, please get in touch, or just start hacking a
 To contact us, email support [at] echomanchester.net.
 
 
-[agplv3]: https://www.gnu.org/licenses/agpl-3.0.en.html
-[github]:  https://github.com/takkaria/echojs
+[agplv3]:   https://www.gnu.org/licenses/agpl-3.0.en.html
+[github]:   https://github.com/takkaria/echojs
+[dnt]:      http://donottrack.us/
+[ghostery]: https://www.ghostery.com/en/try-us/download-add-on/
 
 {% endmarked %}
 
