@@ -6,13 +6,20 @@ var marked = require('marked');
 var slug = require('slug');
 var async = require('async');
 
+var origLocale = moment().locale();
+
+// Create a special locale just for dates for Event.groupByDate()
 moment.locale('en-shortDate', {
 	calendar: {
 		sameDay:  '[Today]',
 		nextDay:  '[Tomorrow]',
-		nextWeek: 'dddd'
+		nextWeek: 'dddd',
+		sameElse: 'dddd, Do MMMM'
 	}
 });
+
+// And return to our normal locale
+moment.locale(origLocale);
 
 module.exports = function(db) {
 	return db.define('event', {

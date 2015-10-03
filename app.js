@@ -12,7 +12,7 @@ var swig = require('swig');
 var markedSwig = require('swig-marked');
 var passport = require('passport');
 var paginate = require('express-paginate');
-
+var moment = require('moment');
 
 var models = require('./models');
 
@@ -34,6 +34,19 @@ app.locals.site = process.env.HOST + (
   ? ''
   : process.env.PORT
 )
+
+// Set up a more humanistic calendar display
+// See: http://momentjs.com/docs/#/customization/calendar/
+moment.locale('en', {
+    calendar: {
+        lastWeek: '[last] dddd, h:mma',
+        lastDay:  '[Yesterday], h:mma',
+        sameDay:  '[Today], h:mma',
+        nextDay:  '[Tomorrow], h:mma',
+        nextWeek: 'dddd, h:mma',
+        sameElse: 'dddd, Do MMMM h:mma'
+    }
+});
 
 // view engine setup
 app.engine('html', swig.renderFile);

@@ -3,19 +3,6 @@ var router = express.Router();
 var moment = require('moment');
 var models = require('../models');
 
-// Get rid of the times from moment.calendar() strings as we only want dates
-// See: http://momentjs.com/docs/#/customization/calendar/
-moment.locale('en', {
-	calendar : {
-		lastWeek : '[last] dddd',
-		lastDay : '[Yesterday]',
-		sameDay : '[Today], h:mma',
-		nextDay : '[Tomorrow], h:mma',
-		nextWeek : 'dddd, h:mma',
-		sameElse : 'dddd, Do MMMM h:mma'
-	}
-});
-
 /* GET home page. */
 router.get('/', function(req, res) {
 	models.Event.groupByDays({
