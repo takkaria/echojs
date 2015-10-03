@@ -8,13 +8,14 @@
     "build": "npm run sass",
     "test": "bin/initdb && mocha",
     "upgrade": "git pull && npm install && bower install && npm run build && npm test",
-    "sass:basic": "sass -I bower_components/ scss:public/stylesheets",
-    "sass:watch": "npm run sass:basic -- --watch",
-    "sass": "npm run sass:basic -- --update",
+    "sass:basic": "node-sass --include-path bower_components/ scss -o public/stylesheets",
+    "sass:watch": "npm run sass:basic -- -w",
+    "sass": "npm run sass:basic",
     "sass_compat": "sass -I bower_components/ scss:public/stylesheets --watch"
   },
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "mocha": "^2.3.3",
+    "node-sass": "^3.3.3"
   },
   "dependencies": {
     "async": "^1.4.2",
