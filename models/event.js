@@ -6,21 +6,6 @@ var marked = require('marked');
 var slug = require('slug');
 var async = require('async');
 
-var origLocale = moment().locale();
-
-// Create a special locale just for dates for Event.groupByDate()
-moment.locale('en-shortDate', {
-	calendar: {
-		sameDay:  '[Today]',
-		nextDay:  '[Tomorrow]',
-		nextWeek: 'dddd',
-		sameElse: 'dddd, Do MMMM'
-	}
-});
-
-// And return to our normal locale
-moment.locale(origLocale);
-
 module.exports = function(db) {
 	return db.define('event', {
 		id: { type: sequelize.INTEGER, primaryKey: true, autoIncrement: true },
@@ -201,7 +186,7 @@ module.exports = function(db) {
 						list = [],
 						one_day_past = Event._getCurrentTime().subtract(1, 'days');
 
-					for (var d = Event._getCurrentTime().locale('en-shortDate'); d.isBefore(max); d.add(1, 'days')) {
+					for (var d = Event._getCurrentTime(); d.isBefore(max); d.add(1, 'days')) {
 						var chunk = {
 							date: d,
 							longDate: d.format("dddd, Do MMMM YYYY"),

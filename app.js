@@ -37,16 +37,17 @@ app.locals.site = process.env.HOST + (
 )
 app.locals.statichost = process.env.STATIC_HOST || '';
 
-// Set up a more humanistic calendar display
+// Set up calendar to not include times.
+// models/event.js depends on this.
 // See: http://momentjs.com/docs/#/customization/calendar/
 moment.locale('en', {
     calendar: {
-        lastWeek: '[last] dddd, h:mma',
-        lastDay:  '[Yesterday], h:mma',
-        sameDay:  '[Today], h:mma',
-        nextDay:  '[Tomorrow], h:mma',
-        nextWeek: 'dddd, h:mma',
-        sameElse: 'dddd, Do MMMM h:mma'
+        lastWeek: '[last] dddd',
+        lastDay:  '[Yesterday]',
+        sameDay:  '[Today]',
+        nextDay:  '[Tomorrow]',
+        nextWeek: 'dddd',
+        sameElse: 'dddd, Do MMMM'
     }
 });
 

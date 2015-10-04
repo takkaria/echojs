@@ -1,5 +1,32 @@
 <div class="box event-box">
-	<p class="head">{{ event_.startdt.calendar() }}</p>
+	<p class="head">
+
+	  {% if event_.allday %}
+		{{ event_.startdt.calendar() }}
+	  {% else %}
+		{{ event_.startdt.calendar() }}{{ event_.startdt.format(", h:mma") }}
+	  {% endif %}
+
+	  {% if event_.enddt %}
+	    &ndash;
+
+	    {% if event_.isMultiDay() %}
+	      {% if event_.allday %}
+	        {{ event_.enddt.calendar() }}
+	      {% else %}
+	        {{ event_.enddt.calendar() }}, 
+	      {% endif %}
+	    {% endif %}
+
+	    {% if !event_.allday %}
+	      {{ event_.enddt.format("h:mma") }}
+	    {% endif %}
+
+	  {% endif %}
+
+	  [{{ event_.startdt.toISOString() }}, {{ event_.enddt.toISOString() }}]
+
+	</p>
 
 	<h4><a href="{{ event_.absolute_url }}">{{ event_.title }}</a></h4>
 	{% if event_.host %}<p class="host">Hosted by {{ event_.host }}</p>{% endif %}
