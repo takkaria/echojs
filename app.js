@@ -1,3 +1,5 @@
+require('dotenv').load();
+
 var express = require('express');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
@@ -28,7 +30,6 @@ var embed = require('./routes/embed');
 var app = express();
 
 // "global" view variables
-require('dotenv').load();
 app.locals.site = process.env.HOST + (
   typeof process.env.PORT === 'undefined'
   ? ''
