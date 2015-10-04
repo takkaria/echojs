@@ -1,32 +1,8 @@
-$primary-colour:     #8fbc8f;
-$primary-colour-l15: lighten($primary-colour, 15%);
-
-////////// BOOTSTRAP //////////
-
-// List of variables here: http://getbootstrap.com/customize/#less-variables
-$font-size-base: 14px;
-
-// Navbar
-$navbar-height:                 55px;
-$navbar-margin-bottom:          0;
-$navbar-border-radius:          0;
-$navbar-default-color:          black;
-$navbar-default-bg:             $primary-colour;
-$navbar-default-border:         transparent;
-$navbar-default-link-color:     $navbar-default-color;
-
-// Jumbotron
-$jumbotron-padding:             5px;
-$jumbotron-bg:                  $primary-colour-l15;
-$jumbotron-font-size:           $font-size-base;
-
-// Breadcrumbs
-$breadcrumb-bg:                 transparent;
-$breadcrumb-color:              #666;
-
+@import "_variables.scss";
 @import "bootstrap-sass/assets/stylesheets/bootstrap";
+@import "_boxes.scss";
 
-// Override
+// Override Bootstrap
 .jumbotron {
 	p { font-weight: normal; }
 	h2 { font-size: $font-size-h3; }
@@ -38,17 +14,13 @@ $breadcrumb-color:              #666;
 
 .alert { margin-top: 15px; }
 
-////////// COMMON //////////
-
-@import "_common.scss";
-
 ////////// LAYOUT //////////
 
 footer {
 	padding: 2em 0;
 	margin: 1em 0 0 0;
 	text-align: center;
-	background-color: $primary-colour-l15;
+	background-color: $brand-primary-l15;
 
 	p { margin-bottom: 0; }
 }
@@ -85,9 +57,6 @@ footer {
 
 		// NB: Bootstrap applies also 10px bottom margin
 		p { text-align: center; line-height: 100px; font-size: 200%; } 
-
-		a { color: #555; }
-		&:hover a { color: #337ab7; } // FIXME: colour should use the var for anchor colour
 	}
 }
 
@@ -155,7 +124,7 @@ div.img {
 // about.html
 .about {
 	#contents {
-		width: 15em; margin-top: 3em; border-top: 2px solid $primary-colour;
+		width: 15em; margin-top: 3em; border-top: 2px solid $brand-primary;
 		ul { margin-top: 1em; margin-left: 0; padding-left: 0; list-style-type: none; }
 		li { margin-bottom: 5px; margin-left: 10px; }
 	}

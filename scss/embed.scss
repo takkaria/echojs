@@ -1,12 +1,11 @@
-$font-size-base: 16px;
-
 // Import some of bootstrap
+@import "_variables.scss";
 @import "bootstrap-sass/assets/stylesheets/bootstrap/variables";
 @import "bootstrap-sass/assets/stylesheets/bootstrap/mixins";
 @import "bootstrap-sass/assets/stylesheets/bootstrap/scaffolding";
 @import "bootstrap-sass/assets/stylesheets/bootstrap/type";
 
-@import "_common.scss";
+@import "_boxes.scss";
 
 html { font-family: sans-serif; }
 #calendar { background-color: white; }

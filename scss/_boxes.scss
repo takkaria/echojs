@@ -5,10 +5,6 @@
 %shadow-depth-4 { box-shadow: 0 25px 55px 0 rgba(0, 0, 0, 0.21), 0 16px 28px 0 rgba(0, 0, 0, 0.22); }
 %shadow-depth-5 { box-shadow: 0 40px 77px 0 rgba(0, 0, 0, 0.22), 0 27px 24px 0 rgba(0, 0, 0, 0.2); }
 
-// Typography
-h1, h2, h3, h4, h5, h6, nav { font-family: "Raleway"; }
-h2 { font-weight: bold; }
-
 // Generic effects we might want to re-use
 .box {
 	border: 1px solid #eee;
