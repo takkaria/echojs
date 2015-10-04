@@ -61,7 +61,7 @@ router.post('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
 	var event_ = req.event_,
 		next = req.body.next;
 
-	approveEvent(req, res, event, next);
+	approveEvent(req, res, event_, next);
 });
 
 router.get('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
