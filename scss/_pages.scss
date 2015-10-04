@@ -1,0 +1,91 @@
+// Individual page styles
+
+// index.html
+.index {
+	ul.news {
+		clear: both; margin-left: 0; padding-left: 1em;
+		li { margin-bottom: 0.5em; }
+	}
+
+	.add-yours {
+		@extend .box;
+		@extend %boxhover;
+
+		// NB: Bootstrap applies also 10px bottom margin
+		p { text-align: center; line-height: 100px; font-size: 200%; } 
+	}
+}
+
+// events.html
+.event_calendar #calendar {
+	margin-top: 20px;
+}
+
+.event_calendar #popup {
+	@extend %eventpopup;
+}
+
+// event_[add|edit].html
+.event_form {
+
+	// This is to stop excess whitespace
+	@media (min-width: $screen-md-min) {
+		.date-input .form-group {
+			margin-bottom: 0;
+		}
+	}
+
+	// Some styling to get the input element to appear correctly
+	// This bit is just kind of gross but required cos of the way typeahead.js works :(
+	span.twitter-typeahead {
+		width: 100%;
+		display: table-cell !important;	// If we don't !important, it gets overriden by script
+
+		input#location_text { // This much specificity overrides Bootstrap
+			border-radius: $border-radius-base;
+			@include border-left-radius(0);
+		}
+	}
+
+	.tt-dropdown-menu {
+		background-color: white; border: 1px solid #aaa; width: 500px;
+		p { margin: 0; padding: 10px; }
+	}
+
+	.tt-suggestion.tt-cursor { background-color: #ddd; }
+	.tt-selected { background-color: lighten($brand-success, 40%) !important; }
+}
+
+// event_page.html
+.event h2 { margin-top: 0; }
+
+div.img {
+  background: url("http://api.ning.com/files/a8yFieGq6xqi92JtUXmbI7z6w59H2RKgNzMtZtvq2MaNfpzVwuExGqJ4iZ1lvscEZ8jebnC8V5wMpK*6yLPJWzMyvMR1oCVC/223470_1031354102634_1188814802_30087004_1015_n2.jpg")
+    #eee no-repeat;
+  background-size: cover;
+  height: 150px;
+}
+
+// login.html
+#loginbox { margin-top: 2em; margin-bottom: 6em; }
+
+// locations.html
+.locations {
+	td:nth-child(2) { min-width: 11em; }
+	td h4 { margin-top: 0; }
+}
+
+// about.html
+.about {
+	#contents {
+		width: 15em; margin-top: 3em; border-top: 2px solid $brand-primary;
+		ul { margin-top: 1em; margin-left: 0; padding-left: 0; list-style-type: none; }
+		li { margin-bottom: 5px; margin-left: 10px; }
+	}
+}
+
+// admin.html
+.admin {
+	.blurb { max-width: 45em; }
+	.date { min-width: 12em; }
+}

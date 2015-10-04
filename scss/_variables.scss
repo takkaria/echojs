@@ -1,8 +1,6 @@
 // Echo's Bootstrap overrides
 // List of variables here: http://getbootstrap.com/customize/#less-variables
 
-// really like this colour: #E6781C;
-
 // Colours
 $brand-primary:     #8fbc8f;
 $brand-primary-l15: lighten($brand-primary, 15%);
@@ -23,6 +21,12 @@ $font-size-h3:            ceil(($headings-size-base * 1.7)) !default; // ~24px
 $font-size-h4:            ceil(($headings-size-base * 1.25)) !default; // ~18px
 $font-size-h5:            $headings-size-base !default;
 $font-size-h6:            ceil(($headings-size-base * 0.85)) !default; // ~12px
+
+// Buttons
+$btn-primary-bg:     darken($brand-primary, 15%);
+
+// Breadcrumbs
+$breadcrumb-padding-horizontal: 0px;
 
 // Navbar
 $navbar-height:                 55px;

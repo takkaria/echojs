@@ -1,0 +1,36 @@
+// Layout
+
+footer {
+	padding: 2em 0;
+	margin: 1em 0 0 0;
+	text-align: center;
+	background-color: $brand-primary-l15;
+
+	p { margin-bottom: 0; }
+}
+
+#map-canvas { width: 100%; height: 300px; }
+
+.fullwidth {
+	@extend .col-md-12;
+	@extend .col-sm-12;
+}
+
+.leftcontent {
+	@extend .col-md-8;
+	@extend .col-sm-7;
+}
+
+.rightcontent {
+	@extend .col-md-4;
+	@extend .col-sm-5;
+}
+
+.jumbo {
+	@extend .jumbotron;
+
+	p { font-weight: normal; }
+	h2 { font-size: $font-size-h3; }
+
+	margin-bottom: 0;
+}
