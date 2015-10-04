@@ -4,7 +4,7 @@ var moment = require('moment');
 var models = require('../models');
 
 /* GET home page. */
-router.get('/', function(req, res) {
+router.get('/', function(req, res, next) {
 	models.Event.groupByDays({
 		include: [ models.Location ],
 		where: [
@@ -14,7 +14,8 @@ router.get('/', function(req, res) {
 		order: "startdt ASC",
 		limit: 10
 	}, function(err, events) {
-		// XXX Handle errors
+		if (err) return next(err);
+
 		models.Post.findAll({
 			include: [ models.Feed ],
 			where: ["hidden IS NOT 1 AND date >= date('now', '-3 months') AND ( " +
@@ -27,6 +28,8 @@ router.get('/', function(req, res) {
 				posts: posts,
 				user: req.user
 			});
+		}).catch(function(err) {
+			next(err);
 		});
 	});
 });
