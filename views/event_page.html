@@ -29,7 +29,30 @@
  
 {# <div class="img"></div> one day... #}
 
-<h4 class="date">{{ event_.startdt.format("dddd, Do MMMM, h:mma") }}</h4>
+<h4 class="date">
+  {% if event_.allday %}
+    {{ event_.startdt.format("dddd, Do MMMM") }}
+  {% else %}
+    {{ event_.startdt.format("dddd, Do MMMM, h:mma") }}
+  {% endif %}
+
+  {% if event_.enddt %}
+    &ndash;
+
+    {% if event_.isMultiDay() %}
+      {% if event_.allday %}
+        {{ event_.enddt.format("dddd, Do MMMM") }}
+      {% else %}
+        {{ event_.enddt.format("dddd, Do MMMM, ") }}
+      {% endif %}
+    {% endif %}
+
+    {% if !event_.allday %}
+      {{ event_.enddt.format("h:mma") }}
+    {% endif %}
+
+  {% endif %}
+</h4>
  
 <h2>
   {{ event_.title }}
