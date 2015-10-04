@@ -138,6 +138,7 @@ router.post('/:event_id/edit', ensure.editorOrAdmin, function(req, res) {
 		title: b.title,
 		startdt: b.startdt,
 		enddt: b.enddt,
+		allday: b.allday ? true : false,
 		blurb: b.blurb,
 		location_text: b.location_text,
 		host: b.host,

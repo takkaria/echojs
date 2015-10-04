@@ -106,19 +106,20 @@ router.get('/ical', function(req, res) {
 			})
 			.setTTL('PT12H');
 
-		events.forEach(function(event) {
-			var start = moment(event.startdt);
-			var end = event.enddt ? moment(event.enddt) : null;
+		events.forEach(function(event_) {
+			var start = moment(event_.startdt);
+			var end = event_.enddt ? moment(event_.enddt) : null;
 
-			cal.addEvent({
-				uid: event.id,
+			cal.addEvent_({
+				uid: event_.id,
 				tz: "Europe/London",
 				start: start.toDate(),
 				end: end ? end.toDate() : undefined,
-				summary: event.title,
-				description: event.blurb,
-				location: event.location,
-				url: event.url || undefined,
+				allDay: event_.allday,
+				summary: event_.title,
+				description: event_.blurb,
+				location: event_.location,
+				url: event_.url || undefined,
 			});
 		});
 
