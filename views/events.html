@@ -22,9 +22,9 @@
 {% endblock %}
 
 {% block script %}
-<script src="/bower_components/moment/min/moment.min.js"></script>
-<script src="/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
-<style>@import "/bower_components/fullcalendar/dist/fullcalendar.min.css";</style>
+<script src="{{ statichost }}/bower_components/moment/min/moment.min.js"></script>
+<script src="{{ statichost }}/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+<style>@import "{{ statichost }}/bower_components/fullcalendar/dist/fullcalendar.min.css";</style>
 
 <script>
 $(document).ready(function() {

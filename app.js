@@ -35,6 +35,7 @@ app.locals.site = process.env.HOST + (
   ? ''
   : process.env.PORT
 )
+app.locals.statichost = process.env.STATIC_HOST || '';
 
 // Set up a more humanistic calendar display
 // See: http://momentjs.com/docs/#/customization/calendar/
