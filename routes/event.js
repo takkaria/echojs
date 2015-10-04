@@ -49,12 +49,28 @@ function defaultState(req) {
 router.post('/add', function(req, res) {
 	var b = req.body;
 
-	b.startdt = moment(b.startdt, 'YYYY/MM/DD hh:mm')
-	// strict mode to prevent blank enddt being taken as "now"
-	b.enddt = moment(b.enddt, 'YYYY/MM/DD hh:mm', true)
-	if (!b.enddt.isValid()) {
-		b.enddt = null;
+	// This code is shared with routes/admin/event.js. XXX
+
+	// We parse start dates loosely because it reduces the chance of data loss
+	b.startdt = moment(b.startdt, 'YYYY/MM/DD HH:mm');
+
+	// End dates need more care.
+	// 1. We parse with strict mode to prevent blank enddt being taken as "now"
+	// 2. This means that if moment can't find a time, it marks the date as invalid.
+	//    So we have to use an alternative parse string for all-day events.
+	if (b.allday) {
+		b.enddt = moment(b.enddt, 'YYYY/MM/DD', true);
+	} else {
+		b.enddt = moment(b.enddt, 'YYYY/MM/DD HH:mm', true);
 	}
+
+	if (!b.enddt.isValid()) b.enddt = null;
+
+	// If the end date and start date are the same and we're doing 'all day',
+	// nuke the end date.
+	if (b.allday && b.startdt.isSame(b.enddt, 'day'))
+		b.enddt = null;
+
 
 	var event_ = models.Event.build({
 		title: b.title,

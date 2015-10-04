@@ -121,17 +121,28 @@ router.post('/:event_id/edit', ensure.editorOrAdmin, function(req, res) {
 	var b = req.body,
 		e = req.event_;
 
-	b.startdt = moment(b.startdt, 'YYYY/MM/DD hh:mm')
-	// strict mode to prevent blank enddt being taken as "now"
-	b.enddt = moment(b.enddt, 'YYYY/MM/DD hh:mm', true)
-	if (!b.enddt.isValid()) {
-		b.enddt = null;
+	// We parse start dates loosely because it reduces the chance of data loss
+	b.startdt = moment(b.startdt, 'YYYY/MM/DD HH:mm');
+
+	// End dates need more care.
+	// 1. We parse with strict mode to prevent blank enddt being taken as "now"
+	// 2. This means that if moment can't find a time, it marks the date as invalid.
+	//    So we have to use an alternative parse string for all-day events.
+	if (b.allday) {
+		b.enddt = moment(b.enddt, 'YYYY/MM/DD', true);
+	} else {
+		b.enddt = moment(b.enddt, 'YYYY/MM/DD HH:mm', true);
 	}
 
+	if (!b.enddt.isValid()) b.enddt = null;
+
+	// If the end date and start date are the same and we're doing 'all day',
+	// nuke the end date.
+	if (b.allday && b.startdt.isSame(b.enddt, 'day'))
+		b.enddt = null;
+
 	// Only one of (id, text) can be stored
-	if (b.location_id) {
-		b.location_text = null;
-	}
+	if (b.location_id) b.location_text = null;
 
 	e.setLocation(b.location_id);
 	e.set({
