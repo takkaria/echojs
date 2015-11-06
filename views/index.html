@@ -26,17 +26,7 @@
 
 <!--			<h3 class="eventlist-date">This week <small>(Fri 6 Nov - Sun 8 Nov)</small></h3> -->
 
-			{% for chunk in events %}
-				{% if chunk.shortDate %}
-					<h3 class="eventlist-date">{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small></h3>
-				{% else %}
-					<h3 class="eventlist-date">{{ chunk.longDate }}</h3>
-				{% endif %}
-
-				{% for event_ in chunk.events %}
-					{{ eventbox.eventbox(event_) }}
-				{% endfor %}
-			{% endfor %}
+			{% include "_eventlist.html" %}
 
 			<p class="see-more"><a href="/events">See more events <i class="fa fa-angle-right"></i></a></p>
 
