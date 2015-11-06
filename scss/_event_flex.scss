@@ -18,6 +18,8 @@
 }
 
 .event-flex {
+    display: block;
+
     // Layout
     @extend .row;
     .date { @extend .col-md-2; }
@@ -27,11 +29,12 @@
     padding: 1rem 0;
     margin: 1rem 0;
 
-    color: black;   // XXX does bootstrap have a var for this
+    color: black; // does bootstrap have a thing for this
     border: 1px solid #ccc; // $brand-accent
     border-radius: 4px;
 
     &:hover {
+        color: black; // does bootstrap have a thing for this
         background-color: #efefef;
         @extend %shadow-depth-1;
     }

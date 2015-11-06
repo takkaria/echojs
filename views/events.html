@@ -52,35 +52,18 @@ $(document).ready(function() {
 		$("#popup").detach();
 
 		// Create a new box
-		var html = '<div id="popup"></div>';
+		var html = '<div id="popup" class="modal fade">' +
+				       '<div class="modal-dialog modal-lg">' +
+				              '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>' +
+				           '<div id="popup-content"></div>' +
+				       '</div>' +
+				   '</div>';
 		$('body').append(html);
 
 		// Request the info
-		$("#popup").hide().load("/event/" + id, function() {
-			var info = $("#popup");
-			info.css('top', ev.pageY + "px");
-
-			/* Don't overflow the page */
-			if (ev.pageX + info.outerWidth() > $(window).width())
-				info.css('left', $(window).width() - info.outerWidth() - 10);
-			else
-				info.css('left', ev.pageX + "px");
-
-			/* Don't overflow the heightwise either */
-			if (ev.pageY + info.outerHeight() > $(document).height())
-				info.css('top', $(document).height() - info.outerHeight() - 10);
-			else
-				info.css('top', ev.pageY + "px");
-
-			info.on("click", function (evt) {
-				location.href = $(this).find("a").attr("href");
-			});
-
-			$("#popup .close").click(function() {
-				$("#popup").detach();
-			});
-
-			info.show();
+		$("#popup-content").load("/event/" + id, function() {
+			var popup = $("#popup");
+			popup.modal();
 		});
 
 		return false;

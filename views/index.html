@@ -33,9 +33,7 @@
 				{% endif %}
 
 				{% for event_ in chunk.events %}
-					<a href="{{ event_.absolute_url }}" {% if loop.index % 2 %}class="alt"{% endif %}>
-						{% include "event_flex.html" %}
-					</a>
+					{% include "event_flex.html" %}
 				{% endfor %}
 			{% endfor %}
 

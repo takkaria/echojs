@@ -5,9 +5,7 @@
 @import "bootstrap-sass/assets/stylesheets/bootstrap/scaffolding";
 @import "bootstrap-sass/assets/stylesheets/bootstrap/type";
 
-@import "_boxes.scss";
-
 html { font-family: sans-serif; }
 #calendar { background-color: white; }
-#popup { @extend %eventpopup; }
+// #popup { @extend %eventpopup; }
 th { background-color: #eee; }

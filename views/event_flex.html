@@ -1,4 +1,4 @@
-<div class="event-flex">
+<a href="{{ event_.absolute_url }}" class="event-flex">
 	<div class="date">
 		{{ event_.startdt.calendar() }}
 		{% if !event_.allday %}{{ event_.startdt.format("HH:mm") }}{% endif %}
@@ -30,4 +30,4 @@
 
 		<p class="blurb">{{ event_.shortBlurb() }}</p>
 	</div>
-</div>
+</a>
