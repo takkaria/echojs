@@ -202,16 +202,18 @@ module.exports = function(db) {
 
 					// Group events by date
 					events.forEach(function(e) {
-						// Add event to current chunk
+						// Add single day event to current chunk
 						if (!e.isMultiDay()
 								&& e.startdt.isAfter(one_day_past)) {
 							return ordered[e.startdt.format('YYYY-MM-DD')].events.push(e);
 						}
 
-						if (e.enddt.diff(e.startdt, 'days') > 7) {
+						// Add long multi-day events to the 'ongoing' pile
+						if (e.enddt && e.enddt.diff(e.startdt, 'days') > 7) {
 							return ongoing.push(e);
 						}
 
+						// Short multi-day events get repeated
 						for (var d_ = Event._getCurrentTime(); d_.isBefore(e.enddt); d_.add(1, 'days')) {
 							ordered[d_.format('YYYY-MM-DD')].events.push(e);
 						}

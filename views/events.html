@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% import "_eventbox.html" as eventbox %}
 
 {# FIXME add a page title here #}
 {% block pageclass %}event_calendar{% endblock %}
@@ -13,9 +14,33 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="fullwidth">
-			{# FIXME add search engine-friendly fallback content #}
+		<div class="fullwidth hidden-xs">
 			<div id='calendar'></div>
+		</div>
+
+		<div class="fullwidth visible-xs eventlist">
+			<h2>{{ month.format("MMMM YYYY") }}</h2>
+			<ul class="pagination" style="margin: 0;">
+				<li>
+					<a href="/events/{{ month.clone().subtract(1, 'month').format("YYYY/MMM") | lower }}">
+				        <span aria-hidden="true">&laquo;</span>
+						{{ month.clone().subtract(1, 'month').format("MMMM YYYY") }}
+					</a>
+				</li>
+				<li>
+					<a href="/events/{{ month.clone().add(1, 'month').format("YYYY/MMM") | lower }}">
+						{{ month.clone().add(1, 'month').format("MMMM YYYY") }}
+						<span aria-hidden="true">&raquo;</span>
+					</a>
+				</li>
+			</ul>
+
+			{% for event_ in events %}
+				{{ eventbox.eventbox(event_) }}
+			{% endfor %}
+
+			{# maybe later... #}
+			{# include "_eventlist.html" #}
 		</div>
 	</div>
 </div>
