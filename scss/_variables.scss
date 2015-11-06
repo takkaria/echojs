@@ -4,13 +4,17 @@
 // Colours
 $brand-primary:     #8fbc8f;
 $brand-primary-l15: lighten($brand-primary, 15%);
+$brand-primary-d15: darken($brand-primary, 15%);
+$brand-accent:      #e6781c;
 $link-color:        #2869B6;
 
-// Fonts
+// Typography
+$line-height-base:        1.45;
+
 $font-family-sans-serif:  Helvetica, Arial, sans-serif;
 $font-family-serif:       Raleway, $font-family-sans-serif;
 $font-family-base:        $font-family-sans-serif;
-$font-size-base:          14px;
+$font-size-base:          16px;
 
 $headings-font-family:    $font-family-serif;
 $headings-font-weight:    bold;
@@ -22,8 +26,13 @@ $font-size-h4:            ceil(($headings-size-base * 1.25)) !default; // ~18px
 $font-size-h5:            $headings-size-base !default;
 $font-size-h6:            ceil(($headings-size-base * 0.85)) !default; // ~12px
 
+// Remove most borders
+$border-radius-base:      0px !default;
+$border-radius-large:     0px !default;
+$border-radius-small:     2px !default;
+
 // Buttons
-$btn-primary-bg:     darken($brand-primary, 15%);
+$btn-primary-bg:                $brand-primary-d15;
 
 // Breadcrumbs
 $breadcrumb-padding-horizontal: 0px;
@@ -35,7 +44,15 @@ $navbar-border-radius:          0;
 $navbar-default-color:          black;
 $navbar-default-bg:             $brand-primary;
 $navbar-default-border:         transparent;
-$navbar-default-link-color:     $navbar-default-color;
+
+// Navbar links
+$navbar-default-link-color:           $navbar-default-color;
+$navbar-default-link-hover-color:     black;
+$navbar-default-link-hover-bg:        darken($brand-primary, 10%);
+$navbar-default-link-active-color:    #555 !default;
+$navbar-default-link-active-bg:       darken($navbar-default-bg, 6.5%) !default;
+$navbar-default-link-disabled-color:  #ccc !default;
+$navbar-default-link-disabled-bg:     transparent !default;
 
 // Jumbotron
 $jumbotron-padding:             5px;
@@ -45,3 +62,6 @@ $jumbotron-font-size:           $font-size-base;
 // Breadcrumbs
 $breadcrumb-bg:                 transparent;
 $breadcrumb-color:              #666;
+
+// Button
+$btn-font-weight:               bold;

@@ -1,9 +1,23 @@
 @import "_variables.scss";
 @import "bootstrap-sass/assets/stylesheets/bootstrap";
 @import "_headings.scss";
+@import "_boxes.scss";
+@import "_event_flex.scss";
 @import "_layout.scss";
 @import "_pages.scss";
-@import "_boxes.scss";
+@import "_forms.scss";
+@import "_sidebar.scss";
 
 // Override Bootstrap
 .breadcrumb { margin-bottom: 0; }
+
+// remove this w bootstrap 3.3.6
+.breadcrumb > li + li:before {
+	content: "/\00a0";
+	color: $breadcrumb-color;
+}
+
+nav {
+	font-family: Raleway;
+	font-weight: bold;
+}

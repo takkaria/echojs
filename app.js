@@ -47,7 +47,7 @@ moment.locale('en', {
         sameDay:  '[Today]',
         nextDay:  '[Tomorrow]',
         nextWeek: 'dddd',
-        sameElse: 'dddd, Do MMMM'
+        sameElse: 'dddd, D MMMM'
     }
 });
 

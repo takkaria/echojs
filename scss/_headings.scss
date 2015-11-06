@@ -1,13 +1,17 @@
+.header-pull-both { margin-left: -15px; margin-right: -15px; }
+.header-pull-left { margin-left: -15px; }
+.header-inline { display: inline-block; }
 
-.header-box {
-   background-color: #E6781C;
-   color: white;
-
-   margin-left: -18px;
-   padding: 6px 18px;
-
-   display: inline-block;
-   font-weight: 700;
-   font-style: normal;
+.header-accent {
+	background-color: $brand-accent;
+	color: white;
+	padding: 6px 15px;
+	font-weight: 700;
+	font-style: normal;
 }
 
+.header-box {
+	@extend .header-accent;
+	@extend .header-inline;
+	@extend .header-pull-left;
+}

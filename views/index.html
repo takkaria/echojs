@@ -4,78 +4,74 @@
 {% block pageclass %}index{% endblock %}
 
 {% block subnav %}
-	<div class="leftcontent">
-		<h4>About Echo</h4>
+<div class="fullwidth">
 
-		<p>
-			Echo is a non-profit political events and news site. Echo hopes to provide
-			opportunities for struggle against oppression to grow by increasing
-			participation in demonstrations, events, organised groups, and
-			fundraisers. <a href="/about">read more &hellip;</a></p>
-	</div>
-	<div class="rightcontent">
-		<h4>Subscribe to our newsletter</h4>
+	<p style="padding-top: 4px; /* XXX */">Echo is an events listing and news site for left wing culture and politics.  <a href="/about">read more…</a>
 
-		<form class="form-inline" action="https://docs.google.com/forms/d/114oUUpYGh0vox28-_wuEh7asoXyHa9zr8yb2B_zqJLE/formResponse" method="POST" target="_new">
-			<div class="form-group">
-				<input class="form-control" type="email" name="entry.557563294" placeholder="Enter email address" style="width: 14em;">
-			</div>
-			<button class="btn btn-primary" type="submit">Subscribe</button>
-		</form>
-
-		<p style="margin-top: 5px;">
-			You can also subscribe to our 
-			<a href="https://www.google.com/calendar/render?cid={{ ("http://" + site + "/api/ical")|url_encode }}">feed on Google Calendar</a>.
-		</p>
-	</div>
+</div>
 {% endblock %}
 
 {% block content %}
 <div class="container">
 	<div class="row">
-		<div class="leftcontent" id="events">
+		<div class="leftcontent" class="eventlist">
 
-			<h2>Events</h2>
+			<h2>Upcoming events</h2>
+<!--
+			<p class="add-event">
+				<a href="/event/add"><i class="fa fa-plus"></i> Add your events here</a>
+			</p>
+-->
+
+<!--			<h3 class="eventlist-date">This week <small>(Fri 6 Nov - Sun 8 Nov)</small></h3> -->
 
 			{% for chunk in events %}
-					<h3>{% if chunk.shortDate %}
-						{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small>
-					{% else %}
-						{{ chunk.longDate }}
-					{% endif %}</h3>
+				{% if chunk.shortDate %}
+					<h3 class="eventlist-date">{{ chunk.shortDate }} <small>{{ chunk.longDate }}</small></h3>
+				{% else %}
+					<h3 class="eventlist-date">{{ chunk.longDate }}</h3>
+				{% endif %}
 
 				{% for event_ in chunk.events %}
-					<div class="row">
-						<div class="col-md-9">
-							{% include "event_card.html" %}
-						</div>
-					</div>
+					<a href="{{ event_.absolute_url }}" {% if loop.index % 2 %}class="alt"{% endif %}>
+						{% include "event_flex.html" %}
+					</a>
 				{% endfor %}
 			{% endfor %}
 
-			<div class="row">
-				<div class="col-md-6">
-					<div class="box add-yours">
-						<p><a href="/event/add"><i class="fa fa-plus"></i> Add your event</a></p>
-					</div>
-				</div>
-
-				<div class="col-md-6">
-					<div class="box add-yours">
-						<p><a href="/events">See more events <i class="fa fa-angle-right"></i></a></p>
-					</div>
-				</div>
-			</div>
+			<p class="see-more"><a href="/events">See more events <i class="fa fa-angle-right"></i></a></p>
 
 		</div> <!-- leftcontent -->
 
-		<div class="rightcontent">
+		<div class="rightcontent sidebar">
+
+			<h2>Keep up to date</h2>
+
+			<div class="social-media">
+				<ul>
+					<li><a href="http://www.facebook.com/echomanchester.net"><i class="fa fa-fw fa-facebook"></i> Facebook</a>
+					<li><a href="https://twitter.com/echomanchester"><i class="fa fa-fw fa-twitter"></i> Twitter</a>
+					<li><a href="https://www.google.com/calendar/render?cid={{ ("http://" + site + "/api/ical")|url_encode }}"><i class="fa fa-fw fa-google"></i> Google Calendar</a>
+					<li><i class="fa fa-fw fa-envelope"></i> Or sign up to our email newsletter:
+				</ul>
+
+				<form class="form-inline" action="https://docs.google.com/forms/d/114oUUpYGh0vox28-_wuEh7asoXyHa9zr8yb2B_zqJLE/formResponse" method="POST" target="_new">
+					<div class="form-group">
+						<input class="form-control" type="email" name="entry.557563294" placeholder="Enter email address" style="width: 15em;">
+					</div>
+					<button class="btn btn-primary" type="submit">Go</button>
+				</form>
+			</div>
+
+
 			<h2>News</h2>
 
 			{% for post in posts %}
 				{% if loop.first %}<ul class="news">{% endif %}
-				<li><b>{{ post.feed.title }}</b> <small>({{ post.date.fromNow() }})</small><br>
-				<a href="{{ post.link }}">{{ post.title }}</a>
+				<a href="{{ post.link }}">
+					<li><b>{{ post.feed.title }}</b> <small>({{ post.date.fromNow() }})</small><br>
+					{{ post.title }}</li>
+				</a>
 				{% if loop.last %}</ul>{% endif %}
 			{% endfor %}
 		</div>

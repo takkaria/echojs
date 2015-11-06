@@ -2,17 +2,16 @@
 
 // index.html
 .index {
-	ul.news {
-		clear: both; margin-left: 0; padding-left: 1em;
-		li { margin-bottom: 0.5em; }
+	.see-more {
+		font-size: 110%;
+		text-align: right;
 	}
 
-	.add-yours {
-		@extend .box;
-		@extend %boxhover;
-
-		// NB: Bootstrap applies also 10px bottom margin
-		p { text-align: center; line-height: 100px; font-size: 200%; } 
+	.leftcontent {
+		h2 { font-size: 4rem; color: #999; }
+		@media (min-width: $screen-md-min) {
+			h2 { font-size: 5rem; }
+		}
 	}
 }
 
