@@ -70,6 +70,10 @@
 // event_[add|edit].html
 .event_form {
 
+	input[type="submit"] {
+		margin: 3rem 0;
+	}
+
 	// This is to stop excess whitespace
 	@media (min-width: $screen-md-min) {
 		.date-input .form-group {
