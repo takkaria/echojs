@@ -1,0 +1,42 @@
+{% macro eventbox(evt, opts) %}
+	{# opts = { close (boolean) } #}
+
+	<a href="{{ evt.absolute_url }}" class="event-flex">
+		{% if opts.close %}
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		{% endif %}
+
+		<div class="date">
+			{{ evt.startdt.calendar() }}
+			{% if !evt.allday %}{{ evt.startdt.format("HH:mm") }}{% endif %}
+
+		  {% if evt.enddt %}
+		    &ndash;
+
+		    {% if evt.isMultiDay() %}
+		      {% if evt.allday %}
+		        {{ evt.enddt.calendar() }}
+		      {% else %}
+		        {{ evt.enddt.calendar() }}, 
+		      {% endif %}
+		    {% endif %}
+
+			{% if !evt.allday %}
+				{{ evt.enddt.format("HH:mm") }}
+			{% endif %}
+
+		  {% endif %}
+
+		</div>
+
+		<div class="main">
+			<h4>{{ evt.title }}</h4>
+
+			{% if evt.host %}<p class="host"><i class="fa fa-fw fa-group"></i> Hosted by {{ evt.host }}</p>{% endif %}
+		    <p class="location"><i class="fa fa-fw fa-map-marker"></i> {{ evt.shortLocation }}</p>
+
+			<p class="blurb">{{ evt.shortBlurb() }}</p>
+		</div>
+	</a>
+
+{% endmacro %}

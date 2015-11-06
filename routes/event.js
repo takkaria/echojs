@@ -127,7 +127,7 @@ router.get('/:id', function(req, res) {
 
 	// Serve XHR requests an event card
 	if (req.xhr) {
-		return res.render('event_flex', {
+		return res.render('event_xhr', {
 			event_: req.event_,
 			user: req.user
 		});

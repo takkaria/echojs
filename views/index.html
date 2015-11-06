@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% import "_eventbox.html" as eventbox %}
 
 {% block title %}Radical Events &amp; News{% endblock %}
 {% block pageclass %}index{% endblock %}
@@ -33,7 +34,7 @@
 				{% endif %}
 
 				{% for event_ in chunk.events %}
-					{% include "event_flex.html" %}
+					{{ eventbox.eventbox(event_) }}
 				{% endfor %}
 			{% endfor %}
 
