@@ -1,11 +1,13 @@
 {% macro eventbox(evt, opts) %}
 	{# opts = { close (boolean) } #}
 
-	<a href="{{ evt.absolute_url }}" class="event-flex">
-		{% if opts.close %}
-			<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		{% endif %}
+	{% if opts.close %}
+	<div class="fullwidth">
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+	</div>
+	{% endif %}
 
+	<a href="{{ evt.absolute_url }}" class="eventbox">
 		<div class="date">
 			{{ evt.startdt.calendar() }}
 			{% if !evt.allday %}{{ evt.startdt.format("HH:mm") }}{% endif %}

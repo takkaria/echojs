@@ -1,4 +1,4 @@
-// event-flex component styling
+// eventbox component styling
 
 // Extra small devices (phones, less than 768px)
 // No media query since this is the default in Bootstrap
@@ -17,7 +17,7 @@
     font-size: 130%;
 }
 
-.event-flex {
+.eventbox {
     display: block;
 
     // Layout
@@ -68,7 +68,7 @@
 
 // Medium devices (desktops, 992px and up)
 @media (min-width: $screen-md-min) {
-    .event-flex {
+    .eventbox {
         padding: 1rem 10px;
 
         h4 {

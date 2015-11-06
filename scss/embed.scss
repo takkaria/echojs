@@ -4,8 +4,8 @@
 @import "bootstrap-sass/assets/stylesheets/bootstrap/mixins";
 @import "bootstrap-sass/assets/stylesheets/bootstrap/scaffolding";
 @import "bootstrap-sass/assets/stylesheets/bootstrap/type";
+@import "_eventbox.scss";
 
 html { font-family: sans-serif; }
 #calendar { background-color: white; }
-// #popup { @extend %eventpopup; }
 th { background-color: #eee; }
