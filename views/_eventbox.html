@@ -1,5 +1,5 @@
 {% macro eventbox(evt, opts) %}
-	{# opts = { close (boolean) } #}
+	{# opts = { close (boolean), longblurb (boolean) } #}
 
 	{% if opts.close %}
 	<div class="fullwidth">
@@ -7,7 +7,7 @@
 	</div>
 	{% endif %}
 
-	<a href="{{ evt.absolute_url }}" class="eventbox">
+	<a href="{{ evt.absolute_url }}" class="eventbox {% if !opts.longblurb %}eventbox-shortblurb{% endif %}">
 		<div class="date">
 			{{ evt.startdt.calendar() }}
 			{% if !evt.allday %}{{ evt.startdt.format("HH:mm") }}{% endif %}

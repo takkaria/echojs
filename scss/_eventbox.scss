@@ -1,5 +1,11 @@
 // eventbox component styling
 
+.singleline {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 // Extra small devices (phones, less than 768px)
 // No media query since this is the default in Bootstrap
 
@@ -50,15 +56,17 @@
         margin-top: 0;
     }
 
-    .blurb, .location, .host {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
     i.fa { color: #444; }
 
+    .location, .host {
+        @extend .singleline;
+    }
+
     .host { margin-bottom: 3px; }
+}
+
+.eventbox-shortblurb {
+    .blurb { @extend .singleline; }
 }
 
 // Small devices (tablets, 768px and up)
