@@ -31,10 +31,10 @@ var app = express();
 
 // "global" view variables
 app.locals.site = process.env.HOST + (
-  typeof process.env.PORT === 'undefined'
-  ? ''
-  : process.env.PORT
-)
+    typeof process.env.PORT === 'undefined' ?
+        '' :
+        process.env.PORT
+);
 app.locals.statichost = process.env.STATIC_HOST || '';
 
 // Set up calendar to not include times.
@@ -62,7 +62,7 @@ if (app.get('env') === 'development')
 markedSwig.useFilter(swig);
 markedSwig.useTag(swig);
 
-app.use(compression())
+app.use(compression());
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -136,8 +136,8 @@ app.use(function(err, req, res, next) {
 });
 
 
-var passport = require('passport')
-  , LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy({
         usernameField: 'email',

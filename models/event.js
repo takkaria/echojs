@@ -47,7 +47,7 @@ module.exports = function(db) {
 					urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, "");
 					urlObj.toString = function() {
 						return urlValue;
-					}
+					};
 					return urlObj;
 				}
 			}
@@ -132,10 +132,9 @@ module.exports = function(db) {
 		},
 		getterMethods: {
 			absolute_url: function() {
-				var url = moment(this.getDataValue('startdt')).format('[/]YYYY[/]MM/') + this.getDataValue('slug');
-				return '/event'
-					+ moment(this.getDataValue('startdt')).format('[/]YYYY[/]MM/')
-					+ this.getDataValue('slug');
+				return '/event' +
+					moment(this.getDataValue('startdt')).format('[/]YYYY[/]MM/') +
+					this.getDataValue('slug');
 			},
 
 			shortLocation: function() {
@@ -180,8 +179,6 @@ module.exports = function(db) {
 					// This will look like
 					// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
 					var ordered = {},
-						chunk,
-						last,
 						ongoing = [],
 						list = [],
 						one_day_past = Event._getCurrentTime().subtract(1, 'days');
@@ -191,7 +188,7 @@ module.exports = function(db) {
 							date: d,
 							longDate: d.format("dddd, Do MMMM YYYY"),
 							events: []
-						}
+						};
 
 						if (d.diff(Event._getCurrentTime(), 'days') < 7) {
 							chunk.shortDate = d.calendar();
@@ -203,8 +200,8 @@ module.exports = function(db) {
 					// Group events by date
 					events.forEach(function(e) {
 						// Add single day event to current chunk
-						if (!e.isMultiDay()
-								&& e.startdt.isAfter(one_day_past)) {
+						if (!e.isMultiDay() &&
+								e.startdt.isAfter(one_day_past)) {
 							return ordered[e.startdt.format('YYYY-MM-DD')].events.push(e);
 						}
 
@@ -237,7 +234,7 @@ module.exports = function(db) {
 		validate: {
 			startBeforeEnd: function() {
 				if (this.enddt && this.enddt.diff(this.startdt) < 0) {
-					throw new Error("Event can't finish after it starts!")
+					throw new Error("Event can't finish after it starts!");
 				}
 			},
 
@@ -249,4 +246,4 @@ module.exports = function(db) {
 			}
 		}
 	});
-}
+};

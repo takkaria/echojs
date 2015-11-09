@@ -13,6 +13,12 @@
     "sass": "npm run sass:basic",
     "sass_compat": "sass -I bower_components/ scss:public/stylesheets --watch"
   },
+  "jshintConfig": {
+    "unused": "vars",
+    "undef": true,
+    "node": true,
+    "mocha": true
+  },
   "devDependencies": {
     "mocha": "^2.3.3",
     "node-sass": "^3.3.3"

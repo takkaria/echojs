@@ -76,12 +76,12 @@ module.exports = function(db) {
 							debug("Password checked - result " + res);
 							if (err) reject(err);
 							else resolve(res);
-						})
+						});
 					} else {
 						var digest = crypto.createHash('sha256').update(
 							self.salt + password
 						).digest('base64');
-						debug("Old sha256 password checked")
+						debug("Old sha256 password checked");
 						resolve(digest === self.getDataValue('digest'));
 					}
 				});
@@ -95,4 +95,4 @@ module.exports = function(db) {
 		}
 	});
 
-}
+};

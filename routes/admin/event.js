@@ -27,16 +27,17 @@ function approveEvent(req, res, event_, next_) {
 	event_.set('state', 'approved');
 	event_.generateSlug();
 	event_.save().then(function(e) {
-		e.reload().then(function() {
-			req.flash('success',
-					'Event <a href="%s">%s</a> approved. <a href="/admin/event/%s/reject">Hide event instead?</a>',
-					event_.absolute_url, event_.id, event_.id);
-			if (!e.isImported())
-				mailer.sendEventApprovedMail(event_);
-			next_ ? res.redirect(next_) : res.redirect(e.absolute_url);
-		})
-	})
-	.catch(function(errors){
+		return e.reload();
+	}).then(function() {
+		req.flash('success',
+				'Event <a href="%s">%s</a> approved. <a href="/admin/event/%s/reject">Hide event instead?</a>',
+				event_.absolute_url, event_.id, event_.id);
+		if (!event_.isImported()) {
+			mailer.sendEventApprovedMail(event_);
+		}
+
+		res.redirect(next_ ? next_ : event_.absolute_url);
+	}).catch(function(errors){
 		debug(errors);
 	});
 }
@@ -65,8 +66,7 @@ router.post('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
 });
 
 router.get('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
-	var event_ = req.event_,
-		next = req.query.next ? req.query.next : '';
+	var next = req.query.next ? req.query.next : '';
 	res.render('event_reject', {
 		event_: req.event_,
 		user: req.user,
@@ -82,7 +82,7 @@ router.post('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 	var sendEmail = req.body.email ? true : false;
 
 	if (sendEmail && !msg) {
-		res.render('event_reject', {
+		return res.render('event_reject', {
 			event_: req.event_,
 			user: req.user,
 			data: req.body,
@@ -90,8 +90,7 @@ router.post('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 				path: 'reason',
 				message: 'Please provide a reason.'
 			} ]
-		})
-		return;
+		});
 	}
 
 	event_.set('state', 'hidden');
@@ -103,7 +102,7 @@ router.post('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 				event_.absolute_url, event_.id,
 				!sendEmail ? " (no email sent)": "",
 				event_.id);
-		next_ ? res.redirect(next_) : res.redirect(event_.absolute_url);
+		res.redirect(next_ ? next_ : event_.absolute_url);
 	})
 	.catch(function(errors){
 		debug(errors);

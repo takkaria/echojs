@@ -17,7 +17,7 @@ router.param('id', function(req, res, next, id) {
 		req.event_ = event_;
 		next(!event_ ? new Error("No such event") : null);
 	});
-})
+});
 
 router.param('slug', function(req, res, next, slug) {
 	models.Event.find({
@@ -27,7 +27,7 @@ router.param('slug', function(req, res, next, slug) {
 		req.event_ = event_;
 		next(!event_ ? new Error("No such event") : null);
 	});
-})
+});
 
 /* GET event add */
 router.get('/add', function(req, res) {
@@ -149,7 +149,7 @@ router.get('/:year/:month/:slug', function(req, res) {
 				if (event_.location_text)
 					params.push({ location_text: req.event_.location_text });
 
-				if (params.length == 0) {
+				if (params.length === 0) {
 					cb(null, null);
 				} else {
 					models.Event.findAll({

@@ -44,7 +44,7 @@ describe("Event", function() {
 			events: [],
 			eventMax: 0,
 			currentTime: undefined
-		}
+		};
 
 		before(function() {
 			originalMax = Event.max;

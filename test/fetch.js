@@ -37,7 +37,7 @@ describe("fetch", function() {
 				description: 'Rania Masri will speak on the topic ‘Dismantling Racism and Colonialism',
 				url: 'http://www.psc-manchester.org.uk/event/tom-hurndall-tenth-memorial-lecture-speaker-rania-masri/',
 				uid: '1033-1425492000-1425499200@http://www.istandbyyou.org.uk',
-			}
+			};
 
 			fetch.saveEvent(data, function(err, errors_) {
 				if (err) throw err;

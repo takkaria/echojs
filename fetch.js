@@ -1,12 +1,11 @@
 var models = require('./models');
-var Event = models.Event,
-	Post = models.Post,
-	Feed = models.Feed;
+var Event = models.Event;
+var Post = models.Post;
 
 var ical = require('ical');
 var FeedParser = require('feedparser');
 var request = require('request');
-var htmlStrip = require('htmlstrip-native').html_strip
+var htmlStrip = require('htmlstrip-native').html_strip;
 var debug = require('debug')('echo:fetch');
 
 // = iCal ===================================================== //
@@ -51,14 +50,12 @@ function useICalData(err, data) {
 		if (!data[k].start || data[k].start < new Date()) continue;
 		if (filter && filter(data[k])) continue;
 
-		var item = data[k]; // bind locally
-
-		function save(event) {
-			if (event != null) return;   /* Don't duplicate IDs */
+		var save = function save(event) {
+			if (event !== null) return;   /* Don't duplicate IDs */
 			if (transform) transform(this);
 
 			saveEvent(this, error);
-		}
+		};
 
 		Event
 			.find({ where: { importid: data[k].uid } })
@@ -167,7 +164,7 @@ function addPost(data, error) {
 
 	Event.find({ where: { importid: data.guid } })
 		 .then(function(evt) {
-			if (evt != null) return;  // don't import twice
+			if (evt !== null) return;  // don't import twice
 
 			debug("Adding new event: " + data.title);
 
@@ -191,8 +188,8 @@ function fetchFeed(params) {
 	var url = params.url;
 	var onerror = params.error;
 
-	var req = request(url)
-	  , feedparser = new FeedParser();
+	var req = request(url),
+		feedparser = new FeedParser();
 
 	// Set error handlers
 	req.on('error', onerror);
@@ -212,7 +209,7 @@ function fetchFeed(params) {
 		var stream = this;
 		var data;
 
-		while (data = stream.read()) {
+		while ((data = stream.read())) {
 			var item = data;	// bind locally
 			item.meta.xmlurl = url;	// this doesn't always get saved by the parser
 
@@ -223,7 +220,7 @@ function fetchFeed(params) {
 
 			Post.find({ where: { id: item.guid } })
 				.then(function(post) {
-					if (post != null) return;	// Don't duplicate posts
+					if (post !== null) return;	// Don't duplicate posts
 					addPost(item, onerror);
 				});
 		}
@@ -242,4 +239,4 @@ module.exports = {
 	test: {
 		useICalData: useICalData
 	}
-}
+};

@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var models = require('../../models');
 var debug = require('debug')('echo:admin');
-var mailer = require('../../lib/mailer');
 var ensure = require('../../lib/ensure');
 
 var Promise = require('promise');
@@ -53,7 +52,7 @@ function getFeedMeta(url) {
 				.on('end', function() {
 					reject(new Error('No metadata found.'));
 				});
-		})
+		});
 	});
 }
 
@@ -130,7 +129,7 @@ router.post('/delete', ensure.editorOrAdmin, function(req, res) {
 
 			feed.destroy()
 				.then(function() {
-					req.flash('success', "Feed %s deleted.", result.title);
+					req.flash('success', "Feed %s deleted.", feed.title);
 					res.redirect('/admin/feeds');
 				}).catch(onerror);
 

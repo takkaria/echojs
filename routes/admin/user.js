@@ -3,14 +3,15 @@ var router = express.Router();
 var models = require('../../models');
 var debug = require('debug')('echo:admin');
 var mailer = require('../../lib/mailer');
-var ensure = require("../../lib/ensure");
+var ensure = require('../../lib/ensure');
+var Promise = require('promise');
 
 router.param('user_id', function(req, res, next, user_id) {
 	models.User.find({
 		where: { id: user_id }
 	}).then(function(user) {
 		req.user_obj = user;
-		next(!user ? new Error("No such user") : null);
+		next(!user ? new Error('No such user') : null);
 	});
 });
 

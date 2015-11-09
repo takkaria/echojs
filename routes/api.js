@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var models = require('../models')
+var models = require('../models');
 
 var icalGenerator = require('../lib/ical-generator');
 var moment = require('moment');
