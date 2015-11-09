@@ -71,8 +71,9 @@ router.post('/password/change', ensure.authenticated, function(req, res, next) {
 				}]
 			});
 		}
-		req.user.setPassword(req.body.new_password);
-		req.user.save().then(function(u_){
+		req.user.setPassword(req.body.new_password).then(function() {
+			return req.user.save();
+		}).then(function(u_){
 			req.flash('success', 'Password changed. You are now logged in.')
 			return res.redirect('/');
 		});
@@ -118,8 +119,8 @@ router.get('/password/reset/:token', function(req, res, next) {
 
 router.post('/password/reset/:token', function(req, res, next) {
 	models.User.find({
-		where: {pwreset: req.params.token,}}).then(function(user){
-		if(req.body.new_password === ''){
+		where: {pwreset: req.params.token,}}).then(function(user) {
+		if (req.body.new_password === '') {
 			return res.render('password_change', {
 				user: user,
 				errors: [{
@@ -128,7 +129,7 @@ router.post('/password/reset/:token', function(req, res, next) {
 				}]
 			});
 		}
-		if(req.body.new_password !== req.body.new_password2){
+		if (req.body.new_password !== req.body.new_password2) {
 			return res.render('password_change', {
 				user: user,
 				errors: [{
@@ -137,9 +138,10 @@ router.post('/password/reset/:token', function(req, res, next) {
 				}]
 			});
 		}
-		user.setPassword(req.body.new_password);
-		user.set('pwreset', null);
-		user.save().then(function(u_){
+		user.setPassword(req.body.new_password).then(function() {
+			user.set('pwreset', null);
+			return user.save();
+		}).then(function(u_) {
 			req.logIn(u_, function(err) {
 				req.flash('success', 'Password changed')
 				return res.redirect('/');

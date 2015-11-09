@@ -58,8 +58,9 @@ router.post('/add', ensure.admin, function(req, res) {
 				});
 			}
 
-			user_obj.setPassword(b.password);
-			user_obj.save().then(function(u) {
+			user_obj.setPassword(b.password).then(function() {
+				return user_obj.save();
+			}).then(function(u) {
 				req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added',
 									u.id, u.id);
 				mailer.sendNewUserMail(u);
@@ -78,18 +79,28 @@ router.get('/:user_id/edit', ensure.admin, function(req, res) {
 router.post('/:user_id/edit', ensure.admin, function(req, res) {
 	var b = req.body,
 		u = req.user_obj;
+
 	u.set({
 		email: b.email,
 		notify: (b.notify === 'on') ? 1 : 0,
 		rights: b.rights
 	});
+
 	debug(u.changed());
 	debug(b, u);
-	if ((b.password !== '')&&(typeof(b.password) !== 'undefined')){
-		u.setPassword(b.password);
+
+	var promise;
+
+	if ((b.password !== '') && (typeof(b.password) !== 'undefined')) {
+		promise = u.setPassword(b.password);
 		debug('password changed');
+	} else {
+		promise = new Promise();
 	}
-	u.save().then(function(u_) {
+
+	promise.then(function() {
+		return u.save();
+	}).then(function(u_) {
 		req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> saved', 
 							u_.id, u_.id);
 		res.redirect('/admin/user');
