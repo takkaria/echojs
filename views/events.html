@@ -36,7 +36,7 @@
 			</ul>
 
 			{% for event_ in events %}
-				{{ eventbox.eventbox(event_) }}
+				{{ eventbox.eventbox(event_, { linkBox: true }) }}
 			{% endfor %}
 
 			{# maybe later... #}

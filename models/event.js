@@ -88,9 +88,8 @@ module.exports = function(db) {
 			isImported: function() {
 				return this.importid ? true : false;
 			},
-			blurbAsHTML: function() {
-				console.log(textToHTML);
-				return textToHTML(this.blurb);
+			blurbAsHTML: function(opts) {
+				return textToHTML(this.blurb, opts);
 			},
 			isMultiDay: function() {
 				if (!this.enddt)

@@ -35,17 +35,10 @@
     padding: 1rem 0;
     margin: 1rem 0;
 
+    background-color: white;
     color: black; // does bootstrap have a thing for this
     border: 1px solid #ccc; // $brand-accent
     border-radius: 4px;
-
-    &:hover {
-        color: black; // does bootstrap have a thing for this
-        background-color: #efefef;
-        @extend %shadow-depth-1;
-    }
-    @include transition(background-color ease-in-out .2s,
-                        box-shadow ease-in-out .2s);
 
     p { line-height: 1.3; }
 
@@ -63,6 +56,17 @@
     }
 
     .host { margin-bottom: 3px; }
+}
+
+.eventbox-link {
+    &:hover {
+        color: black; // does bootstrap have a thing for this
+        background-color: #efefef;
+        @extend %shadow-depth-1;
+    }
+
+    @include transition(background-color ease-in-out .2s,
+                        box-shadow ease-in-out .2s);
 }
 
 .eventbox-shortblurb {

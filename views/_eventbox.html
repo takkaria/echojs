@@ -1,5 +1,5 @@
 {% macro eventbox(evt, opts) %}
-	{# opts = { close (boolean), longblurb (boolean) } #}
+	{# opts = { close (boolean), linkBox (boolean), longblurb (boolean) } #}
 
 	{% if opts.close %}
 	<div class="fullwidth">
@@ -7,7 +7,16 @@
 	</div>
 	{% endif %}
 
-	<a href="{{ evt.absoluteURL }}" class="eventbox {% if !opts.longblurb %}eventbox-shortblurb{% endif %}">
+	{% if opts.linkBox %}
+		<a href="{{ evt.absoluteURL }}"
+	{% else %}
+		<div
+	{% endif %}
+		class="eventbox
+			{% if !opts.longblurb %}eventbox-shortblurb{% endif %}
+			{% if opts.linkBox %}eventbox-link{% endif %}
+		">
+
 		<div class="date">
 			{{ evt.startdt.calendar() }}
 			{% if !evt.allday %}{{ evt.startdt.format("HH:mm") }}{% endif %}
@@ -35,10 +44,30 @@
 			<h4>{{ evt.title }}</h4>
 
 			{% if evt.host %}<p class="host"><i class="fa fa-fw fa-group"></i> Hosted by {{ evt.host }}</p>{% endif %}
-		    <p class="location"><i class="fa fa-fw fa-map-marker"></i> {{ evt.shortLocation }}</p>
+			<p class="location"><i class="fa fa-fw fa-map-marker"></i> {{ evt.shortLocation }}</p>
 
-			<p class="blurb">{{ evt.shortBlurb() }}</p>
+			<div class="blurb">
+				{{ evt.blurbAsHTML({ link: !opts.linkBox }) }}
+			</div>
+
+			{% if !opts.linkBox %}
+			<small>
+				{% if event_.url %}
+					{% if event_.url.hostNoWww == "facebook.com" %}
+						<i class="fa fa-fw fa-facebook"></i> <a href="{{ event_.url.href }}" target="_blank">Facebook event</a>
+					{% else %}
+						<i class="fa fa-fw fa-external-link"></i> <a href="{{ event_.url.href }}" target="_blank">More info at {{ event_.url.hostNoWww }}</a>
+					{% endif %}<br>
+				{% endif %}
+				<a href="{{ evt.absoluteURL }}"><i class="fa fa-fw fa-chain"></i> Link to this event</a></a>
+			</small>
+			{% endif %}
 		</div>
-	</a>
+
+	{% if opts.linkBox %}
+		</a>
+	{% else %}
+		</div>
+	{% endif %}
 
 {% endmacro %}
