@@ -100,7 +100,7 @@ router.post('/add', function(req, res) {
 		e_.save().then(function(e_) {
 			if (e_.state === 'approved') {
 				req.flash('success', 'Event added and approved.');
-				return res.redirect(e_.absolute_url);
+				return res.redirect(e_.absoluteURL);
 			}
 
 			req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
@@ -132,8 +132,8 @@ router.get('/:id', function(req, res) {
 		});
 	}
 
-	debug(req.event_.absolute_url);
-	res.redirect(req.event_.absolute_url);
+	debug(req.event_.absoluteURL);
+	res.redirect(req.event_.absoluteURL);
 });
 
 /* GET event by slug */

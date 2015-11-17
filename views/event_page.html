@@ -119,7 +119,7 @@
   <h4 class="sidebar-header">{{ header }}</h4>
   <ul class="sidebar-list">
     {% for event_ in list %}
-      <a href="{{ event_.absolute_url }}">
+      <a href="{{ event_.absoluteURL }}">
         <li>
           <span class="title">{{ event_.title }}</span>
           ({{ event_.startdt.format("DD MMM") }})

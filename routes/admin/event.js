@@ -31,12 +31,12 @@ function approveEvent(req, res, event_, next_) {
 	}).then(function() {
 		req.flash('success',
 				'Event <a href="%s">%s</a> approved. <a href="/admin/event/%s/reject">Hide event instead?</a>',
-				event_.absolute_url, event_.id, event_.id);
+				event_.absoluteURL, event_.id, event_.id);
 		if (!event_.isImported()) {
 			mailer.sendEventApprovedMail(event_);
 		}
 
-		res.redirect(next_ ? next_ : event_.absolute_url);
+		res.redirect(next_ ? next_ : event_.absoluteURL);
 	}).catch(function(errors){
 		debug(errors);
 	});
@@ -99,10 +99,10 @@ router.post('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 			mailer.sendEventRejectedMail(event_, msg);
 
 		req.flash('warning', 'Event <a href="%s">%s</a> hidden%s. <a href="/admin/event/%s/approve">Show event instead?</a>',
-				event_.absolute_url, event_.id,
+				event_.absoluteURL, event_.id,
 				!sendEmail ? " (no email sent)": "",
 				event_.id);
-		res.redirect(next_ ? next_ : event_.absolute_url);
+		res.redirect(next_ ? next_ : event_.absoluteURL);
 	})
 	.catch(function(errors){
 		debug(errors);

@@ -7,7 +7,7 @@
 	</div>
 	{% endif %}
 
-	<a href="{{ evt.absolute_url }}" class="eventbox {% if !opts.longblurb %}eventbox-shortblurb{% endif %}">
+	<a href="{{ evt.absoluteURL }}" class="eventbox {% if !opts.longblurb %}eventbox-shortblurb{% endif %}">
 		<div class="date">
 			{{ evt.startdt.calendar() }}
 			{% if !evt.allday %}{{ evt.startdt.format("HH:mm") }}{% endif %}

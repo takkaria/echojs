@@ -23,7 +23,7 @@
 			{{ event.enddt.format("ha Do MMM") }}
 		</i>
 		{% endif %}
-		<a href="https://echomanchester.net{{ event.absolute_url }}">{{ event.title }}</a>
+		<a href="https://echomanchester.net{{ event.absoluteURL }}">{{ event.title }}</a>
 		{% if not loop.last %}<br>{% endif %}
 	{% endfor %}
 </p>

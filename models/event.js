@@ -124,7 +124,7 @@ module.exports = function(db) {
 			}
 		},
 		getterMethods: {
-			absolute_url: function() {
+			absoluteURL: function() {
 				return '/event' +
 					moment(this.getDataValue('startdt')).format('[/]YYYY[/]MM/') +
 					this.getDataValue('slug');
