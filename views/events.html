@@ -44,6 +44,23 @@
 		</div>
 	</div>
 </div>
+
+<!-- Templates / overlays -->
+
+<div class="xhr-loading hidden">
+	<i class="fa fa-circle-o-notch fa-spin"></i> Loading...
+</div>
+
+<div class="popup-template modal fade" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content"> <!-- only in error cases is this shown -->
+			<div class="modal-body">
+				Sorry, there was a problem loading the event.  Please try again. 
+				<button type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+		</div>
+	</div>
+</div>
 {% endblock %}
 
 {% block script %}
@@ -52,45 +69,50 @@
 <style>@import "{{ statichost }}/bower_components/fullcalendar/dist/fullcalendar.min.css";</style>
 
 <script>
-$(document).ready(function() {
 
-	// This detects clicks outside the popup and closes the window
-	$(document).click(function(e) {
-		var box = $("#popup");
-		if (box && box.offset() && (
-					e.pageX < box.offset().left ||
-					e.pageX > box.offset().left+box.outerWidth() ||
-					e.pageY < box.offset().top ||
-					e.pageY > box.offset().top+box.outerHeight()
-				)) {
-			box.detach();
-		}
+// Fetch and show an event card
+function showEvent(event_, ev) {
+	var id = event_.id;
+	var _timeout;
 
-		return true;
+	startLoading = function startLoading() {
+		// Timeout to avoid flashing the timer
+		_timeout = window.setTimeout(function() {
+			$(".xhr-loading").removeClass("hidden");
+		}, 500);
+	};
+
+	stopLoading = function stopLoading() {
+		window.clearTimeout(_timeout);
+		$(".xhr-loading").addClass("hidden");
+	};
+
+	// Clone our template
+	var newPopup = $('.popup-template').clone();
+	newPopup.removeClass('hidden');
+	newPopup.attr('id', 'popup');	// Consider making this ID unique
+	newPopup.attr('aria-hidden', 'false');
+	$('body').append(newPopup);
+
+	startLoading();
+
+	$("#popup .modal-dialog").load("/event/" + id, function() {
+		// We don't check status because if the content wasn't loaded, the
+		// HTML template already has an error message.  If the content is
+		// loaded, then it's overwritten.
+
+		stopLoading();
+		$("#popup").modal();
+		$("#popup").on('hidden.bs.modal', function() {
+			// Remove from the DOM when done
+			$("#popup").detach();
+		});
 	});
 
-	// Fetch and show an event card
-	function showEvent(event_, ev) {
-		var id = event_.id;
+	return false;
+}
 
-		// Clean up previous boxes
-		$("#popup").detach();
-
-		// Create a new box
-		var html = '<div id="popup" class="modal fade">' +
-				       '<div class="modal-dialog modal-lg">' +
-				       '</div>' +
-				   '</div>';
-		$('body').append(html);
-
-		// Request the info
-		$("#popup .modal-dialog").load("/event/" + id, function() {
-			var popup = $("#popup");
-			popup.modal();
-		});
-
-		return false;
-	}
+$(document).ready(function() {
 
 	// If the URL is just '/events' then we start at today's date
 	var start = moment();
