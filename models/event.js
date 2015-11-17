@@ -31,13 +31,6 @@ module.exports = function(db) {
 		type: {
 			type: sequelize.TEXT
 		},
-		cost: {
-			type: sequelize.TEXT,
-			allowNull: false,
-			validate: {
-				notEmpty: true
-			}
-		},
 		url: {
 			type: sequelize.TEXT,
 			get: function() {

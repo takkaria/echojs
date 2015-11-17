@@ -90,7 +90,7 @@ router.get('/ical', function(req, res) {
 
 	models.Event.findAll({
 		where: [clauses.join(" AND "), []],
-		attributes: [ "id", "title", "startdt", "enddt", "location_text", "blurb", "url", "cost", "host" ],
+		attributes: [ "id", "title", "startdt", "enddt", "location_text", "blurb", "url", "host" ],
 		order: "startdt ASC",
 	}).then(function(events) {
 

@@ -153,7 +153,6 @@ router.post('/:event_id/edit', ensure.editorOrAdmin, function(req, res) {
 		location_text: b.location_text,
 		host: b.host,
 		type: '',
-		cost: b.cost,
 		email: b.email,
 	});
 

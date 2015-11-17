@@ -81,7 +81,6 @@ router.post('/add', function(req, res) {
 		location_text: b.location_text,
 		host: b.host,
 		type: '',
-		cost: b.cost,
 		email: b.email,
 		state: defaultState(req)
 	});

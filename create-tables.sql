@@ -20,7 +20,6 @@ CREATE TABLE events (
 	blurb TEXT,
 	url TEXT,
 	type TEXT,		/* ATM this can only be "film" */
-	cost TEXT,		/* NULL = free */
 	host TEXT,
 
 	/* State crap */
