@@ -116,13 +116,31 @@
 }
 
 // event_page.html
-.event h2 { margin-top: 0; }
+.event {
+	.header-title {
+		color: black;
+		font-weight: 700;
+		font-size: floor(($headings-size-base * 3.2));
+	}
 
-div.img {
-  background: url("http://api.ning.com/files/a8yFieGq6xqi92JtUXmbI7z6w59H2RKgNzMtZtvq2MaNfpzVwuExGqJ4iZ1lvscEZ8jebnC8V5wMpK*6yLPJWzMyvMR1oCVC/223470_1031354102634_1188814802_30087004_1015_n2.jpg")
-    #eee no-repeat;
-  background-size: cover;
-  height: 150px;
+	.header-date {
+		color: black;
+		font-weight: 200;
+		font-size: 30px;
+		margin-bottom: 20px;
+	}
+
+	.img {
+		background: url("http://api.ning.com/files/a8yFieGq6xqi92JtUXmbI7z6w59H2RKgNzMtZtvq2MaNfpzVwuExGqJ4iZ1lvscEZ8jebnC8V5wMpK*6yLPJWzMyvMR1oCVC/223470_1031354102634_1188814802_30087004_1015_n2.jpg") #eee no-repeat;
+		background-size: cover;
+		height: 150px;
+	}
+
+	.jumbo {
+		margin-bottom: $line-height-computed;
+	}
+
+
 }
 
 // login.html

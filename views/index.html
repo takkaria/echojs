@@ -4,12 +4,8 @@
 {% block title %}Radical Events &amp; News{% endblock %}
 {% block pageclass %}index{% endblock %}
 
-{% block subnav %}
-<div class="fullwidth">
-
-	<p style="padding-top: 4px; /* XXX */">Echo is an events listing and news site for left wing culture and politics.  <a href="/about">read more…</a>
-
-</div>
+{% block header %}
+<p style="padding-top: 4px; /* XXX */">Echo is an events listing and news site for left wing culture and politics.  <a href="/about">read more…</a>
 {% endblock %}
 
 {% block content %}
@@ -34,7 +30,7 @@
 
 		<div class="rightcontent sidebar">
 
-			<h2>Keep up to date</h2>
+			<h2 class="sidebar-header">Keep up to date</h2>
 
 			<div class="sozial-media">
 				<ul>
@@ -53,13 +49,15 @@
 			</div>
 
 
-			<h2>News</h2>
+			<h2 class="sidebar-header">News</h2>
 
 			{% for post in posts %}
-				{% if loop.first %}<ul class="news">{% endif %}
+				{% if loop.first %}<ul class="sidebar-list">{% endif %}
 				<a href="{{ post.link }}">
-					<li><b>{{ post.feed.title }}</b> <small>({{ post.date.fromNow() }})</small><br>
-					{{ post.title }}</li>
+					<li>
+						<b>{{ post.feed.title }}</b> <small>({{ post.date.fromNow() }})</small><br>
+						<span class="title">{{ post.title }}</span>
+					</li>
 				</a>
 				{% if loop.last %}</ul>{% endif %}
 			{% endfor %}

@@ -140,6 +140,8 @@ router.get('/:id', function(req, res) {
 router.get('/:year/:month/:slug', function(req, res) {
 	var event_ = req.event_;
 
+	// XXX Rewrite to use Promise.all
+
 	async.parallel({
 			location: function findOtherEventsByLocation(cb) {
 				var params = [];

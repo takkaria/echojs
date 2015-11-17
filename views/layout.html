@@ -3,7 +3,7 @@
 	<title>{% block title %}{% endblock %} ~ Echo Manchester</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway:700,500">
+	<link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway:200,500,700">
 
 	<link href="{{ statichost }}/stylesheets/echo.css" rel="stylesheet">
 	<link rel="stylesheet" href="{{ statichost }}/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css" />
@@ -67,13 +67,9 @@
 <div class="jumbo">
 	<div class="container">
 		<div class="row">
-			{% block subnav %}
-
-			<div class="leftcontent">
-				{% block breadcrumb %}{% endblock %}
+			<div class="fullwidth">
+				{% block header %}{% endblock %}
 			</div>
-
-			{% endblock %}
 		</div>
 	</div>
 </div>
@@ -98,9 +94,14 @@
 {% endblock %}
  
 <footer>
-<p>&copy; Echo Manchester, 2014.  <a href="/about">Read more about Echo</a>.
+	<div class="container">
+		<div class="row">
+			<div class="fullwidth">
+				<p>&copy; Echo Manchester, 2014.  <a href="/about">Read more about Echo</a>.</p>
+			</div>
+		</div>
+	</div>
 </footer>
-</div>
 
 <script type="text/javascript" src="{{ statichost }}/bower_components/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript" src="{{ statichost }}/bower_components/moment/min/moment.min.js"></script>
