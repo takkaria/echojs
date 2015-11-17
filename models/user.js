@@ -7,6 +7,8 @@ var Promise = require('promise');
 module.exports = function(db) {
 
 	return db.define('user', {
+		id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+
 		email: {
 			type: sequelize.TEXT,
 			allowNull: false,
@@ -28,18 +30,8 @@ module.exports = function(db) {
 				}
 			}
 		},
-		id: { type: sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-		salt: {
-			type: sequelize.TEXT,
-			get: function() {
-				var salt = this.getDataValue('salt');
-				if ((salt === '')||(typeof(salt) === 'undefined')) {
-					salt = crypto.randomBytes(256).toString('base64');
-					this.setDataValue('salt', salt);
-				}
-				return salt;
-			}
-		},
+
+		salt: { type: sequelize.TEXT },
 		digest: { type: sequelize.TEXT },
 
 		pwreset: { type: sequelize.TEXT },
