@@ -70,7 +70,13 @@
 }
 
 .eventbox-shortblurb {
-    .blurb { @extend .singleline; }
+    .blurb {
+        & > * { display: none; }
+        & > *:first-child {
+            display: block;
+            &:after { content: " ... (click for more)"; font-style: italic; };
+        }
+    }
 }
 
 // Small devices (tablets, 768px and up)
