@@ -1,10 +1,10 @@
 var sequelize = require('sequelize');
 var url = require('url');
 var moment = require('moment');
-var ModifiedRenderer = require('../lib/marked-mod-render');
 var marked = require('marked');
 var slug = require('slug');
 var async = require('async');
+var textToHTML = require('../lib/texttohtml')
 
 module.exports = function(db) {
 	return db.define('event', {
@@ -89,9 +89,8 @@ module.exports = function(db) {
 				return this.importid ? true : false;
 			},
 			blurbAsHTML: function() {
-				return marked(this.blurb, {
-					renderer: ModifiedRenderer // new marked.Renderer
-				});
+				console.log(textToHTML);
+				return textToHTML(this.blurb);
 			},
 			isMultiDay: function() {
 				if (!this.enddt)
@@ -107,8 +106,8 @@ module.exports = function(db) {
 				var altered = this.blurb.slice(0);
 
 				// FIXME: This could be done with more finesse
-				if (altered >= 180) {
-					altered = altered.substr(0, 179) + (readMore ? '… <i>(read more)</i>' : '...');
+				if (altered.length >= 140) {
+					altered = altered.substr(0, 139) + (readMore ? '… <i>(read more)</i>' : '...');
 				}
 
 				// Split up any long strings of characters without a space

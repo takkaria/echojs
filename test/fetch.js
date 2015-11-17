@@ -19,6 +19,7 @@ Date.prototype.toShortISOString = function() {
 };
 
 describe("fetch", function() {
+	// XXX find a way of testing this without using DB accesses
 	describe("#saveEvent", function() {
 		after(function(done) {
 			models.Event
