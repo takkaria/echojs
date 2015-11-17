@@ -29,14 +29,15 @@ or with `&`) before running `nodemon` or `node app.js`.
 
 These are things you can set as environment variables, or using a .env file:
 
-* ```ENV```:            can be production 'development' or 'development'
-* ```DBPATH```:         an alternate path to the sqlite database
-* ```STATICHOST```:     (optional) use a different base URL for static resources
-* ```BCRYPT_FACTOR```:  (optional, default 10) bcrypt difficulty setting
-* ```SMTP_HOST```:      SMTP host
-* ```SMTP_USER```:      SMTP username
-* ```SMTP_PASS```:      SMTP password
-* ```SMTP_FROM```:      From line in emails
-* ```SMTP_SECURE```:    set this to enable secure sending
-* ```SMTP_NOSEND```:    set this to disable actual sending, useful for test set-ups
-
+| Variable        | Description
+| --------------- | -------------------------------------------------------------
+| ENV             | can be production 'development' or 'development'
+| DBPATH          | an alternate path to the sqlite database
+| STATICHOST      | (optional) use a different base URL for static resources
+| BCRYPT_FACTOR   | (optional, default 10) bcrypt difficulty setting
+| SMTP_HOST       | SMTP host
+| SMTP_USER       | SMTP username
+| SMTP_PASS       | SMTP password
+| SMTP_FROM       | From line in emails
+| SMTP_SECURE     | set this to enable secure sending
+| SMTP_NOSEND     | set this to disable actual sending, useful for test set-ups
