@@ -1,5 +1,7 @@
 require('dotenv').load();
 
+var mkdirp = require('mkdirp');
+
 var express = require('express');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
@@ -15,6 +17,7 @@ var markedSwig = require('swig-marked');
 var passport = require('passport');
 var paginate = require('express-paginate');
 var moment = require('moment');
+var winston = require('winston');
 
 var models = require('./models');
 
@@ -94,44 +97,61 @@ app.use('/api', api);
 app.use('/about', about);
 app.use('/embed', embed);
 
-// catch 404 and forward to error handler
+// ERROR HANDLERS
+
+// Init log path
+if (!process.env.logpath) {
+    process.env.logpath = './logs';
+}
+mkdirp(process.env.logpath);
+
+// Init Winston file logging
+var logger = new winston.Logger({
+    transports: [
+        new winston.transports.Console,
+        new winston.transports.File({
+            filename: process.env.logpath + '/all.log'
+        }),
+    ],
+    exceptionHandlers: [
+        new winston.transports.File({
+            filename: process.env.logpath + '/exceptions.log',
+        })
+    ]
+})
+
+
+// Express error handlers
+
+// catch 404 and to next error handler
+// XXX we could make this a nicer 404 page
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
+
+    logger.log('warn', "404 %s", req.url);
+
     next(err);
 });
 
-// error handlers
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        if (res.headersSent) {
-            console.log("Headers sent but error found - oops");
-            return next(err);
-        }
-
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
-
-// production error handler
-// no stacktraces leaked to user
 app.use(function(err, req, res, next) {
+    var status = (err.status || 500);
+
+    if (status != 404) {
+        logger.log('error', "%s %s", status, req.url, err);
+    }
+
     if (res.headersSent) {
-        console.log("Headers sent but error found - oops");
+        logger.log('error', '%s %s Headers sent but error found -- oops', status, req.url);
         return next(err);
     }
 
-    res.status(err.status || 500);
+    res.status(status);
+
+    // Only show stackstrace in dev environment
     res.render('error', {
         message: err.message,
-        error: {}
+        error: (app.get('env') === 'development') ? err : {}
     });
 });
 
