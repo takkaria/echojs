@@ -1,5 +1,4 @@
-echojs
-======
+# echojs
 
 [![Build Status](https://travis-ci.org/takkaria/echojs.svg?branch=master)](https://travis-ci.org/takkaria/echojs)
 [![Code Climate](https://codeclimate.com/github/takkaria/echojs/badges/gpa.svg)](https://codeclimate.com/github/takkaria/echojs)
@@ -8,7 +7,7 @@ A news &amp; events aggregator (rewritten in Node).
 
 To get started, create the database:
 
-	$ sqlite3 db.sqlite < create-tables.sql
+	$ bin/initdb
 
 then use bower and npm to fetch the dependencies:
 
@@ -26,17 +25,18 @@ version, you can execute `npm run sass_compat` (in a separate terminal,
 or with `&`) before running `nodemon` or `node app.js`.
 
 
-.env variables
---------------
+## Environment variables
 
-These are things you can set in .env:
+These are things you can set as environment variables, or using a .env file:
 
-* ```env```: can be production 'development' or 'development'
-* ```dbpath```: an alternate path to the sqlite database
+* ```ENV```:            can be production 'development' or 'development'
+* ```DBPATH```:         an alternate path to the sqlite database
+* ```STATICHOST```:     (optional) use a different base URL for static resources
+* ```BCRYPT_FACTOR```:  (optional, default 10) bcrypt difficulty setting
+* ```SMTP_HOST```:      SMTP host
+* ```SMTP_USER```:      SMTP username
+* ```SMTP_PASS```:      SMTP password
+* ```SMTP_FROM```:      From line in emails
+* ```SMTP_SECURE```:    set this to enable secure sending
+* ```SMTP_NOSEND```:    set this to disable actual sending, useful for test set-ups
 
-* ```SMTP_HOST```:   SMTP host
-* ```SMTP_USER```:   SMTP username
-* ```SMTP_PASS```:   SMTP password
-* ```SMTP_FROM```:   From line in emails
-* ```SMTP_SECURE```: set this to enable secure sending
-* ```SMTP_NOSEND```: set this to disable actual sending, useful for test set-ups
