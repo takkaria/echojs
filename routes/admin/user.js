@@ -38,7 +38,7 @@ router.post('/add', ensure.admin, function(req, res) {
 
 	user_obj
 		.validate()
-		.done(function(err, errors_) {
+		.then(function(errors_) {
 			var errors = typeof(errors_) === 'undefined' ? [] : errors_.errors;
 
 			if (b.password === '' || typeof(b.password) === 'undefined') {
@@ -59,14 +59,14 @@ router.post('/add', ensure.admin, function(req, res) {
 				});
 			}
 
-			user_obj.setPassword(b.password).then(function() {
-				return user_obj.save();
-			}).then(function(u) {
-				req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added',
-									u.id, u.id);
-				mailer.sendNewUserMail(u);
-				return res.redirect('/admin/user');
-			});
+			return user_obj.setPassword(b.password);
+		}).then(function(user) {
+			return user.save();
+		}).then(function(user) {
+			req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added',
+								user.id, user.id);
+			mailer.sendNewUserMail(user);
+			return res.redirect('/admin/user');
 		});
 });
 

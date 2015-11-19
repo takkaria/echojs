@@ -5,6 +5,15 @@ var bcrypt = require('bcrypt');
 describe('User', function() {
 	describe('.resetPassword', function() {
 
+		it('should be chainable', function() {
+			var u = User.build({
+				email: 'text@test.test'
+			});
+
+			expect(u.resetPassword()).to.equal(u);
+		});
+
+
 		it('should alter pwtoken', function() {
 			var u = User.build({
 				email: 'text@test.test'
@@ -16,6 +25,14 @@ describe('User', function() {
 	});
 
 	describe('.setPassword', function() {
+		it('should resolve to user object', function(done) {
+			var u = User.build();
+			u.setPassword('testing-string').then(function(user) {
+				expect(user).to.equal(u);
+				done();
+			});
+		});
+
 		it('should alter digest', function(done) {
 			var u = User.build();
 			u.setPassword('testing-string').then(function() {

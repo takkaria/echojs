@@ -55,7 +55,7 @@ module.exports = function(db) {
 						} else {
 							self.setDataValue('digest', hash);
 							self.setDataValue('salt', 'bcrypt');
-							resolve(hash);
+							resolve(self);
 						}
 					});
 				});
@@ -83,6 +83,7 @@ module.exports = function(db) {
 					.update(crypto.pseudoRandomBytes(24))
 					.digest('base64');
 				this.setDataValue('pwreset', token);
+				return this;
 			}
 		}
 	});
