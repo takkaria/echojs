@@ -164,7 +164,7 @@ module.exports = function(db) {
 					if (err)
 						return callback(err, null);
 
-					var max = data.max;
+					var max = moment(data.max).startOf('day');
 					var events = data.events;
 
 					// This will look like
@@ -174,7 +174,9 @@ module.exports = function(db) {
 						list = [],
 						one_day_past = Event._getCurrentTime().subtract(1, 'days');
 
-					for (var d = Event._getCurrentTime(); d.isBefore(max); d.add(1, 'days')) {
+					for (var d = Event._getCurrentTime().startOf('day');
+							!d.isAfter(max);
+							d.add(1, 'days')) {
 						var chunk = {
 							date: d,
 							longDate: d.format("dddd, Do MMMM YYYY"),

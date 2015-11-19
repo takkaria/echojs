@@ -93,5 +93,28 @@ describe("Event", function() {
 			});
 		});
 
+		it("should not crash when the start time of the latest event in the database is before the current time (but not date)", function(done) {
+
+			testData.currentTime = '2015-11-19T19:31:48.780Z';
+			testData.eventMax = '2015-12-03T19:30:00.000Z';
+			testData.events = [
+				Event.build({
+					title: 'Last event',
+					startdt: "2015-12-03T19:30:00.000Z",
+					allday: null
+				})
+			];
+
+			try {
+				Event.groupByDays(null, function (err, list) {
+					if (err) throw err;
+					expect(list).to.not.equal(null);
+					done();
+				});
+			} catch (e) {
+				done(e);
+			}
+		});
+
 	});
 });
