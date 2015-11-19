@@ -24,7 +24,7 @@ describe("fetch", function() {
 		after(function(done) {
 			models.Event
 				.destroy({ where: { title: "TEST" } })
-				.done(function () {
+				.then(function () {
 					done();
 				});
 		});
