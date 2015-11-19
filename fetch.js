@@ -7,67 +7,48 @@ var FeedParser = require('feedparser');
 var request = require('request');
 var htmlStrip = require('htmlstrip-native').html_strip;
 var debug = require('debug')('echo:fetch');
+var Promise = require('promise');
 
 // = iCal ===================================================== //
 
-function saveEvent(item, error, done) {
-	debug("Adding new event: " + item.summary);
-
-	Event
-		.build({
-			title: item.summary.trim(),
-			startdt: item.start,
-			enddt: item.end,
-			location: item.location,
-			blurb: item.description.trim(),
-			url: item.url,
-			state: 'imported',
-			importid: item.uid
-		})
-		.save({ validate: false })
-		.then(function (e_) {
-			// Must be called post-save to get ID property
-			e_.generateSlug();
-			e_.save({ validate: false })
-				.then(done);
-		})
-		.catch(function (e) {
-			error(e);
-		});
+function iCalDataToEvent(item) {
+	return Event.build({
+		title: item.summary.trim(),
+		startdt: item.start,
+		enddt: item.end,
+		location_text: item.location,
+		blurb: item.description.trim(),
+		url: item.url,
+		state: 'imported',
+		importid: item.uid
+	});
 }
 
-function useICalData(err, data) {
-	/* XXX This doesn't check for errors */
+function processICalEntry(entry, opts) {
+	if (!entry.start || entry.start < new Date()) return;
+	if (opts.filter && opts.filter(entry)) return;
 
-	/* "this" set using .bind(), below */
-	var error = this.error;
-	var filter = this.filter;
-	var transform = this.transform;
+	// Don't duplicate events
+	Event.count({ where: { importid: entry.uid } })
+			.then(function(count) {
+		if (count > 0) return;
 
-	for (var k in data) {
+		if (opts.transform) opts.transform(entry);
 
-		if (!data.hasOwnProperty(k)) continue;
-		if (!data[k].start || data[k].start < new Date()) continue;
-		if (filter && filter(data[k])) continue;
-
-		var save = function save(event) {
-			if (event !== null) return;   /* Don't duplicate IDs */
-			if (transform) transform(this);
-
-			saveEvent(this, error);
-		};
-
-		Event
-			.find({ where: { importid: data[k].uid } })
-			.then(save.bind(data[k]))
-			.catch(error);
-	}
+		debug("Adding new event: " + entry.summary);
+		return icalDataToEvent(item).saveAndGenerateSlug({ validate: false });
+	}).catch(opts.error);
 }
 
-function fetchICal(params) {
-	debug("Fetching iCal " + params.url);
+function fetchICal(opts) {
+	debug("Fetching iCal " + opts.url);
 
-	ical.fromURL(params.url, {}, useICalData.bind(params));
+	ical.fromURL(opts.url, {}, function useICalData(data) {
+		for (var k in data) {
+			if (!data.hasOwnProperty(k)) continue;
+			processICalEntry(data[k], opts);
+		}
+	});
 }
 
 
@@ -234,9 +215,7 @@ module.exports = {
 	ical: fetchICal,
 	feed: fetchFeed,
 	findDate: findDate,
-	saveEvent: saveEvent,
 
-	test: {
-		useICalData: useICalData
-	}
+	_processICalEntry: processICalEntry,
+	_iCalDataToEvent: iCalDataToEvent
 };

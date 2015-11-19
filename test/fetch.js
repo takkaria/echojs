@@ -1,6 +1,10 @@
 var expect = require("chai").expect;
 var fetch = require("../fetch");
 var models = require("../models");
+var Event = models.Event;
+
+var moment = require('moment');
+var Promise = require('promise');
 
 // Hideous monkey patching
 Date.prototype.toShortISOString = function() {
@@ -19,17 +23,47 @@ Date.prototype.toShortISOString = function() {
 };
 
 describe("fetch", function() {
-	// XXX find a way of testing this without using DB accesses
-	describe("#saveEvent", function() {
-		after(function(done) {
-			models.Event
-				.destroy({ where: { title: "TEST" } })
-				.then(function () {
-					done();
-				});
+	describe("#iCalDataToEvent", function() {
+		// XXX add start and end
+
+		var entry = {
+			summary: 'summary',
+			location: 'location',
+			description: 'description',
+			url: 'url',
+			uid: 'tag:unique-uid'
+		};
+
+		it("should correctly fill in fields", function() {
+			var evt = fetch._iCalDataToEvent(entry);
+
+			expect(evt.title).to.equal(entry.summary);
+			expect(evt.location_text).to.equal(entry.location);
+			expect(evt.blurb).to.equal(entry.description);
+			expect(evt.url.toString()).to.equal(entry.url);
+			expect(evt.importid).to.equal(entry.uid);
+		});
+	});
+
+	describe("#processICalEntry", function() {
+		var originalSave;
+
+		before(function() {
+			// Avoid actually saving anything
+			originalSave = Event.Instance.prototype.save;
+			Event.Instance.prototype.save = function() {
+				var self = this;
+				return new Promise(function(resolve, reject) {
+					resolve(self);
+				})
+			};
 		});
 
-		it("should not throw an error when asked to save an event", function(done) {
+		after(function() {
+			Event.Instance.prototype.save = originalSave;
+		});
+
+		it("should not throw an error when asked to save an event", function() {
 			var data = {
 				summary: 'TEST',
 				start: new Date("Wed, 04 Mar 2015 18:00:00 GMT"),
@@ -40,12 +74,7 @@ describe("fetch", function() {
 				uid: '1033-1425492000-1425499200@http://www.istandbyyou.org.uk',
 			};
 
-			fetch.saveEvent(data, function(err, errors_) {
-				if (err) throw err;
-				done();
-			}, function() {
-				done();
-			});
+			return fetch._processICalEntry(data);
 		});
 	});
 

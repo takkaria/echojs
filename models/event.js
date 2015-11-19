@@ -37,7 +37,9 @@ module.exports = function(db) {
 				var urlValue = this.getDataValue('url');
 				if (urlValue) {
 					var urlObj = url.parse(urlValue);
-					urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, "");
+					if (urlObj.hostname) {
+						urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, "");
+					}
 					urlObj.toString = function() {
 						return urlValue;
 					};
@@ -88,9 +90,11 @@ module.exports = function(db) {
 			isImported: function() {
 				return this.importid ? true : false;
 			},
+
 			blurbAsHTML: function(opts) {
 				return textToHTML(this.blurb, opts);
 			},
+
 			isMultiDay: function() {
 				if (!this.enddt)
 					return false;
@@ -119,6 +123,13 @@ module.exports = function(db) {
 					this.setDataValue('slug', text.toLowerCase());
 				}
 				return this;
+			},
+
+			saveAndGenerateSlug: function(opts) {
+				// We save it first, then post-save we check the ID and save again
+				this.save(opts).then(function(event) {
+					return event.generateSlug().save(opts);
+				})
 			}
 		},
 		getterMethods: {
@@ -147,6 +158,8 @@ module.exports = function(db) {
 				var Event = this;
 
 				return Promise.all([
+					// XXX we don't want the max 'enddt' of all events in the db - just the ones
+					// with our options
 					Event.max('enddt'),
 					Event.findAll(options)
 				]).then(function(results) {
