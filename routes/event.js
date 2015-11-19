@@ -4,7 +4,7 @@ var mailer = require('../lib/mailer');
 var debug = require('debug')('echo:event');
 var router = express.Router();
 var models = require('../models');
-var async = require('async');
+var Promise = require('promise');
 
 router.param('id', function(req, res, next, id) {
 	models.Event.findOne({
@@ -136,62 +136,57 @@ router.get('/:id', function(req, res) {
 	res.redirect(req.event_.absoluteURL);
 });
 
+function findOtherEventsByLocation(event_, cb) {
+	var params = [];
+	if (event_.location_id)
+		params.push({ location_id: event_.location_id });
+	else if (event_.location_text)
+		params.push({ location_text: event_.location_text });
+	else
+		return Promise.resolve(null);
+
+	return models.Event.findAll({
+		where: [
+			{ id: { $ne: event_.id } },
+			{ $or: params },
+			["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
+		],
+		order: "startdt"
+	});
+}
+
+function findOtherEventsByHost(event_, cb) {
+	if (!event_.host)
+		return Promise.resolve(null);
+
+	return models.Event.findAll({
+		where: [
+			{ id: { $ne: event_.id } },
+			{ host: event_.host },
+			["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
+		],
+		order: "startdt"
+	});
+}
+
 /* GET event by slug */
 router.get('/:year/:month/:slug', function(req, res) {
 	var event_ = req.event_;
 
-	// XXX Rewrite to use Promise.all
+	Promise.all([
+		findOtherEventsByLocation(event_),
+		findOtherEventsByHost(event_)
+	]).then(function (results) {
+		var evtsThisLocation = results[0];
+		var evtsThisHost = results[1];
 
-	async.parallel({
-			location: function findOtherEventsByLocation(cb) {
-				var params = [];
-				if (event_.location_id)
-					params.push({ location_id: req.event_.location_id });
-				if (event_.location_text)
-					params.push({ location_text: req.event_.location_text });
-
-				if (params.length === 0) {
-					cb(null, null);
-				} else {
-					models.Event.findAll({
-						where: [
-							{ id: { $ne: event_.id } },
-							{ $or: params },
-							["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
-						],
-						order: "startdt"
-					}).then(function(evs) {
-						cb(null, evs);
-					});
-				}
-			},
-
-			host: function findOtherEventsByHost(cb) {
-				if (!event_.host) {
-					cb(null, null);
-				} else {
-					models.Event.findAll({
-						where: [
-							{ id: { $ne: event_.id } },
-							{ host: event_.host },
-							["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
-						],
-						order: "startdt"
-					}).then(function(evs) {
-						cb(null, evs);
-					});
-				}
-			}
-		},
-
-		function(err, results) {
-			res.render('event_page', {
-				event_: req.event_,
-				user: req.user,
-				otherEventsLocation: results.location,
-				otherEventsHost: results.host
-			});
+		res.render('event_page', {
+			event_: req.event_,
+			user: req.user,
+			otherEventsLocation: evtsThisLocation,
+			otherEventsHost: evtsThisHost
 		});
+	});
 });
 
 module.exports = router;

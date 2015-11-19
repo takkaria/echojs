@@ -24,7 +24,6 @@
     "node-sass": "^3.3.3"
   },
   "dependencies": {
-    "async": "^1.4.2",
     "autolinker": "^0.22.0",
     "bcrypt": "^0.8.5",
     "body-parser": "^1.14.1",
