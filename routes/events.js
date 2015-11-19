@@ -10,11 +10,9 @@ router.get('/newsletter', function(req, res) {
 			["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
 		],
 		order: "startdt ASC"
-	}, function(err, ordered) {
-		// XXX Handle errors
-
+	}).then(function(evts) {
 		res.render('events_newsletter', {
-			events: ordered,
+			events: evts,
 			user: req.user
 		});
 	});

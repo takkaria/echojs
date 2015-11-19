@@ -86,10 +86,11 @@ describe("Event", function() {
 				})
 			];
 
-			Event.groupByDays(null, function (err, list) {
-				if (err) throw err;
+			Event.groupByDays().then(function(list) {
 				expect(list).to.not.equal(null);
 				done();
+			}).catch(function (err) {
+				done(err);
 			});
 		});
 
@@ -105,15 +106,11 @@ describe("Event", function() {
 				})
 			];
 
-			try {
-				Event.groupByDays(null, function (err, list) {
-					if (err) throw err;
-					expect(list).to.not.equal(null);
-					done();
-				});
-			} catch (e) {
-				done(e);
-			}
+			Event.groupByDays().then(function(list) {
+				done();
+			}).catch(function (err) {
+				done(err);
+			});
 		});
 
 	});

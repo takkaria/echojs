@@ -3,7 +3,7 @@ var url = require('url');
 var moment = require('moment');
 var marked = require('marked');
 var slug = require('slug');
-var async = require('async');
+var Promise = require('promise');
 var textToHTML = require('../lib/texttohtml')
 
 module.exports = function(db) {
@@ -143,29 +143,15 @@ module.exports = function(db) {
 				return moment();
 			},
 
-			// Should probably go in a toolbox somewhere
-			_asyncPromise: function _asyncPromise(promise) {
-				return function(cb) {
-					promise.then(function(result) {
-						cb(null, result);
-					}).catch(function(err) {
-						cb(err);
-					});
-				};
-			},
-
-			groupByDays: function(options, callback) {
+			groupByDays: function(options) {
 				var Event = this;
 
-				async.parallel({
-					max:    Event._asyncPromise(Event.max('enddt')),
-					events: Event._asyncPromise(Event.findAll(options))
-				}, function(err, data) {
-					if (err)
-						return callback(err, null);
-
-					var max = moment(data.max).startOf('day');
-					var events = data.events;
+				return Promise.all([
+					Event.max('enddt'),
+					Event.findAll(options)
+				]).then(function(results) {
+					var max = moment(results[0]).startOf('day');
+					var events = results[1];
 
 					// This will look like
 					// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
@@ -220,7 +206,7 @@ module.exports = function(db) {
 						is_ongoing: true
 					});
 
-					callback(err, list);
+					return list;
 				});
 			}
 		},
