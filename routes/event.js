@@ -97,21 +97,20 @@ router.post('/add', function(req, res) {
 			e_.location_text = null;
 		}
 
-		e_.save().then(function(e_) {
-			if (e_.state === 'approved') {
-				req.flash('success', 'Event added and approved.');
-				return res.redirect(e_.absoluteURL);
-			}
+		return e_.save();
+	}).then(function(e_) {
+		if (e_.state === 'approved') {
+			req.flash('success', 'Event added and approved.');
+			return res.redirect(e_.absoluteURL);
+		}
 
-			req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
+		req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
 
-			mailer.sendEventSubmittedMail(event_);
-			mailer.sendAdminsEventNotifyMail(models, event_);
+		mailer.sendEventSubmittedMail(event_);
+		mailer.sendAdminsEventNotifyMail(models, event_);
 
-			return res.redirect('/events');
-		});
-	})
-	.catch(function(errors) {
+		return res.redirect('/events');
+	}).catch(function(errors) {
 		debug(errors, event_, b);
 		res.render('event_add', {
 			event_: event_,
