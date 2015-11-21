@@ -41,3 +41,5 @@ These are things you can set as environment variables, or using a .env file:
 | SMTP_FROM       | From line in emails
 | SMTP_SECURE     | set this to enable secure sending
 | SMTP_NOSEND     | set this to disable actual sending, useful for test set-ups
+| LOGGLY_TOKEN    | (optional) token for Loggly logging support
+| LOGGLY_DOMTAIN  | (optional) subdomain for loggly support

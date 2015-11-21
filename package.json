@@ -60,6 +60,7 @@
     "swig": "^1.4.2",
     "swig-email-templates-2": "^1.4.0",
     "swig-marked": "~0.0.1",
-    "winston": "^2.1.0"
+    "winston": "^2.1.0",
+    "winston-loggly": "^1.2.0"
   }
 }
