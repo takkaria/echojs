@@ -166,6 +166,10 @@ module.exports = function(db) {
 					var max = moment(results[0]).startOf('day');
 					var events = results[1];
 
+					if (!max.isValid() || events == []) {
+						return [];
+					}
+
 					// This will look like
 					// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
 					var ordered = {},
