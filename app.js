@@ -1,7 +1,5 @@
 require('dotenv').load();
 
-var mkdirp = require('mkdirp');
-
 var express = require('express');
 var session = require('express-session');
 var FileStore = require('session-file-store')(session);
@@ -9,7 +7,7 @@ var flash = require('express-flash');
 var path = require('path');
 var compression = require('compression');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
+var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
@@ -17,8 +15,8 @@ var markedSwig = require('swig-marked');
 var passport = require('passport');
 var paginate = require('express-paginate');
 var moment = require('moment');
-var winston = require('winston');
 
+var logger = require('./lib/logger');
 var models = require('./models');
 
 var routes = require('./routes/index');
@@ -67,7 +65,7 @@ markedSwig.useTag(swig);
 
 app.use(compression());
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -98,28 +96,6 @@ app.use('/about', about);
 app.use('/embed', embed);
 
 // ERROR HANDLERS
-
-// Init log path
-if (!process.env.logpath) {
-    process.env.logpath = './logs';
-}
-mkdirp(process.env.logpath);
-
-// Init Winston file logging
-var logger = new winston.Logger({
-    transports: [
-        new winston.transports.Console,
-        new winston.transports.File({
-            filename: process.env.logpath + '/all.log'
-        }),
-    ],
-    exceptionHandlers: [
-        new winston.transports.File({
-            filename: process.env.logpath + '/exceptions.log',
-        })
-    ]
-})
-
 
 // Express error handlers
 
