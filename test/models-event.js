@@ -73,6 +73,19 @@ describe("Event", function() {
 			});
 		});
 
+		it("should return an empty array when there are no upcoming events", function(done) {
+			testData.eventMax = null;
+			testData.events = [];
+
+			Event.groupByDays().then(function(list) {
+				expect(list).to.be.empty;
+				done();
+			}).catch(function (err) {
+				done(err);
+			});
+
+		});
+
 		it("should not crash for multiday events on a different calendar date but less 24 hours in the past", function(done) {
 
 			testData.currentTime = "2015-06-13T11:00:00.000+0100";
