@@ -35,6 +35,7 @@ These are things you can set as environment variables, or using a .env file:
 | DBPATH          | an alternate path to the sqlite database
 | STATICHOST      | (optional) use a different base URL for static resources
 | BCRYPT_FACTOR   | (optional, default 10) bcrypt difficulty setting
+| LOG_PATH        | (optional, default ./logs) where to store logs
 | SMTP_HOST       | SMTP host
 | SMTP_USER       | SMTP username
 | SMTP_PASS       | SMTP password
