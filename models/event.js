@@ -127,9 +127,9 @@ module.exports = function(db) {
 
 			saveAndGenerateSlug: function(opts) {
 				// We save it first, then post-save we check the ID and save again
-				this.save(opts).then(function(event) {
-					return event.generateSlug().save(opts);
-				})
+				return this.save(opts).then(function(evt) {
+					return evt.generateSlug().save(opts);
+				});
 			}
 		},
 		getterMethods: {
