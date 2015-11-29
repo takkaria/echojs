@@ -95,6 +95,11 @@ app.use('/api', api);
 app.use('/about', about);
 app.use('/embed', embed);
 
+// Permanently redirect the old PHP icalendar URL to the new one
+app.use('/icalendar', function(req, res) {
+    res.redirect(301, '/api/ical');
+});
+
 // ERROR HANDLERS
 
 // Express error handlers
