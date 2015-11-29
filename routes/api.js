@@ -5,6 +5,7 @@ var models = require('../models');
 
 var icalGenerator = require('../lib/ical-generator');
 var moment = require('moment');
+var Promise = require('promise');
 
 /* GET root */
 router.get('/', function(req, res) {
@@ -85,15 +86,8 @@ router.get('/json/locations', function(req, res) {
 		});
 });
 
-router.get('/ical', function(req, res) {
-	var clauses = parseOpts(req);
-
-	models.Event.findAll({
-		where: [clauses.join(" AND "), []],
-		attributes: [ "id", "title", "startdt", "enddt", "location_text", "blurb", "url", "host" ],
-		order: "startdt ASC",
-	}).then(function(events) {
-
+function generateCalendar(events) {
+	return new Promise(function(resolve, reject) {
 		var cal = icalGenerator();
 
 		cal.setDomain('echomanchester.net')
@@ -110,7 +104,7 @@ router.get('/ical', function(req, res) {
 			var start = moment(event_.startdt);
 			var end = event_.enddt ? moment(event_.enddt) : null;
 
-			cal.addEvent_({
+			cal.addEvent({
 				uid: event_.id,
 				tz: "Europe/London",
 				start: start.toDate(),
@@ -123,7 +117,25 @@ router.get('/ical', function(req, res) {
 			});
 		});
 
-		cal.serve(res);
+		resolve(cal);
+	});
+}
+
+router.get('/ical', function(req, res) {
+	var clauses = parseOpts(req);
+
+	clauses = clauses || [];
+
+	models.Event.findAll({
+		where: [clauses.join(" AND "), []],
+		attributes: [ "id", "title", "startdt", "enddt", "location_text", "blurb", "url", "host" ],
+		order: "startdt ASC",
+	}).then(function(events) {
+		return generateCalendar(events);
+	}).then(function(calendar) {
+		calendar.serve(res);
+	}).catch(function(err) {
+		res.status(500).end();
 	});
 });
 
