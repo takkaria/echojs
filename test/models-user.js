@@ -1,4 +1,7 @@
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
+chai.use(require('chai-as-promised'));
+
 var User = require('../models').User;
 var bcrypt = require('bcrypt');
 
@@ -25,12 +28,9 @@ describe('User', function() {
 	});
 
 	describe('.setPassword', function() {
-		it('should resolve to user object', function(done) {
+		it('should resolve to user object', function() {
 			var u = User.build();
-			u.setPassword('testing-string').then(function(user) {
-				expect(user).to.equal(u);
-				done();
-			});
+			expect(u.setPassword('testing-string')).to.eventually.equal(u);
 		});
 
 		it('should alter digest', function(done) {
@@ -63,18 +63,12 @@ describe('User', function() {
 				});
 			});
 
-			it('should promise-return true for a correct password', function(done) {
-				u.checkPassword(pw).then(function(result) {
-					expect(result).to.equal(true);
-					done();
-				});
+			it('should promise-return true for a correct password', function() {
+				expect(u.checkPassword(pw)).to.eventually.equal(true);
 			});
 
-			it('should promise-return false for an incorrect password', function(done) {
-				u.checkPassword(pw + '555').then(function(result) {
-					expect(result).to.equal(false);
-					done();
-				});
+			it('should promise-return false for an incorrect password', function() {
+				expect(u.checkPassword(pw + '555')).to.eventually.equal(false);
 			});
 		});
 
@@ -85,18 +79,12 @@ describe('User', function() {
 				digest: 'e3MjCoP7Oui8bQ+BK+2wWIRmq/OApZ8nXNuv6Kt6qiw='
 			});
 
-			it('should promise-return true for a correct password', function(done) {
-				u.checkPassword(pw).then(function(result) {
-					expect(result).to.equal(true);
-					done();
-				});
+			it('should promise-return true for a correct password', function() {
+				expect(u.checkPassword(pw)).to.eventually.equal(true);
 			});
 
-			it('should promise-return false for an incorrect password', function(done) {
-				u.checkPassword(pw + '555').then(function(result) {
-					expect(result).to.equal(false);
-					done();
-				});
+			it('should promise-return false for an incorrect password', function() {
+				expect(u.checkPassword(pw + '555')).to.eventually.equal(false);
 			});
 		});
 

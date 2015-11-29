@@ -1,4 +1,7 @@
-var expect = require("chai").expect;
+var chai = require('chai');
+var expect = chai.expect;
+chai.use(require('chai-as-promised'));
+
 var Event = require("../models").Event;
 var moment = require("moment");
 
@@ -91,32 +94,19 @@ describe("Event", function() {
 			Event._getCurrentTime = originalGetCurrentTime;
 		});
 
-		it("should mock up OK", function(done) {
-			Event.max('enddt').then(function(max) {
-				expect(max).to.equal(testData.eventMax);
-
-				Event.findAll().then(function(events) {
-					expect(events).to.equal(testData.events);
-					done();
-				});
-			});
+		it("should mock up OK", function() {
+			expect(Event.max('enddt')).to.eventually.equal(testData.eventMax);
+			expect(Event.findAll()).to.eventually.equal(testData.events);
 		});
 
-		it("should return an empty array when there are no upcoming events", function(done) {
+		it("should return an empty array when there are no upcoming events", function() {
 			testData.eventMax = null;
 			testData.events = [];
 
-			Event.groupByDays().then(function(list) {
-				expect(list).to.be.empty;
-				done();
-			}).catch(function (err) {
-				done(err);
-			});
-
+			expect(Event.groupByDays()).to.eventually.be.empty;
 		});
 
-		it("should not crash for multiday events on a different calendar date but less 24 hours in the past", function(done) {
-
+		it("should not crash for multiday events on a different calendar date but less 24 hours in the past", function() {
 			testData.currentTime = "2015-06-13T11:00:00.000+0100";
 			testData.eventMax = "2015-06-14T23:00:00.000+0100";
 			testData.events = [
@@ -128,15 +118,10 @@ describe("Event", function() {
 				})
 			];
 
-			Event.groupByDays().then(function(list) {
-				expect(list).to.not.equal(null);
-				done();
-			}).catch(function (err) {
-				done(err);
-			});
+			expect(Event.groupByDays()).to.eventually.not.throw();
 		});
 
-		it("should not crash when the start time of the latest event in the database is before the current time (but not date)", function(done) {
+		it("should not crash when the start time of the latest event in the database is before the current time (but not date)", function() {
 
 			testData.currentTime = '2015-11-19T19:31:48.780Z';
 			testData.eventMax = '2015-12-03T19:30:00.000Z';
@@ -148,11 +133,7 @@ describe("Event", function() {
 				})
 			];
 
-			Event.groupByDays().then(function(list) {
-				done();
-			}).catch(function (err) {
-				done(err);
-			});
+			expect(Event.groupByDays()).to.eventually.not.throw();
 		});
 
 	});
