@@ -30,6 +30,7 @@
     "autolinker": "^0.22.0",
     "bcrypt": "^0.8.5",
     "body-parser": "^1.14.1",
+    "cache-manager": "^1.2.2",
     "chai": "^3.3.0",
     "chai-as-promised": "^5.1.0",
     "compression": "^1.6.0",

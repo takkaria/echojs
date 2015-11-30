@@ -1,10 +1,25 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
+var cache = require('../lib/cache');
 var Promise = require('promise');
 
+var debug = require('debug')('echo:cache');
+
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
+	if (cache.isCacheFriendly(req)) {
+		debug('trying to load index page from cache');
+		cache.get('index', function(err, html) {
+			if (html === undefined || err) next(err);
+			else res.send(html);
+		});
+	} else {
+		next();
+	}
+});
+
+router.get('/', function (req, res, next) {
 
 	Promise.all([
 		models.Event.groupByDays({
@@ -32,6 +47,12 @@ router.get('/', function(req, res, next) {
 			events: events,
 			posts: posts,
 			user: req.user
+		}, function (err, html) {
+			if (cache.isCacheFriendly(req)) {
+				debug('saving index page to cache')
+				cache.set('index', html);
+			}
+			res.send(html);
 		});
 	});
 });
