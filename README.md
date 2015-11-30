@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/takkaria/echojs.svg?branch=master)](https://travis-ci.org/takkaria/echojs)
 [![Code Climate](https://codeclimate.com/github/takkaria/echojs/badges/gpa.svg)](https://codeclimate.com/github/takkaria/echojs)
+[![Dependency Status](https://david-dm.org/takkaria/echojs.svg)](https://david-dm.org/takkaria/echojs)
+[![devDependency Status](https://david-dm.org/takkaria/echojs/dev-status.svg)](https://david-dm.org/takkaria/echojs#info=devDependencies)
 
 A news &amp; events aggregator (rewritten in Node).
 
