@@ -5,7 +5,7 @@ var Post = models.Post;
 var ical = require('ical');
 var FeedParser = require('feedparser');
 var request = require('request');
-var htmlStrip = require('htmlstrip-native').html_strip;
+var striptags = require('striptags');
 var debug = require('debug')('echo:fetch');
 var Promise = require('promise');
 
@@ -153,10 +153,7 @@ function addPost(data, error) {
 					title: data.title,
 					startdt: date,
 					url: data.link,
-					blurb: htmlStrip(data.description, {
-						include_script: false,
-						include_style: false,
-					}),
+					blurb: striptags(data.description),
 					state: 'imported',
 					importid: data.guid
 				})
