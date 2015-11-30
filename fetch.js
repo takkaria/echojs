@@ -1,3 +1,5 @@
+'use strict';
+
 var models = require('./models');
 var Event = models.Event;
 var Post = models.Post;
@@ -116,23 +118,7 @@ function findDate(base, text) {
 	return null;
 }
 
-function addPost(data, error) {
-	// https://github.com/danmactough/node-feedparser#what-is-the-parsed-output-produced-by-feedparser
-	// may want to re-add summary, content or image parsing at some point
-
-	debug("Adding new post: " + data.title);
-
-	// Build the post
-	Post.build({
-			id: data.guid,
-			title: data.title,
-			link: data.link,
-			date: data.pubDate,
-			feed_id: data.meta.xmlurl,
-		})
-		.save()
-		.catch(error);
-
+function checkPostForEvent(data, error) {
 	// Check if it's like an event
 	var date = findDate(data.pubDate, data.description);
 	if (!date) return;
@@ -148,17 +134,39 @@ function addPost(data, error) {
 
 			debug("Adding new event: " + data.title);
 
-			Event.build({
+			return Event.build({
 					title: data.title,
 					startdt: date,
 					url: data.link,
 					blurb: striptags(data.description),
 					state: 'imported',
 					importid: data.guid
-				})
-				.save({ validate: false })
-				.catch(error);
-		 });
+				}).save({ validate: false });
+		 }).catch(error);
+}
+
+function processPost(item, url, onerror) {
+	if (!item.title || !item.guid) return;
+
+	Post.find({ where: { id: item.guid } }).then(function(post) {
+		if (post !== null) return;	// Don't duplicate posts
+
+		// https://github.com/danmactough/node-feedparser#what-is-the-parsed-output-produced-by-feedparser
+		// may want to re-add summary, content or image parsing at some point
+
+		debug("Adding new post: " + item.title);
+
+		// Build the post
+		return Post.build({
+			id: item.guid,
+			title: item.title,
+			link: item.link,
+			date: item.pubDate,
+			feed_id: url,
+		}).save();
+	}).then(function () {
+		checkPostForEvent(item);
+	}).catch(onerror);
 }
 
 function fetchFeed(params) {
@@ -182,24 +190,9 @@ function fetchFeed(params) {
 	debug("Fetching feed " + url);
 
 	feedparser.on('readable', function() {
-		// This is where the action is!
-		var stream = this;
 		var data;
-
-		while ((data = stream.read())) {
-			let item = data;	// bind locally
-			item.meta.xmlurl = url;	// this doesn't always get saved by the parser
-
-			if (!item.title) return;	// Ignore some items
-
-			if (!item.guid)
-				throw new Error("Feed item with no ID");
-
-			Post.find({ where: { id: item.guid } })
-				.then(function(post) {
-					if (post !== null) return;	// Don't duplicate posts
-					addPost(item, onerror);
-				});
+		while ((data = this.read())) {
+			processPost(data, url, onerror);
 		}
 	});
 }
