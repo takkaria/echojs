@@ -7,11 +7,13 @@
 
 // Bootstrap import and settings
 @import "_variables.scss";
-@import "bootstrap-sass/assets/stylesheets/bootstrap";
+@import "_bootstrap.scss";
 
 // Other includes
 @import "eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker";
-@import "fontawesome/css/font-awesome";
+
+$fa-font-path: "/bower_components/fontawesome/fonts";
+@import "fontawesome/scss/font-awesome";
 
 // Echo
 @import "_headings.scss";
