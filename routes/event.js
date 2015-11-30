@@ -4,7 +4,6 @@ var mailer = require('../lib/mailer');
 var debug = require('debug')('echo:event');
 var router = express.Router();
 var models = require('../models');
-var Promise = require('promise');
 
 router.param('id', function(req, res, next, id) {
 	models.Event.findOne({

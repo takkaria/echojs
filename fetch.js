@@ -7,7 +7,6 @@ var FeedParser = require('feedparser');
 var request = require('request');
 var striptags = require('striptags');
 var debug = require('debug')('echo:fetch');
-var Promise = require('promise');
 
 // = iCal ===================================================== //
 
@@ -36,7 +35,7 @@ function processICalEntry(entry, opts) {
 		if (opts.transform) opts.transform(entry);
 
 		debug("Adding new event: " + entry.summary);
-		return icalDataToEvent(item).saveAndGenerateSlug({ validate: false });
+		return iCalDataToEvent(entry).saveAndGenerateSlug({ validate: false });
 	}).catch(opts.error);
 }
 
@@ -188,7 +187,7 @@ function fetchFeed(params) {
 		var data;
 
 		while ((data = stream.read())) {
-			var item = data;	// bind locally
+			let item = data;	// bind locally
 			item.meta.xmlurl = url;	// this doesn't always get saved by the parser
 
 			if (!item.title) return;	// Ignore some items

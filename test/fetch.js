@@ -3,9 +3,6 @@ var fetch = require("../fetch");
 var models = require("../models");
 var Event = models.Event;
 
-var moment = require('moment');
-var Promise = require('promise');
-
 // Hideous monkey patching
 Date.prototype.toShortISOString = function() {
 	function pad(number) {
@@ -55,7 +52,7 @@ describe("fetch", function() {
 				var self = this;
 				return new Promise(function(resolve, reject) {
 					resolve(self);
-				})
+				});
 			};
 		});
 

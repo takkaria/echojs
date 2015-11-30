@@ -1,10 +1,8 @@
 var sequelize = require('sequelize');
 var url = require('url');
 var moment = require('moment');
-var marked = require('marked');
 var slug = require('slug');
-var Promise = require('promise');
-var textToHTML = require('../lib/texttohtml')
+var textToHTML = require('../lib/texttohtml');
 
 module.exports = function(db) {
 	return db.define('event', {

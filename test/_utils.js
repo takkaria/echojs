@@ -1,5 +1,3 @@
-var Promise = require('promise');
-
 module.exports = {
 
 	mockPromise: function mockPromise(yield_fn) {

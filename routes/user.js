@@ -4,8 +4,7 @@ var express = require('express'),
 	passport = require('passport'),
 	router = express.Router(),
 	models = require('../models'),
-	ensure = require('../lib/ensure'),
-	Promise = require('promise');
+	ensure = require('../lib/ensure');
 
 router.get('/login', function(req, res) {
 	res.render('login', {next: req.query.next});

@@ -5,7 +5,6 @@ var models = require('../models');
 
 var icalGenerator = require('../lib/ical-generator');
 var moment = require('moment');
-var Promise = require('promise');
 
 /* GET root */
 router.get('/', function(req, res) {

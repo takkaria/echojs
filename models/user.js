@@ -2,7 +2,6 @@ var sequelize = require('sequelize');
 var crypto = require('crypto');
 var debug = require('debug')('echo:models:user');
 var bcrypt = require('bcrypt');
-var Promise = require('promise');
 
 module.exports = function(db) {
 

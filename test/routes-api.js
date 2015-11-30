@@ -10,16 +10,16 @@ var Event = require('../models').Event;
 describe('routes/api.js', function() {
 
 	describe('#generateCalendar', function() {
-		var generateCalendar = api.__get__('generateCalendar')
+		var generateCalendar = api.__get__('generateCalendar');
 
 		it('should return a promise', function(done) {
 			generateCalendar([]).then(function() {
 				done();
-			})
+			});
 		});
 
 		it('should generate a calendar when given events', function(done) {
-			events = [
+			var events = [
 				Event.build({
 					title: 'Last event',
 					startdt: '2015-12-03T19:30:00.000Z',
@@ -40,7 +40,7 @@ describe('routes/api.js', function() {
 		});
 
 		it('should throw when when given an event without a title', function() {
-			events = [
+			var events = [
 				Event.build({
 					startdt: '2015-06-12T13:00:00.000+0100',
 					enddt: '2015-06-14T23:00:00.000+0100',

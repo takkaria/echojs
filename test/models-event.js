@@ -63,7 +63,7 @@ describe("Event", function() {
 			Event.destroy({ where: { title: 'TEST' } }).then(function() {
 				done();
 			});
-		})
+		});
 	});
 
 	describe("::groupByDays", function() {
@@ -103,7 +103,7 @@ describe("Event", function() {
 			testData.eventMax = null;
 			testData.events = [];
 
-			expect(Event.groupByDays()).to.eventually.be.empty;
+			expect(Event.groupByDays()).to.eventually.have.length(0);
 		});
 
 		it("should not crash for multiday events on a different calendar date but less 24 hours in the past", function() {

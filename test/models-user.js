@@ -3,7 +3,6 @@ var expect = chai.expect;
 chai.use(require('chai-as-promised'));
 
 var User = require('../models').User;
-var bcrypt = require('bcrypt');
 
 describe('User', function() {
 	describe('.resetPassword', function() {

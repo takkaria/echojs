@@ -8,6 +8,7 @@
     "precoverage": "./bin/initdb",
     "test": "mocha",
     "coverage": "istanbul cover _mocha",
+    "jshint": "jshint *.js lib/*.js models/*.js routes/*.js test/*.js",
     "deploy": "npm install && bower install && npm run sass:minify",
     "sass:basic": "node-sass --include-path bower_components/ scss -o public/stylesheets",
     "sass:watch": "npm run sass:basic -- -w",
@@ -19,7 +20,8 @@
     "unused": "vars",
     "undef": true,
     "node": true,
-    "mocha": true
+    "mocha": true,
+    "esnext": true
   },
   "devDependencies": {
     "istanbul": "^0.4.0",

@@ -1,16 +1,17 @@
 require('dotenv').load();
 
-var expect = require('chai').expect;
+var chai = require('chai');
+var expect = chai.expect;
+chai.use(require('chai-as-promised'));
+
 var Event = require('../models').Event;
 var mailer = require('../lib/mailer');
-
-var utils = require('./_utils');
 
 describe('mailer', function() {
 	describe('.sendMail', function() {
 
-		xit('should not crash when sending mail', function(done) {
-			mailer.sendMail({
+		xit('should not crash when sending mail', function() {
+			var options = {
 				template: 'event_submit.html',
 				subject: 'Testing email',
 				to: 'andi@takkaria.org',
@@ -19,9 +20,9 @@ describe('mailer', function() {
 						title: 'Testing event'
 					})
 				}
-			}).then(function(info) {
-				done();
-			});
+			};
+
+			expect(mailer.sendMail(options)).to.eventually.not.throw();
 		});
 
 	});
