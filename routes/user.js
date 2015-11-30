@@ -4,7 +4,8 @@ var express = require('express'),
 	passport = require('passport'),
 	router = express.Router(),
 	models = require('../models'),
-	ensure = require('../lib/ensure');
+	ensure = require('../lib/ensure'),
+	Promise = require('promise');
 
 router.get('/login', function(req, res) {
 	res.render('login', {next: req.query.next});
@@ -113,7 +114,7 @@ router.get('/password/reset/:token', function(req, res, next) {
 router.post('/password/reset/:token', function(req, res, next) {
 	models.User.find({
 		where: { pwreset: req.params.token }
-	}).then(function(user) {
+	}).then(function (user) {
 		if (req.body.new_password === '') {
 			return res.render('password_change', {
 				user: user,
@@ -134,13 +135,14 @@ router.post('/password/reset/:token', function(req, res, next) {
 			});
 		}
 
-		return user.setPassword(req.body.new_password);
-	}).then(function(user) {
-		user.set('pwreset', null);
-		return user.save();
-	}).then(function(user) {
-		var logIn = Promise.denodeify(req.logIn);
-		logIn(user).then(function () {
+		user.setPassword(req.body.new_password)
+		.then(function (user) {
+			user.set('pwreset', null);
+			return user.save();
+		}).then(function (user) {
+			var logIn = Promise.denodeify(req.logIn);
+			return logIn(user);
+		}).then(function () {
 			req.flash('success', 'Password changed');
 			return res.redirect('/');
 		});
