@@ -3,7 +3,7 @@ var router = express.Router();
 
 var models = require('../models');
 
-var icalGenerator = require('../lib/ical-generator');
+var ical = require('ical-generator');
 var moment = require('moment');
 
 /* GET root */
@@ -12,8 +12,8 @@ router.get('/', function(req, res) {
 });
 
 function isNumber(str) {
-	return typeof(str) == "number" ||
-			(typeof(str) == "string" && str.match(/^(\d+)$/));
+	return typeof(str) == 'number' ||
+			(typeof(str) == 'string' && str.match(/^(\d+)$/));
 }
 
 function today() {
@@ -29,18 +29,18 @@ function inMonths(n) {
 }
 
 function parseOpts(req) {
-	var clauses = [ "state='approved'" ];
+	var clauses = [ 'state="approved"' ];
 
 	var start = req.query.start || today();
 	if (start) {
 		if (isNumber(start))
-			clauses.push("startdt >= datetime(" + start + ", 'unixepoch')");
+			clauses.push("startdt >= datetime(' + start + ', 'unixepoch')");
 	}
 
 	var end = req.query.end || inMonths(3);
 	if (end) {
 		if (isNumber(end))
-			clauses.push("startdt <= datetime(" + end + ", 'unixepoch')");
+			clauses.push("startdt <= datetime(' + end + ', 'unixepoch')");
 	}
 
 	return clauses;	
@@ -54,11 +54,11 @@ router.get('/json', function(req, res) {
 	// to FullCalendar.
 
 	models.Event.findAll({
-		where: [clauses.join(" AND "), []],
-		attributes: [ "id", "title", "startdt", "enddt" ],
-		order: "startdt ASC",
+		where: [clauses.join(' AND '), []],
+		attributes: [ 'id', 'title', 'startdt', 'enddt' ],
+		order: 'startdt ASC',
 	}).then(function(events) {
-		req.header("Content-Type", "application/json");
+		req.header('Content-Type', 'application/json');
 
 		events.forEach(function(_e) {
 			_events.push({
@@ -66,46 +66,46 @@ router.get('/json', function(req, res) {
 			});
 		});
 
-		res.send(JSON.stringify(_events, " "));
+		res.send(JSON.stringify(_events, ' '));
 	});
 });
 
 router.get('/json/locations', function(req, res) {
 	models.Location
-		.findAll({ attributes: [ "id", "name", "address" ] })
+		.findAll({ attributes: [ 'id', 'name', 'address' ] })
 		.then(function(locations) {
-			req.header("Content-Type", "application/json");
+			req.header('Content-Type', 'application/json');
 
 			locations.forEach(function(location) {
 				location.address = location.address.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1, ');
 				// FIXME: Maybe do this client-side
 			});
 
-			res.send(JSON.stringify(locations, null, " "));
+			res.send(JSON.stringify(locations, null, ' '));
 		});
 });
 
 function generateCalendar(events) {
 	return new Promise(function(resolve, reject) {
-		var cal = icalGenerator();
-
-		cal.setDomain('echomanchester.net')
-			.setName('Echo Manchester')
-			.setTZ("Europe/London")
-			.setProdID({
-				company: "Chamber Products",
-				product: "Echo",
-				language: "EN"
-			})
-			.setTTL('PT12H');
+		var cal = ical({
+			domain: 'echomanchester.net',
+			name: 'Echo Manchester',
+			timezone: 'Europe/London',
+			prodId: {
+				company: 'Chamber Products',
+				product: 'Echo',
+				language: 'EN'
+			},
+			ttl: 60 * 60 * 12
+		});
 
 		events.forEach(function(event_) {
 			var start = moment(event_.startdt);
 			var end = event_.enddt ? moment(event_.enddt) : null;
 
-			cal.addEvent({
+			cal.createEvent({
 				uid: event_.id,
-				tz: "Europe/London",
+				timezone: 'Europe/London',
 				start: start.toDate(),
 				end: end ? end.toDate() : undefined,
 				allDay: event_.allday,
@@ -126,9 +126,9 @@ router.get('/ical', function(req, res) {
 	clauses = clauses || [];
 
 	models.Event.findAll({
-		where: [clauses.join(" AND "), []],
-		attributes: [ "id", "title", "startdt", "enddt", "location_text", "blurb", "url", "host" ],
-		order: "startdt ASC",
+		where: [clauses.join(' AND '), []],
+		attributes: [ 'id', 'title', 'startdt', 'enddt', 'location_text', 'blurb', 'url', 'host' ],
+		order: 'startdt ASC',
 	}).then(function(events) {
 		return generateCalendar(events);
 	}).then(function(calendar) {
