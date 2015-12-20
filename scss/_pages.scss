@@ -13,6 +13,12 @@
 			h2 { font-size: 5rem; }
 		}
 	}
+
+	.no-events {
+		@extend .text-center;
+		padding: 2em;
+		border: 3px dotted $brand-primary-l15;
+	}
 }
 
 // events.html
