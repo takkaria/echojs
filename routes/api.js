@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 
@@ -47,8 +49,7 @@ function parseOpts(req) {
 }
 
 router.get('/json', function(req, res) {
-	var clauses = parseOpts(req),
-		_events = [];
+	var clauses = parseOpts(req);
 
 	// This particular kind of JSON output is designed to be suitable input
 	// to FullCalendar.
@@ -58,15 +59,12 @@ router.get('/json', function(req, res) {
 		attributes: [ 'id', 'title', 'startdt', 'enddt' ],
 		order: 'startdt ASC',
 	}).then(function(events) {
+		var data = events.map(e =>
+			({ id: e.id, title: e.title, start: e.startdt, end: e.enddt })
+		);
+
 		req.header('Content-Type', 'application/json');
-
-		events.forEach(function(_e) {
-			_events.push({
-				id: _e.id, title: _e.title, start: _e.startdt, end: _e.enddt
-			});
-		});
-
-		res.send(JSON.stringify(_events, ' '));
+		res.send(JSON.stringify(data, ' '));
 	});
 });
 
