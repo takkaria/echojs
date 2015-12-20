@@ -215,11 +215,13 @@ module.exports = function(db) {
 							list.push(ordered[key]);
 					}
 
-					list.push({
-						longDate: 'Ongoing',
-						events: ongoing,
-						is_ongoing: true
-					});
+					if (ongoing.length) {
+						list.push({
+							longDate: 'Ongoing',
+							events: ongoing,
+							is_ongoing: true
+						});
+					}
 
 					return list;
 				});
