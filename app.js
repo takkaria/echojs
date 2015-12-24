@@ -107,20 +107,17 @@ app.use('/icalendar', function(req, res) {
 // catch 404 and to next error handler
 // XXX we could make this a nicer 404 page
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
-    err.status = 404;
-
     logger.log('warn', "404 %s", req.url);
 
-    next(err);
+    res.render('error', {
+        message: 'Page not found',
+    });
 });
 
 app.use(function(err, req, res, next) {
     var status = (err.status || 500);
 
-    if (status != 404) {
-        logger.log('error', "%s %s", status, req.url, err);
-    }
+    logger.log('error', "%s %s", status, req.url, err);
 
     if (res.headersSent) {
         logger.log('error', '%s %s Headers sent but error found -- oops', status, req.url);

@@ -1,10 +1,21 @@
 {% extends "layout.html" %}
 
 {% block title %}Error{% endblock %}
+
+{% block header %}
+<ol class="breadcrumb">
+	<li><a href="/">Echo</a></li>
+	<li>Error</li>
+</ol>
+{% endblock %}
+
 {% block leftcontent %}
 
 <h1>{{ message }}</h1>
-<h2>{{ error.status }}</h2>
-<pre>{{ error.stack }}</pre>
+
+{% if error %}
+	<h2>{{ error.status }}</h2>
+	<pre>{{ error.stack }}</pre>
+{% endif %}
 
 {% endblock %} 
