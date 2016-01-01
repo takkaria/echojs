@@ -52,7 +52,7 @@ router.get('/', function (req, res, next) {
 			}
 			res.send(html);
 		});
-	});
+	}).catch(next);
 });
 
 module.exports = router;

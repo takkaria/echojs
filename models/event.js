@@ -158,11 +158,12 @@ module.exports = function(db) {
 				return Promise.all([
 					// XXX we don't want the max 'enddt' of all events in the db - just the ones
 					// with our options
+					Event.max('startdt'),
 					Event.max('enddt'),
 					Event.findAll(options)
 				]).then(function(results) {
-					var max = moment(results[0]).startOf('day');
-					var events = results[1];
+					var max = moment(Math.max(results[0], results[1])).startOf('day');
+					var events = results[2];
 
 					if (!max.isValid() || events == []) {
 						return [];
