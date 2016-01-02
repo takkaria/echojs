@@ -12,8 +12,10 @@ module.exports = function(db) {
 		title: {
 			type: sequelize.TEXT,
 			allowNull: false,
-			validate:  {
-				notEmpty: true
+			validate: {
+				notEmpty: {
+					msg: "Events must have a title"
+				}
 			}
 		},
 		location_text: {
@@ -23,7 +25,9 @@ module.exports = function(db) {
 			type: sequelize.TEXT,
 			allowNull: false,
 			validate: {
-				notEmpty: true
+				notEmpty: {
+					msg: "Events must have a description"
+				}
 			}
 		},
 		type: {
@@ -47,35 +51,42 @@ module.exports = function(db) {
 		},
 		host: {
 			type: sequelize.TEXT,
-			validate: {
-				notEmpty: true
-			}
 		},
 
 		startdt: {
 			type: sequelize.DATE,
-			get: function() { return moment(this.getDataValue('startdt')); },
+			validate: {
+				notEmpty: {
+					msg: "Events must have a start date"
+				}
+			},
+			get: function() {
+				var d = moment(this.getDataValue('enddt'));
+				return (d.isValid() ? d : null);
+			}
 		},
+
 		enddt: {
 			type: sequelize.DATE,
 			get: function() {
-				var val = this.getDataValue('enddt');
-				if (val) {
-					var d = moment(val);
-					return (d.isValid() ? d : null);
-				}
+				var d = moment(this.getDataValue('enddt'));
+				return (d.isValid() ? d : null);
 			}
 		},
+
 		allday: { type: sequelize.BOOLEAN },
 
 		state: {
 			type: sequelize.ENUM,
 			values: [ 'submitted', 'approved', 'imported', 'hidden' ]
 		},
+
 		email: {
 			type: sequelize.TEXT,
 			validate:  {
-				isEmail: true
+				isEmail: {
+					msg: "Email addresses must be valid"
+				}
 			}
 		},
 		key: { type: sequelize.TEXT },
@@ -231,14 +242,14 @@ module.exports = function(db) {
 		validate: {
 			startBeforeEnd: function() {
 				if (this.enddt && this.enddt.diff(this.startdt) < 0) {
-					throw new Error("Event can't finish after it starts!");
+					throw new Error("Event can't finish after it starts");
 				}
 			},
 
 			locationEmpty: function() {
 				if (!this.location_id &&
 						(this.location_text === "" || this.location_text === null)) {
-					throw new Error("You must provide a location.");
+					throw new Error("Events must have a location");
 				}
 			}
 		}

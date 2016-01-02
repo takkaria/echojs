@@ -44,79 +44,94 @@ function defaultState(req) {
 	return 'submitted';
 }
 
-/* POST event add */
-router.post('/add', function(req, res) {
-	var b = req.body;
+function parseDateTime(data, field) {
+	var date;
 
-	// This code is shared with routes/admin/event.js. XXX
-
-	// We parse start dates loosely because it reduces the chance of data loss
-	b.startdt = moment(b.startdt, 'YYYY/MM/DD HH:mm');
-
-	// End dates need more care.
 	// 1. We parse with strict mode to prevent blank enddt being taken as "now"
 	// 2. This means that if moment can't find a time, it marks the date as invalid.
 	//    So we have to use an alternative parse string for all-day events.
-	if (b.allday) {
-		b.enddt = moment(b.enddt, 'YYYY/MM/DD', true);
+
+	// Start/end date parsing could be made better, so that we return the data
+	// the user entered instead of blanks when the dates don't parse. XXX
+
+	if (data.allday) {
+		date = moment(data[field], 'YYYY/MM/DD', true);
 	} else {
-		b.enddt = moment(b.enddt, 'YYYY/MM/DD HH:mm', true);
+		date = moment(data[field], 'YYYY/MM/DD HH:mm', true);
 	}
 
-	if (!b.enddt.isValid()) b.enddt = null;
+	return date.isValid() ? date : null;
+}
+
+// POST /event/add
+//
+// This code is shared with routes/admin/event.js
+// Should have an Event.buildFromData(). XXX
+router.post('/add', function(req, res) {
+	var data = req.body;
+
+	data.startdt = parseDateTime(data, 'startdt');
+	data.enddt = parseDateTime(data, 'enddt');
 
 	// If the end date and start date are the same and we're doing 'all day',
 	// nuke the end date.
-	if (b.allday && b.startdt.isSame(b.enddt, 'day'))
-		b.enddt = null;
+	if (data.allday && data.startdt.isSame(data.enddt, 'day'))
+		data.enddt = null;
 
-
-	var event_ = models.Event.build({
-		title: b.title,
-		startdt: b.startdt,
-		enddt: b.enddt,
-		allday: b.allday ? true : false,
-		blurb: b.blurb,
-		location_text: b.location_text,
-		host: b.host,
-		type: '',
-		email: b.email,
-		state: defaultState(req)
+	var evt = models.Event.build({
+		title:         data.title,
+		startdt:       data.startdt,
+		enddt:         data.enddt,
+		allday:        data.allday ? true : false,
+		blurb:         data.blurb,
+		location_text: data.location_text,
+		host:          data.host,
+		type:          '',
+		email:         data.email,
+		state:         defaultState(req)
 	});
 
-	event_.save().then(function(e_) {
-		// Must be called post-save to get ID property
-		e_.generateSlug();
-		if (b.location_id) {
-			event_.setLocation(b.location_id);
-		}
-
-		// If we have an ID that works, erase the text
-		if (e_.location_id) {
-			e_.location_text = null;
-		}
-
-		return e_.save();
-	}).then(function(e_) {
-		if (e_.state === 'approved') {
-			req.flash('success', 'Event added and approved.');
-			return res.redirect(e_.absoluteURL);
-		}
-
-		req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
-
-		mailer.sendEventSubmittedMail(event_);
-		mailer.sendAdminsEventNotifyMail(models, event_);
-
-		return res.redirect('/events');
-	}).catch(function(errors) {
-		debug(errors, event_, b);
+	if (data.edit) {
+		// Just render the event data back
 		res.render('event_add', {
-			event_: event_,
-			errors: errors.errors,
+			event_: evt,
 			user: req.user
 		});
-	});
+	} else {
+		evt.save().then(function setID(evt) {
+			// Must be called post-save to get ID property
+			evt.generateSlug();
+			if (data.location_id) {
+				evt.setLocation(data.location_id);
+			}
+
+			// If we have an ID that works, erase the text
+			if (evt.location_id) {
+				evt.location_text = null;
+			}
+
+			return evt.save();
+		}).then(function notify(evt) {
+			if (evt.state === 'approved') {
+				req.flash('success', 'Event added and approved.');
+				return res.redirect(evt.absoluteURL);
+			}
+
+			req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
+
+			mailer.sendEventSubmittedMail(evt);
+			mailer.sendAdminsEventNotifyMail(models, evt);
+
+			return res.redirect('/events');
+		}).catch(function(errors) {
+			debug(errors, evt, data);
+			res.render('event_add', {
+				event_: evt,
+				errors: errors.errors,
+				user: req.user
+			});
+		});
+	}
 });
 
 /* GET event by ID */
