@@ -21,21 +21,20 @@
 			{{ evt.startdt.calendar() }}
 			{% if !evt.allday %}{{ evt.startdt.format("HH:mm") }}{% endif %}
 
-		  {% if evt.enddt %}
-		    &ndash;
+			{% if evt.enddt %}
+				{% if !evt.isMultiDay() && !evt.allday %}
+					&ndash; {{ evt.enddt.format("HH:mm") }}
+				{% else %}
+					&ndash;<br>
 
-		    {% if evt.isMultiDay() %}
-		      {% if evt.allday %}
-		        {{ evt.enddt.calendar() }}
-		      {% else %}
-		        {{ evt.enddt.calendar() }}, 
-		      {% endif %}
-		    {% endif %}
+					{% if evt.isMultiDay() %}
+						{{ evt.enddt.calendar() }}
+					{% endif %}
 
-			{% if !evt.allday %}
-				{{ evt.enddt.format("HH:mm") }}
-			{% endif %}
-
+					{% if !evt.allday %}
+						{{ evt.enddt.format("HH:mm") }}
+					{% endif %}
+				{% endif %}
 		  {% endif %}
 
 		</div>
