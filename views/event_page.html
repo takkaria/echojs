@@ -17,7 +17,7 @@
 
 {% endblock %}
 
-{% block header %}{% spaceless %}
+{% block header %}
 
 <ol class="breadcrumb">
   <li><a href="/">Echo</a></li>
@@ -25,63 +25,63 @@
   <li><a href="/events/{{ event_.startdt.format("YYYY/MMM") | lower }}">{{ event_.startdt.format("MMMM YYYY") }}</a></li>
 </ol>
 
-  <h2 class="header-title">
-    {{ event_.title }}
+{% if user.rights === 'admin' or user.rights === 'editor' %}
+  <div class="button-list">
 
-    {% if user.rights === 'admin' or user.rights === 'editor' %}
+    <span class="btn btn-xs btn-outline">status&nbsp;{{ event_.state }}</span>
+
     <a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-primary">edit</a>
-    <span class="btn btn-xs btn-info">status '{{ event_.state }}'</span>
+
+    {% if event_.state == "submitted" %}
+      <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
+        approve
+      </a>
+      <a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-danger">
+        reject
+      </a>
+    {% elif event_.state== "approved" %}
+      <a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-danger">
+       reject
+      </a>
     {% endif %}
 
-    {% if user.rights === 'admin' or user.rights === 'editor' %}
-      {% if event_.state == "submitted" %}
-        <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
-          approve
-        </a>
-        <a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-warning">
-          reject
-        </a>
-      {% elif event_.state== "approved" %}
-        <a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-warning">
-          un-approve
-        </a>
-      {% endif %}
-
-      {% if event_.state == "hidden" %}
-        <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
-          approve
-        </a>
-      {% endif %}
-
-    {% endif %}
-  </h2>
-
-  <h4 class="header-date">
-    {% if event_.allday %}
-      {{ event_.startdt.format("dddd, Do MMMM") }}
-    {% else %}
-      {{ event_.startdt.format("dddd, Do MMMM, h:mma") }}
+    {% if event_.state == "hidden" %}
+      <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
+        approve
+      </a>
     {% endif %}
 
-    {% if event_.enddt %}
-      &nbsp;&ndash;&nbsp;
+  </div>
+{% endif %}
 
-      {% if event_.isMultiDay() %}
-        {% if event_.allday %}
-          {{ event_.enddt.format("dddd, Do MMMM") }}
-        {% else %}
-          {{ event_.enddt.format("dddd, Do MMMM, ") }}
-        {% endif %}
+<h2 class="header-title">{{ event_.title }}</h2>
+
+<h4 class="header-date">
+  {% if event_.allday %}
+    {{ event_.startdt.format("dddd, Do MMMM") }}
+  {% else %}
+    {{ event_.startdt.format("dddd, Do MMMM, h:mma") }}
+  {% endif %}
+
+  {% if event_.enddt %}
+    &ndash;
+
+    {% if event_.isMultiDay() %}
+      {% if event_.allday %}
+        {{ event_.enddt.format("dddd, Do MMMM") }}
+      {% else %}
+        {{ event_.enddt.format("dddd, Do MMMM, ") }}
       {% endif %}
-
-      {% if !event_.allday %}
-        {{ event_.enddt.format("h:mma") }}
-      {% endif %}
-
     {% endif %}
-  </h4>
 
-{% endspaceless %}{% endblock %}
+    {% if !event_.allday %}
+      {{ event_.enddt.format("h:mma") }}
+    {% endif %}
+
+  {% endif %}
+</h4>
+
+{% endblock %}
 
 {% block leftcontent %}
 

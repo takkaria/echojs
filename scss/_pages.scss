@@ -123,6 +123,10 @@
 
 // event_page.html
 .event {
+	.button-list .btn {
+		margin-right: 0.5em;
+	}
+
 	.header-title {
 		color: black;
 		font-weight: 700;
@@ -145,8 +149,6 @@
 	.jumbo {
 		margin-bottom: $line-height-computed;
 	}
-
-
 }
 
 // login.html
