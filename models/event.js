@@ -1,3 +1,5 @@
+'use strict';
+
 var sequelize = require('sequelize');
 var url = require('url');
 var moment = require('moment');
@@ -112,14 +114,19 @@ module.exports = function(db) {
 				return this.importid ? true : false;
 			},
 
-			blurbAsHTML: function(opts) {
-				return textToHTML(this.blurb, opts);
-			},
-
 			isMultiDay: function() {
 				if (!this.enddt)
 					return false;
 				return !this.startdt.isSame(this.enddt, 'day');
+			},
+
+			length: function(unit) {
+				if (!this.enddt) return;
+				return this.enddt.diff(this.startdt, unit)
+			},
+
+			blurbAsHTML: function(opts) {
+				return textToHTML(this.blurb, opts);
 			},
 
 			shortBlurb: function(readMore) {
@@ -166,7 +173,7 @@ module.exports = function(db) {
 				} else {
 					return this.getDataValue('location_text');
 				}
-			}
+			},
 		},
 		classMethods: {
 			// This probably isn't the best place for this but I'm not sure where is -AS
@@ -175,81 +182,86 @@ module.exports = function(db) {
 				return moment();
 			},
 
+			// Iterate through all the start & end dates in the events array and
+			// find the latest one.
+			getLatestDate: function getLatestDate(events) {
+				return events.reduce(function(prev, evt) {
+					if (evt.startdt.isAfter(prev))
+						prev = evt.startdt
+
+					if (evt.enddt && evt.enddt.isAfter(prev))
+						prev = evt.enddt
+
+					return prev
+				})
+			},
+
 			groupByDays: function(options) {
-				var Event = this;
+				let Event = this;
 
-				return Promise.all([
-					// XXX we don't want the max 'enddt' of all events in the db - just the ones
-					// with our options
-					Event.max('startdt'),
-					Event.max('enddt'),
-					Event.findAll(options)
-				]).then(function(results) {
-					var max = moment(Math.max(results[0], results[1])).startOf('day');
-					var events = results[2];
-
-					if (!max.isValid() || events == []) {
-						return [];
+				return Event.findAll(options).then(function(events) {
+					// Find the latest date in our dataset
+					let max = Event.getLatestDate(events).startOf('day');
+					if (events == [] || !max.isValid()) {
+						return;
 					}
 
-					// This will look like
-					// [ { date: moment, events: [ models.Event(), models.Event(), ... ] }, ... ]
-					var ordered = {},
-						ongoing = [],
-						list = [],
-						one_day_past = Event._getCurrentTime().subtract(1, 'days');
-
-					for (var d = Event._getCurrentTime().startOf('day');
+					// Create an dictionary of date to event list
+					let indexByDate = {};
+					for (let d = Event._getCurrentTime().startOf('day');
 							!d.isAfter(max);
 							d.add(1, 'days')) {
-						var chunk = {
-							date: d,
-							longDate: d.format("dddd, Do MMMM YYYY"),
+						indexByDate[d.format('YYYY-MM-DD')] = {
+							date: d.clone(),
 							events: []
-						};
-
-						if (d.diff(Event._getCurrentTime(), 'days') < 7) {
-							chunk.shortDate = d.calendar();
 						}
-
-						ordered[d.format('YYYY-MM-DD')] = chunk;
 					}
 
-					// Group events by date
-					events.forEach(function(e) {
+					// Group events into either indexByDate or the ongoing pile
+					let ongoing = [];
+					let one_day_past = Event._getCurrentTime().subtract(1, 'days');
+
+					for (let i = 0, len = events.length; i < len; i++) {
+						let evt = events[i];
+
 						// Add single day event to current chunk
-						if (!e.isMultiDay() &&
-								e.startdt.isAfter(one_day_past)) {
-							return ordered[e.startdt.format('YYYY-MM-DD')].events.push(e);
-						}
+						if (!evt.isMultiDay() &&
+								evt.startdt.isAfter(one_day_past)) {
+							indexByDate[evt.startdt.format('YYYY-MM-DD')].events.push(evt);
 
 						// Add long multi-day events to the 'ongoing' pile
-						if (e.enddt && e.enddt.diff(e.startdt, 'days') > 7) {
-							return ongoing.push(e);
-						}
+						} else if (evt.length('days') > 7) {
+							ongoing.push(evt);
 
 						// Short multi-day events get repeated
-						for (var d_ = Event._getCurrentTime(); d_.isBefore(e.enddt); d_.add(1, 'days')) {
-							ordered[d_.format('YYYY-MM-DD')].events.push(e);
+						} else {
+							for (let d = evt.startdt; d.isBefore(evt.enddt); d.add(1, 'days')) {
+								indexByDate[d.format('YYYY-MM-DD')].events.push(evt);
+							}
 						}
-					});
-
-					for (var key in ordered) {
-						if (ordered[key].events.length > 0)
-							list.push(ordered[key]);
 					}
 
-					if (ongoing.length) {
-						list.push({
-							longDate: 'Ongoing',
-							events: ongoing,
-							is_ongoing: true
-						});
+					let ordered = [];
+					for (let key in indexByDate) {
+						let chunk = indexByDate[key];
+
+						if (chunk.events.length > 0) {
+							// Add a 'short date' to the display
+							// XXX This should be in the display layer!
+							if (chunk.date.diff(Event._getCurrentTime(), 'days') < 7) {
+								chunk.shortDate = chunk.date.calendar();
+							}
+
+							ordered.push(chunk);
+						}
 					}
 
-					return list;
+					return {
+						ordered: ordered,
+						ongoing: ongoing
+					};
 				});
-			}
+			}	
 		},
 		validate: {
 			startBeforeEnd: function() {
