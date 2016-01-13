@@ -35,6 +35,7 @@
 		<select id="predefined" class="form-control">
 			<option value="0" select>Regular group meeting</option>
 			<option value="1">Doesn't fit Echo</option>
+			<option value="1">Duplicate event</option>
 		</select>
 	</div>
 
@@ -58,9 +59,7 @@ pre.reason { display: none; }
 </style>
 
 <pre class="reason" data-reason="0">
-Thanks for adding your event "{{ event_.title }}" to Echo Manchester. Unfortunately we've decided not to publish your event at this time, because we don't want to list regular group meetings.
-
-We don't want to list regular group organising meetings on Echo because in our experience, they are often inaccessible to newcomers. We're fine with them going on the site every so often but we'd prefer groups to put on events aimed at new people.
+Thanks for adding your event "{{ event_.title }}" to Echo Manchester. We've decided not to publish your event because we don't want to list regular group meetings. In our experience, they are often inaccessible to newcomers. We're fine with them going on the site every so often but we'd prefer groups to put on events aimed at new people.
 
 We realise this might seem arbitrary or unfair to you. If you feel strongly that your event should go on the site, please reply and explain why and we'll reconsider. We're definitely open to having a conversation about it!
 
@@ -68,13 +67,17 @@ We hope you understand our position and that this doesn't put you off posting fu
 </pre>
 
 <pre class="reason" data-reason="1">
-Thanks for adding your event "{{ event_.title }}" to Echo Manchester.  Unfortunately we've decided not to publish your event at this time, because we don't feel that it fits within Echo's remit.
+Thanks for adding your event "{{ event_.title }}" to Echo Manchester.  We've decided not to publish your event because we don't feel that it fits within Echo's remit.
 
 We are sorry if this sounds harsh, we just want to keep our focus on what Echo was set up for (i.e. to provide opportunities for struggle against oppression to grow by increasing participation in demonstrations, events, organised groups, and fundraisers) so Echo's mission doesn't become diluted and its effectiveness lessened.
 
 We realise this might seem arbitrary or unfair to you. If you feel strongly that your event fits our ethos, please reply and explain why and we'll reconsider. Sometimes it's hard to judge from the little blurb/link and we might have missed out some crucial information!
 
 We hope you understand our position and that this doesn't put you off posting future events within our event guidelines.
+</pre>
+
+<pre class="reason" data-reason="2">
+Thanks for adding "{{ event_.title }}" to Echo Manchester.  It was already on the site so we've combined the information from the two events and kept the original.
 </pre>
 
 {% endblock %}
