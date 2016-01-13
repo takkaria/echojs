@@ -119,12 +119,15 @@ if (action.type == "ical") {
 } else if (action.type == "feed") {
 	fetch.feed({ url: action.url, error: console.log });
 } else {
-	Feed.findAll().then(function (e) {
-		e.forEach(function(feed) {
-			fetch.feed({
-				url: feed.id,
-				error: feedError.bind(feed),
-			});
+	Feed.findAll().then(function (feeds) {
+		feeds.forEach(function(feed) {
+			feed.errors = null;
+			feed.save().then(function() {
+				fetch.feed({
+					url: feed.id,
+					error: feedError.bind(feed),
+				});
+			})
 		});
 	});
 
