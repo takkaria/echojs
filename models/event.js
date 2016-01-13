@@ -61,7 +61,7 @@ module.exports = function(db) {
 				}
 			},
 			get: function() {
-				var d = moment(this.getDataValue('enddt'));
+				var d = moment(this.getDataValue('startdt'));
 				return (d.isValid() ? d : null);
 			}
 		},
