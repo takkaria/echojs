@@ -61,16 +61,28 @@ module.exports = function(db) {
 				}
 			},
 			get: function() {
-				var d = moment(this.getDataValue('startdt'));
-				return (d.isValid() ? d : null);
+				let val = this.getDataValue('startdt');
+				if (val) {
+					let d = moment(val);
+					if (d.isValid())
+						return d;
+				}
+
+				return null;
 			}
 		},
 
 		enddt: {
 			type: sequelize.DATE,
 			get: function() {
-				var d = moment(this.getDataValue('enddt'));
-				return (d.isValid() ? d : null);
+				let val = this.getDataValue('enddt');
+				if (val) {
+					let d = moment(val);
+					if (d.isValid())
+						return d;
+				}
+
+				return null;
 			}
 		},
 
