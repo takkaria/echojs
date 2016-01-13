@@ -12,7 +12,9 @@ var FeedParser = require('feedparser');
 var request = require('request');
 
 router.get('/', ensure.editorOrAdmin, function(req, res) {
-	models.Feed.findAll().then(function(result) {
+	models.Feed.findAll({
+		order: 'errors DESC, title ASC'
+	}).then(function(result) {
 		res.render('feeds', {
 			user: req.user,
 			feeds: result

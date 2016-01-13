@@ -174,3 +174,34 @@
 	.blurb { max-width: 45em; }
 	.date { min-width: 12em; }
 }
+
+// feeds.html
+.admin.feeds {
+
+	// Only do two-column layout on bigger screens
+	@media (min-width: $screen-md-min) {
+		.feedlist { /* Masonry container */
+			-moz-column-count: 2;
+			-moz-column-gap: 1em;
+			-webkit-column-count: 2;
+			-webkit-column-gap: 1em;
+			column-count: 2;
+			column-gap: 1em;
+		}
+	}
+
+	.feed {
+		display: inline-block;
+		margin: 0 0 1em;
+		width: 100%;
+
+		padding: 0 10px;
+		border-radius: 4px;
+	    border: 1px solid $brand-primary;
+	}
+
+	.feed-error {
+		border-color: $state-danger-border;
+		background: $state-danger-bg;
+	}
+}

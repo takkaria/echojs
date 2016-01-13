@@ -2,7 +2,7 @@
 {% import "_formmacros.html" as form %}
 
 {% block title %}Feeds{% endblock %}
-{% block pageclass %}admin{% endblock %}
+{% block pageclass %}admin feeds{% endblock %}
 
 {% block header %}
 <ol class="breadcrumb">
@@ -25,27 +25,28 @@
 
 			<h2>Add a new feed</h2>
 
-			<form method="POST" action="/admin/feeds/add">
-				{{ form.inputText({ label: "URL:", field: "url" }) }}
-				{{ form.inputSubmit("Add") }}
+			<form method="POST" action="/admin/feeds/add" class="form">
+				<div class="input-group">
+					<input class="form-control" name="url" type="text" placeholder="URL">
+					<span class="input-group-btn">
+						<input class="btn btn-primary" type="submit" value="Add feed">
+					</span>
+				</div>
 			</form>
 
 			<h2>Edit existing feed info</h2>
 
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th>Feed</th>
-						<th>Actions</th>
-						<th>Feed URL</th>
-						<th>Errors</th>
-					</tr>
-				</thead>
-
+			<div class="feedlist">
 				{% for feed in feeds %}
-				<tr>
-					<th><a href="{{ feed.site_url }}">{{ feed.title }}</a></th>
-					<td>
+				<div class="feed {% if feed.errors %}feed-error{% endif %}">
+					<h4><a href="{{ feed.site_url }}">{{ feed.title }}</a></h4>
+
+					<p>URL: {{ feed.id }}</p>
+					{% if feed.errors %}
+						<p>Error: <b>{{ feed.errors }}</b></p>
+					{% endif %}
+
+					<p>
 						<form method="GET" action="/admin/feeds/edit" style="display: inline-block;">
 							{{ form.inputHidden({ field: "id", fill: feed.id }) }}
 							{{ form.inputSubmit("Edit", "btn-xs btn-primary") }}
@@ -55,14 +56,11 @@
 							{{ form.inputHidden({ field: "id", fill: feed.id }) }}
 							{{ form.inputSubmit("Delete", "btn-xs btn-danger") }}
 						</form>
-					</td>
-					<td>{{ feed.id }}</td>
-					<td>{{ feed.errors }}</td>
-				</tr>
+					</p>
+
+				</div>
 				{% endfor %}
-
-			</table>
-
+			</div>
 		</div>
 	</div>
 </div>

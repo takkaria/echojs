@@ -26,7 +26,7 @@
 {% endmacro %}
 
 {% macro inputText(opts) %}
-	{# opts = { label, field, fill, icon, class, helpText } #}
+	{# opts = { label, placeholder, field, fill, icon, class, helpText } #}
 
 	<div class="form-group">
 		<label for="{{ opts.field }}">{{ opts.label }}</label>
@@ -36,8 +36,9 @@
 			name="{{ opts.field }}"
 			type="text"
 			id="{{ opts.field }}"
-			{% if opts.fill %}     value="{{ opts.fill }}" {% endif %}
-			{% if opts.helpText %} aria-describedBy="{{ opts.field }}Help" {% endif %}
+			{% if opts.placeholder %} placeholder="{{ opts.placeholder }}" {% endif %}
+			{% if opts.fill %}        value="{{ opts.fill }}" {% endif %}
+			{% if opts.helpText %}    aria-describedBy="{{ opts.field }}Help" {% endif %}
 		>
 		{{ iconEnd(opts) }}
 		{{ checkErrors(opts.field) }}
