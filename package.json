@@ -25,11 +25,11 @@
   },
   "devDependencies": {
     "chai": "^3.4.1",
-    "chai-as-promised": "^5.2.0"
+    "chai-as-promised": "^5.2.0",
     "istanbul": "^0.4.2",
     "mocha": "^2.3.4",
     "node-sass": "^3.4.2",
-    "sequelize-cli": "^2.3.0",
+    "sequelize-cli": "^2.3.0"
   },
   "dependencies": {
     "autolinker": "^0.22.0",
