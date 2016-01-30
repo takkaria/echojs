@@ -2,17 +2,17 @@ var express = require('express');
 var router = express.Router();
 var models = require('../models');
 
-var ensure = require("../lib/ensure");
+var ensure = require('../lib/ensure');
 
 router.get('/', ensure.editorOrAdmin, function(req, res) {
 	models.Event.findAndCountAll({
 		where: [
-			{ state: ["submitted", "imported"] }
+			{ state: [ 'submitted', 'imported' ] }
 		],
 		include: [ models.Location ],
 		limit: req.query.limit,
 		offset: req.query.limit * (req.query.page - 1),
-		order: "startdt ASC"
+		order: 'startdt ASC'
 	}).then(function(result) {
 		res.render('admin', {
 			user: req.user,

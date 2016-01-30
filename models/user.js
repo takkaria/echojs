@@ -17,8 +17,8 @@ module.exports = function(db) {
 					var id = this.getDataValue('id');
 
 					exports.User.find({
-						where: {email: value},
-						attributes: ['id']
+						where: { email: value },
+						attributes: [ 'id' ]
 					}).then(function(user) {
 						if (user && user.id !== id)
 							return next('email already in use');
@@ -37,7 +37,7 @@ module.exports = function(db) {
 		notify: { type: sequelize.BOOLEAN },
 		rights: {
 			type: sequelize.ENUM,
-			values: [ "admin", "editor" ],
+			values: [ 'admin', 'editor' ],
 			allowNull: false
 		}
 	}, {
@@ -59,12 +59,13 @@ module.exports = function(db) {
 					});
 				});
 			},
+
 			checkPassword: function(password) {
 				var self = this;
 				return new Promise(function(resolve, reject) {
 					if (self.salt == 'bcrypt') {
 						bcrypt.compare(password, self.getDataValue('digest'), function(err, res) {
-							debug("Password checked - result " + res);
+							debug('Password checked - result ' + res);
 							if (err) reject(err);
 							else resolve(res);
 						});
@@ -72,11 +73,12 @@ module.exports = function(db) {
 						var digest = crypto.createHash('sha256').update(
 							self.salt + password
 						).digest('base64');
-						debug("Old sha256 password checked");
+						debug('Old sha256 password checked');
 						resolve(digest === self.getDataValue('digest'));
 					}
 				});
 			},
+
 			resetPassword: function() {
 				var token = crypto.createHash('sha256')
 					.update(crypto.pseudoRandomBytes(24))

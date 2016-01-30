@@ -14,7 +14,7 @@ router.param('id', function(req, res, next, id) {
 		}
 	}).then(function(event_) {
 		req.event_ = event_;
-		next(!event_ ? new Error("No such event") : null);
+		next(!event_ ? new Error('No such event') : null);
 	});
 });
 
@@ -24,7 +24,7 @@ router.param('slug', function(req, res, next, slug) {
 		where: { slug: slug }
 	}).then(function(event_) {
 		req.event_ = event_;
-		next(!event_ ? new Error("No such event") : null);
+		next(!event_ ? new Error('No such event') : null);
 	});
 });
 
@@ -117,7 +117,7 @@ router.post('/add', function(req, res) {
 				return res.redirect(evt.absoluteURL);
 			}
 
-			req.flash('success', 'Event successfully added; you\'ll get an e-mail when a moderator has looked at it');
+			req.flash('success', "Event successfully added; you'll get an e-mail when a moderator has looked at it");
 
 			mailer.sendEventSubmittedMail(evt);
 			mailer.sendAdminsEventNotifyMail(models, evt);
@@ -162,9 +162,9 @@ function findOtherEventsByLocation(event_, cb) {
 		where: [
 			{ id: { $ne: event_.id } },
 			{ $or: params },
-			["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
+			[ "(startdt >= date('now', 'start of day') OR date('now') <= enddt)", [] ]
 		],
-		order: "startdt"
+		order: 'startdt'
 	});
 }
 
@@ -176,9 +176,9 @@ function findOtherEventsByHost(event_, cb) {
 		where: [
 			{ id: { $ne: event_.id } },
 			{ host: event_.host },
-			["(startdt >= date('now', 'start of day') OR date('now') <= enddt)", []]
+			[ "(startdt >= date('now', 'start of day') OR date('now') <= enddt)", [] ]
 		],
-		order: "startdt"
+		order: 'startdt'
 	});
 }
 
@@ -189,7 +189,7 @@ router.get('/:year/:month/:slug', function(req, res) {
 	Promise.all([
 		findOtherEventsByLocation(event_),
 		findOtherEventsByHost(event_)
-	]).then(function (results) {
+	]).then(function(results) {
 		var evtsThisLocation = results[0];
 		var evtsThisHost = results[1];
 

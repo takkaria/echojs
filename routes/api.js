@@ -14,8 +14,8 @@ router.get('/', function(req, res) {
 });
 
 function isNumber(str) {
-	return typeof(str) == 'number' ||
-			(typeof(str) == 'string' && str.match(/^(\d+)$/));
+	return typeof str === 'number' ||
+			(typeof str === 'string' && str.match(/^(\d+)$/));
 }
 
 function today() {
@@ -45,7 +45,7 @@ function parseOpts(req) {
 			clauses.push("startdt <= datetime(' + end + ', 'unixepoch')");
 	}
 
-	return clauses;	
+	return clauses;
 }
 
 router.get('/json', function(req, res) {
@@ -55,7 +55,7 @@ router.get('/json', function(req, res) {
 	// to FullCalendar.
 
 	models.Event.findAll({
-		where: [clauses.join(' AND '), []],
+		where: [ clauses.join(' AND '), [] ],
 		attributes: [ 'id', 'title', 'startdt', 'enddt' ],
 		order: 'startdt ASC',
 	}).then(function(events) {
@@ -76,6 +76,7 @@ router.get('/json/locations', function(req, res) {
 
 			locations.forEach(function(location) {
 				location.address = location.address.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1, ');
+
 				// FIXME: Maybe do this client-side
 			});
 
@@ -124,7 +125,7 @@ router.get('/ical', function(req, res) {
 	clauses = clauses || [];
 
 	models.Event.findAll({
-		where: [clauses.join(' AND '), []],
+		where: [ clauses.join(' AND '), [] ],
 		attributes: [ 'id', 'title', 'startdt', 'enddt', 'location_text', 'blurb', 'url', 'host' ],
 		order: 'startdt ASC',
 	}).then(function(events) {

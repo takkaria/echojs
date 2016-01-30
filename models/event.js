@@ -16,7 +16,7 @@ module.exports = function(db) {
 			allowNull: false,
 			validate: {
 				notEmpty: {
-					msg: "Events must have a title"
+					msg: 'Events must have a title'
 				}
 			}
 		},
@@ -28,7 +28,7 @@ module.exports = function(db) {
 			allowNull: false,
 			validate: {
 				notEmpty: {
-					msg: "Events must have a description"
+					msg: 'Events must have a description'
 				}
 			}
 		},
@@ -42,11 +42,13 @@ module.exports = function(db) {
 				if (urlValue) {
 					var urlObj = url.parse(urlValue);
 					if (urlObj.hostname) {
-						urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, "");
+						urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, '');
 					}
+
 					urlObj.toString = function() {
 						return urlValue;
 					};
+
 					return urlObj;
 				}
 			}
@@ -59,7 +61,7 @@ module.exports = function(db) {
 			type: sequelize.DATE,
 			validate: {
 				notEmpty: {
-					msg: "Events must have a start date"
+					msg: 'Events must have a start date'
 				}
 			},
 			get: function() {
@@ -99,7 +101,7 @@ module.exports = function(db) {
 			type: sequelize.TEXT,
 			validate:  {
 				isEmail: {
-					msg: "Email addresses must be valid"
+					msg: 'Email addresses must be valid'
 				}
 			}
 		},
@@ -122,7 +124,7 @@ module.exports = function(db) {
 
 			length: function(unit) {
 				if (!this.enddt) return;
-				return this.enddt.diff(this.startdt, unit)
+				return this.enddt.diff(this.startdt, unit);
 			},
 
 			blurbAsHTML: function(opts) {
@@ -147,9 +149,10 @@ module.exports = function(db) {
 
 			generateSlug: function() {
 				if (!this.getDataValue('slug')) {
-					var text = slug(this.getDataValue('title')) + "-" + this.id;
+					var text = slug(this.getDataValue('title')) + '-' + this.id;
 					this.setDataValue('slug', text.toLowerCase());
 				}
+
 				return this;
 			},
 
@@ -187,39 +190,39 @@ module.exports = function(db) {
 			getLatestDate: function getLatestDate(events) {
 				return events.reduce(function(prev, evt) {
 					if (evt.startdt.isAfter(prev))
-						prev = evt.startdt
+						prev = evt.startdt;
 
 					if (evt.enddt && evt.enddt.isAfter(prev))
-						prev = evt.enddt
+						prev = evt.enddt;
 
-					return prev
-				})
+					return prev;
+				});
 			},
 
 			groupByDays: function(options) {
-				let Event = this;
+				let self = this;
 
-				return Event.findAll(options).then(function(events) {
+				return self.findAll(options).then(function(events) {
 					// Find the latest date in our dataset
-					let max = Event.getLatestDate(events).startOf('day');
+					let max = self.getLatestDate(events).startOf('day');
 					if (events == [] || !max.isValid()) {
 						return;
 					}
 
 					// Create an dictionary of date to event list
 					let indexByDate = {};
-					for (let d = Event._getCurrentTime().startOf('day');
+					for (let d = self._getCurrentTime().startOf('day');
 							!d.isAfter(max);
 							d.add(1, 'days')) {
 						indexByDate[d.format('YYYY-MM-DD')] = {
 							date: d.clone(),
 							events: []
-						}
+						};
 					}
 
 					// Group events into either indexByDate or the ongoing pile
 					let ongoing = [];
-					let one_day_past = Event._getCurrentTime().subtract(1, 'days');
+					let one_day_past = self._getCurrentTime().subtract(1, 'days');
 
 					for (let i = 0, len = events.length; i < len; i++) {
 						let evt = events[i];
@@ -248,7 +251,7 @@ module.exports = function(db) {
 						if (chunk.events.length > 0) {
 							// Add a 'short date' to the display
 							// XXX This should be in the display layer!
-							if (chunk.date.diff(Event._getCurrentTime(), 'days') < 7) {
+							if (chunk.date.diff(self._getCurrentTime(), 'days') < 7) {
 								chunk.shortDate = chunk.date.calendar();
 							}
 
@@ -261,7 +264,7 @@ module.exports = function(db) {
 						ongoing: ongoing
 					};
 				});
-			}	
+			}
 		},
 		validate: {
 			startBeforeEnd: function() {
@@ -272,8 +275,8 @@ module.exports = function(db) {
 
 			locationEmpty: function() {
 				if (!this.location_id &&
-						(this.location_text === "" || this.location_text === null)) {
-					throw new Error("Events must have a location");
+						(this.location_text === '' || this.location_text === null)) {
+					throw new Error('Events must have a location');
 				}
 			}
 		}

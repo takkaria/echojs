@@ -15,7 +15,6 @@ describe('User', function() {
 			expect(u.resetPassword()).to.equal(u);
 		});
 
-
 		it('should alter pwtoken', function() {
 			var u = User.build({
 				email: 'text@test.test'
@@ -48,7 +47,6 @@ describe('User', function() {
 			});
 		});
 	});
-
 
 	describe('.checkPassword', function() {
 

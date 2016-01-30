@@ -1,33 +1,37 @@
-var express = require('express'),
-	mailer = require('../lib/mailer'),
-	debug = require('debug')('echo:user'),
-	passport = require('passport'),
-	router = express.Router(),
-	models = require('../models'),
-	ensure = require('../lib/ensure'),
-	Promise = require('promise');
+var express = require('express');
+var mailer = require('../lib/mailer');
+var debug = require('debug')('echo:user');
+var passport = require('passport');
+var router = express.Router();
+var models = require('../models');
+var ensure = require('../lib/ensure');
+var Promise = require('promise');
 
 router.get('/login', function(req, res) {
-	res.render('login', {next: req.query.next});
+	res.render('login', { next: req.query.next });
 });
 
 router.post('/login', function(req, res, next) {
 	passport.authenticate('local', function(err, user, info) {
 		if (err) { return next(err); }
+
 		if (!user) { return res.render('login'); }
+
 		req.logIn(user, function(err) {
 			if (err) { return next(err); }
+
 			debug(req.body.next);
 			if (req.body.next) {
 				return res.redirect(req.body.next);
 			}
+
 			return res.redirect('/');
 		});
 	})(req, res, next);
 });
 
 router.get('/password/change', ensure.authenticated, function(req, res) {
-	res.render('password_change', {user: req.user});
+	res.render('password_change', { user: req.user });
 });
 
 router.post('/password/change', ensure.authenticated, function(req, res, next) {
@@ -44,7 +48,7 @@ router.post('/password/change', ensure.authenticated, function(req, res, next) {
 			});
 		}
 
-		if (req.body.new_password === ''){
+		if (req.body.new_password === '') {
 			return res.render('password_change', {
 				user: req.user,
 				errors: [{
@@ -73,19 +77,19 @@ router.post('/password/change', ensure.authenticated, function(req, res, next) {
 	})(req, res, next);
 });
 
-router.get('/logout', ensure.authenticated, function(req, res){
+router.get('/logout', ensure.authenticated, function(req, res) {
 	req.logout();
 	res.redirect('/');
 });
 
 router.get('/password/reset', function(req, res) {
-	res.render('password_reset', {user: req.user});
+	res.render('password_reset', { user: req.user });
 });
 
 router.post('/password/reset', function(req, res, next) {
 	models.User
 		.find({ where: { email: req.body.email } })
-		.then(function (user) {
+		.then(function(user) {
 			if (user) {
 				user.resetPassword().
 					save().
@@ -101,9 +105,9 @@ router.get('/password/reset/done', function(req, res, next) {
 });
 
 router.get('/password/reset/:token', function(req, res, next) {
-	models.User.find({where: { pwreset: req.params.token}}).then(function(user){
+	models.User.find({ where: { pwreset: req.params.token } }).then(function(user) {
 		if (user) {
-			res.render('password_reset_change', {user: user});
+			res.render('password_reset_change', { user: user });
 		} else {
 			req.flash('danger', 'Invalid reset link, or maybe it has been used already?');
 			res.redirect('/user/password/reset');
@@ -114,7 +118,7 @@ router.get('/password/reset/:token', function(req, res, next) {
 router.post('/password/reset/:token', function(req, res, next) {
 	models.User.find({
 		where: { pwreset: req.params.token }
-	}).then(function (user) {
+	}).then(function(user) {
 		if (req.body.new_password === '') {
 			return res.render('password_change', {
 				user: user,
@@ -136,18 +140,17 @@ router.post('/password/reset/:token', function(req, res, next) {
 		}
 
 		user.setPassword(req.body.new_password)
-		.then(function (user) {
+		.then(function(user) {
 			user.set('pwreset', null);
 			return user.save();
-		}).then(function (user) {
+		}).then(function(user) {
 			var logIn = Promise.denodeify(req.logIn);
 			return logIn(user);
-		}).then(function () {
+		}).then(function() {
 			req.flash('success', 'Password changed');
 			return res.redirect('/');
 		});
 	});
 });
-
 
 module.exports = router;

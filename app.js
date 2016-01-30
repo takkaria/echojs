@@ -12,7 +12,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
 var markedSwig = require('swig-marked');
-var passport = require('passport');
 var paginate = require('express-paginate');
 var moment = require('moment');
 
@@ -32,9 +31,9 @@ var app = express();
 
 // "global" view variables
 app.locals.site = process.env.HOST + (
-    typeof process.env.PORT === 'undefined' ?
-        '' :
-        process.env.PORT
+	typeof process.env.PORT === 'undefined' ?
+		'' :
+		process.env.PORT
 );
 app.locals.statichost = process.env.STATIC_HOST || '';
 
@@ -42,14 +41,14 @@ app.locals.statichost = process.env.STATIC_HOST || '';
 // models/event.js depends on this.
 // See: http://momentjs.com/docs/#/customization/calendar/
 moment.locale('en', {
-    calendar: {
-        lastWeek: '[last] dddd',
-        lastDay:  '[Yesterday]',
-        sameDay:  '[Today]',
-        nextDay:  '[Tomorrow]',
-        nextWeek: 'dddd',
-        sameElse: 'ddd D MMM'
-    }
+	calendar: {
+		lastWeek: '[last] dddd',
+		lastDay:  '[Yesterday]',
+		sameDay:  '[Today]',
+		nextDay:  '[Tomorrow]',
+		nextWeek: 'dddd',
+		sameElse: 'ddd D MMM'
+	}
 });
 
 // view engine setup
@@ -58,7 +57,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
 if (app.get('env') === 'development')
-    swig.setDefaults({ cache: false });
+	swig.setDefaults({ cache: false });
 
 markedSwig.useFilter(swig);
 markedSwig.useTag(swig);
@@ -71,11 +70,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(session({
-    secret: 'half-baked potato claustrophobia',
-    resave: false,
-    saveUninitialized: false,
-    store: new FileStore(),
-    proxy: true // if you do SSL outside of node
+	secret: 'half-baked potato claustrophobia',
+	resave: false,
+	saveUninitialized: false,
+	store: new FileStore(),
+	proxy: true // if you do SSL outside of node
 }));
 
 app.use(flash());
@@ -97,7 +96,7 @@ app.use('/embed', embed);
 
 // Permanently redirect the old PHP icalendar URL to the new one
 app.use('/icalendar', function(req, res) {
-    res.redirect(301, '/api/ical');
+	res.redirect(301, '/api/ical');
 });
 
 // ERROR HANDLERS
@@ -107,72 +106,74 @@ app.use('/icalendar', function(req, res) {
 // catch 404 and to next error handler
 // XXX we could make this a nicer 404 page
 app.use(function(req, res, next) {
-    logger.log('warn', "404 %s", req.url);
+	logger.log('warn', '404 %s', req.url);
 
-    res.render('error', {
-        message: 'Page not found',
-    });
+	res.render('error', {
+		message: 'Page not found',
+	});
 });
 
 app.use(function(err, req, res, next) {
-    var status = (err.status || 500);
+	var status = (err.status || 500);
 
-    logger.log('error', "%s %s", status, req.url, err);
+	logger.log('error', '%s %s', status, req.url, err);
 
-    if (res.headersSent) {
-        logger.log('error', '%s %s Headers sent but error found -- oops', status, req.url);
-        return next(err);
-    }
+	if (res.headersSent) {
+		logger.log('error', '%s %s Headers sent but error found -- oops', status, req.url);
+		return next(err);
+	}
 
-    res.status(status);
+	res.status(status);
 
-    // Only show stackstrace in dev environment
-    res.render('error', {
-        message: err.message,
-        error: (app.get('env') === 'development') ? err : {}
-    });
+	// Only show stackstrace in dev environment
+	res.render('error', {
+		message: err.message,
+		error: (app.get('env') === 'development') ? err : {}
+	});
 });
 
-
-var passport = require('passport'),
-    LocalStrategy = require('passport-local').Strategy;
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy({
-        usernameField: 'email',
-    },
-    function(email, password, done) {
-        var user_;
-        models.User.find({
-            where: [
-                { email: email },
-            ]
-        }).then(function(user) {
-            user_ = user;
-            if (!user) {
-                return done(null, false, { message: 'Incorrect email.' });
-            }
-            return user.checkPassword(password);
-        }).then(function(correct) {
-            if (correct === false) {
-                return done(null, false, { message: 'Incorrect password.' });
-            }
-            return done(null, user_);
-        });
-    }
+		usernameField: 'email',
+	},
+	function(email, password, done) {
+		var user_;
+		models.User.find({
+			where: [
+				{ email: email },
+			]
+		}).then(function(user) {
+			user_ = user;
+
+			if (!user) {
+				return done(null, false, { message: 'Incorrect email.' });
+			}
+
+			return user.checkPassword(password);
+		}).then(function(correct) {
+			if (correct === false) {
+				return done(null, false, { message: 'Incorrect password.' });
+			}
+
+			return done(null, user_);
+		});
+	}
 ));
 
 passport.serializeUser(function(user, done) {
-  done(null, user.email);
+	done(null, user.email);
 });
 
 passport.deserializeUser(function(email, done) {
-    models.User.find({
-        where: [
-            { email: email },
-        ]
-        }).then(function(user) {
-            done(null, user);
-        });
+	models.User.find({
+		where: [
+			{ email: email },
+		]
+	}).then(function(user) {
+		done(null, user);
+	});
 });
 
 module.exports = app;

@@ -2,7 +2,7 @@ module.exports = {
 
 	mockPromise: function mockPromise(yield_fn) {
 		return function() {
-			return new Promise(function (resolve, reject) {
+			return new Promise(function(resolve, reject) {
 				resolve(yield_fn());
 			});
 		};

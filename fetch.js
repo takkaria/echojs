@@ -36,13 +36,13 @@ function processICalEntry(entry, opts) {
 
 		if (opts.transform) opts.transform(entry);
 
-		debug("Adding new event: " + entry.summary);
+		debug('Adding new event: ' + entry.summary);
 		return iCalDataToEvent(entry).saveAndGenerateSlug({ validate: false });
 	}).catch(opts.error);
 }
 
 function fetchICal(opts) {
-	debug("Fetching iCal " + opts.url);
+	debug('Fetching iCal ' + opts.url);
 
 	ical.fromURL(opts.url, {}, function useICalData(data) {
 		for (var k in data) {
@@ -51,7 +51,6 @@ function fetchICal(opts) {
 		}
 	});
 }
-
 
 // = Atom/RSS ================================================= //
 
@@ -128,21 +127,22 @@ function checkPostForEvent(data, error) {
 			date.getTime() > (now.getTime() + 7.88923e9)) // 1.578e10 == 3 months in ms
 		return;
 
-	Event.find({ where: { importid: data.guid } })
-		 .then(function(evt) {
-			if (evt !== null) return;  // don't import twice
+	Event.find({
+		where: { importid: data.guid }
+	}).then(function(evt) {
+		if (evt !== null) return;  // don't import twice
 
-			debug("Adding new event: " + data.title);
+		debug('Adding new event: ' + data.title);
 
-			return Event.build({
-					title: data.title,
-					startdt: date,
-					url: data.link,
-					blurb: striptags(data.description),
-					state: 'imported',
-					importid: data.guid
-				}).save({ validate: false });
-		 }).catch(error);
+		return Event.build({
+				title: data.title,
+				startdt: date,
+				url: data.link,
+				blurb: striptags(data.description),
+				state: 'imported',
+				importid: data.guid
+			}).save({ validate: false });
+	}).catch(error);
 }
 
 function processPost(item, url, onerror) {
@@ -154,7 +154,7 @@ function processPost(item, url, onerror) {
 		// https://github.com/danmactough/node-feedparser#what-is-the-parsed-output-produced-by-feedparser
 		// may want to re-add summary, content or image parsing at some point
 
-		debug("Adding new post: " + item.title);
+		debug('Adding new post: ' + item.title);
 
 		// Build the post
 		return Post.build({
@@ -164,39 +164,38 @@ function processPost(item, url, onerror) {
 			date: item.pubDate,
 			feed_id: url,
 		}).save();
-	}).then(function () {
+	}).then(function() {
 		checkPostForEvent(item);
 	}).catch(onerror);
 }
 
 function fetchFeed(params) {
-	var url = params.url;
-	var onerror = params.error;
+	const url = params.url;
+	const onerror = params.error;
 
-	var req = request(url),
-		feedparser = new FeedParser();
+	let req = request(url);
+	let feedparser = new FeedParser();
 
 	// Set error handlers
 	req.on('error', onerror);
 	feedparser.on('error', onerror);
 
-	req.on('response', function (res) {
-		var stream = this;
-		if (res.statusCode != 200) return this.emit('error', new Error('Bad status code'));
+	req.on('response', function(res) {
+		if (res.statusCode != 200)
+			return this.emit('error', new Error('Bad status code'));
 
-		stream.pipe(feedparser);
+		this.pipe(feedparser);
 	});
 
-	debug("Fetching feed " + url);
+	debug('Fetching feed ' + url);
 
 	feedparser.on('readable', function() {
-		var data;
+		let data;
 		while ((data = this.read())) {
 			processPost(data, url, onerror);
 		}
 	});
 }
-
 
 // = Exports ================================================== //
 

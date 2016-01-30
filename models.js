@@ -1,9 +1,9 @@
-var sequelize = require('sequelize');
+var Sequelize = require('sequelize');
 var debug = require('debug')('echo:models');
 
 var dbpath = process.env.DBPATH || 'db.sqlite';
 
-var db = new sequelize('', '', '', {
+var db = new Sequelize('', '', '', {
 	dialect: 'sqlite',
 	storage: dbpath,
 	logging: debug

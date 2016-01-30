@@ -40,7 +40,7 @@ module.exports = function(db) {
 		underscored: true,
 		instanceMethods: {
 			addressAsHTML: function() {
-			    return this.getDataValue('address').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>');
+				return this.getDataValue('address').replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1<br>');
 			},
 
 			descriptionAsHTML: function() {
@@ -50,7 +50,7 @@ module.exports = function(db) {
 		},
 		getterMethods: {
 			singleLine: function() {
-				return this.name + ", " + this.address.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1, ');
+				return this.name + ', ' + this.address.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1, ');
 			},
 		},
 	});
