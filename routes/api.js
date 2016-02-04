@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 
 var models = require('../models');
+var Sequelize = models.db;
 
 var ical = require('ical-generator');
 var moment = require('moment');
@@ -25,11 +26,13 @@ function parseOpts(req) {
 		end.set(new Date()).add(3, 'months');
 	}
 
-	return [
-		'state="approved"',
-		'startdt >= date("' + start.format(dateFormat) + '", "localtime")',
-		'startdt <= date("' + end.format(dateFormat) + '", "localtime")'
-	];
+	return {
+		state: 'approved',
+		startdt: {
+			$gte: Sequelize.fn('date', start.format(dateFormat), 'localtime'),
+			$lte: Sequelize.fn('date', end.format(dateFormat), 'localtime'),
+		}
+	}
 }
 
 router.get('/json', function(req, res) {
@@ -39,7 +42,7 @@ router.get('/json', function(req, res) {
 	// to FullCalendar.
 
 	models.Event.findAll({
-		where: [ clauses.join(' AND '), [] ],
+		where: clauses,
 		attributes: [ 'id', 'title', 'startdt', 'enddt' ],
 		order: 'startdt ASC',
 	}).then(function(events) {
@@ -105,7 +108,7 @@ router.get('/ical', function(req, res) {
 	const clauses = parseOpts(req);
 
 	models.Event.findAll({
-		where: [ clauses.join(' AND '), [] ],
+		where: clauses,
 		attributes: [ 'id', 'title', 'startdt', 'enddt', 'location_text', 'blurb', 'url', 'host' ],
 		order: 'startdt ASC',
 	}).then(function(events) {
