@@ -14,6 +14,8 @@ var swig = require('swig');
 var markedSwig = require('swig-marked');
 var paginate = require('express-paginate');
 var moment = require('moment');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 
 var logger = require('./lib/logger');
 var models = require('./models');
@@ -131,9 +133,6 @@ app.use(function(err, req, res, next) {
 		error: (app.get('env') === 'development') ? err : {}
 	});
 });
-
-var passport = require('passport');
-var LocalStrategy = require('passport-local').Strategy;
 
 passport.use(new LocalStrategy({
 		usernameField: 'email',
