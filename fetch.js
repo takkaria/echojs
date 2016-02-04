@@ -75,7 +75,7 @@ function findDate(base, text) {
 	var time = /\d?\d[\.:]\d\d([ap]m)?/.sexec(text)[0] ||
 			/\d?\d([ap]m)/.sexec(text)[0];
 
-	var day = /(\d?\d)(th|rd|nd)/.sexec(text)[1];
+	var day = /(\d?\d)(st|nd|rd|th)/.sexec(text)[1];
 
 	var month = /(January|February|March|May|April|June|July|August|September|October|November|December)/.sexec(text)[0] ||
 			/(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)/.sexec(text)[0];
@@ -83,14 +83,19 @@ function findDate(base, text) {
 	if (time && day && month) {
 		var d = new Date();
 
-		// 'day' is in form 23rd, parseInt will just look at numbers
-		// we do this first because otherwise if base is '31 May' and
-		// text is '28 Feb' and month is set first, the transition will be
-		// (31 May).setMonth(Feb) -> 3 Mar
-		d.setDate(parseInt(day));
+		// We set the day of the month to 1 first for the following reason:
+		// Say it's February 2016, a leap year - so February has 29 days.
+		// If the date we are setting is 30 January 2016, doing:
+		//   (new Date()).setDate(30)
+		// ...will result in a date object set to 1 March.
+		//
+		// Similarly, if it's 31 May, and you want to set the date to 28 Feb,
+		// (new Date()).setMonth(2) gets you 3 March.
+		d.setDate(1);
 
 		// Months in JS are 0-11, not 1-12
 		d.setMonth(monthToInt(month) - 1);
+		d.setDate(parseInt(day));
 
 		// Assume year in the future
 		if (d.getMonth() < base.getMonth())
