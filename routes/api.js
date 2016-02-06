@@ -50,7 +50,7 @@ router.get('/json', function(req, res) {
 			({ id: e.id, title: e.title, start: e.startdt, end: e.enddt })
 		);
 
-		req.header('Content-Type', 'application/json');
+		res.header('Content-Type', 'application/json');
 		res.send(JSON.stringify(data, ' '));
 	}).catch(function(err) {
 		res.status(500).end();
@@ -58,8 +58,8 @@ router.get('/json', function(req, res) {
 });
 
 router.get('/json/locations', function(req, res) {
-	models.Location.findAll(
-		{ attributes: [ 'id', 'name', 'address' ]
+	models.Location.findAll({
+		attributes: [ 'id', 'name', 'address' ]
 	}).then(function(locations) {
 		req.header('Content-Type', 'application/json');
 

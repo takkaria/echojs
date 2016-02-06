@@ -5,9 +5,8 @@
 	"scripts": {
 		"prestart": "npm run sass:watch &",
 		"start": "DEBUG=echo:* nodemon ./bin/www",
-		"test": "NODE_PATH=\".:$NODE_PATH\" mocha --recursive",
-		"precoverage": "./bin/initdb",
-		"coverage": "NODE_PATH=\".:$NODE_PATH\" istanbul cover _mocha -- --recursive",
+		"pretest": "./bin/initdb",
+		"test": "./run_tests.sh",
 		"jshint": "jshint *.js lib/*.js models/*.js routes/*.js test/*.js",
 		"jscs": "jscs *.js lib/*.js models/*.js routes/*.js test/*.js",
 		"deploy": "npm install && bower install && npm run sass:minify",

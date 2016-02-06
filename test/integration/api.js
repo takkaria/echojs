@@ -1,34 +1,23 @@
 'use strict';
 
 var chai = require('chai');
-var app = require('app');
 var request = require('request');
 
 var expect = chai.expect;
 chai.use(require('chai-as-promised'));
 
-let server;
-const port = process.env.PORT || 5000;
-
-before(function(done) {
-	server = app.listen(port, () => { console.log('Server started\n'), done() });
-})
-
-after(function(done) {
-	server.close(() => { console.log('Server stopped'), done() });
-})
-
-// Utils
-let baseUrl = 'http://localhost:' + port;
+let baseUrl = 'http://localhost:' + process.env.PORT;
 
 describe('/api', function() {
 
-	describe('JSON output', function() {
+	describe('/json', function() {
+		let url = baseUrl + '/api/json';
+
 		xit('should return valid JSON & correct MIME type');
 		xit('should at the highest level be an array');
 	});
 
-	describe('ical output', function() {
+	describe('/ical', function() {
 		let url = baseUrl + '/api/ical';
 
 		it('should return an icalendar with correct header & MIME type', function(done) {
