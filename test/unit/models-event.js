@@ -5,8 +5,6 @@ chai.use(require('chai-as-promised'));
 var Event = require('models').Event;
 var moment = require('moment');
 
-var utils = require('./_utils');
-
 describe('Event', function() {
 	describe('.isMultiDay', function() {
 
@@ -83,11 +81,9 @@ describe('Event', function() {
 			originalFindAll = Event.findAll;
 			originalGetCurrentTime = Event._getCurrentTime;
 
-			Event.findAll         = utils.mockPromise(function() { return testData.events; });
-
-			Event.max             = utils.mockPromise(function() { return testData.eventMax; });
-
-			Event._getCurrentTime = function() { return moment(testData.currentTime); };
+			Event.findAll = () => Promise.resolve(testData.events);
+			Event.max = () => Promise.resolve(testData.eventMax);
+			Event._getCurrentTime = () => moment(testData.currentTime);
 		});
 
 		after(function() {
