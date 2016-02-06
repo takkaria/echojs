@@ -35,8 +35,8 @@
 				</li>
 			</ul>
 
-			{% for event_ in events %}
-				{{ eventbox.eventbox(event_, { linkBox: true }) }}
+			{% for evt in events %}
+				{{ eventbox.eventbox(evt, { linkBox: true }) }}
 			{% endfor %}
 
 			{# maybe later... #}
@@ -55,7 +55,7 @@
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content"> <!-- only in error cases is this shown -->
 			<div class="modal-body">
-				Sorry, there was a problem loading the event.  Please try again. 
+				Sorry, there was a problem loading the event.  Please try again.
 				<button type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 			</div>
 		</div>
@@ -71,8 +71,8 @@
 <script>
 
 // Fetch and show an event card
-function showEvent(event_, ev) {
-	var id = event_.id;
+function showEvent(evt, domevent) {
+	var id = evt.id;
 	var _timeout;
 
 	startLoading = function startLoading() {

@@ -1,104 +1,96 @@
 <!DOCTYPE html>
 <title>Echo Manchester</title>
 
+<meta tag="robots" content="noindex">
 <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Raleway:700,500">
 <link rel="stylesheet" type="text/css" href="{{ statichost }}/bower_components/fullcalendar/dist/fullcalendar.min.css">
+<link rel="stylesheet" type="text/css" href="{{ statichost }}/stylesheets/echo.css">
 <link rel="stylesheet" type="text/css" href="{{ statichost }}/stylesheets/embed.css">
 <link rel="stylesheet" href="{{ statichost }}/bower_components/fontawesome/css/font-awesome.min.css " />
 
 <script src="{{ statichost }}/bower_components/jquery/dist/jquery.min.js"></script>
 <script src="{{ statichost }}/bower_components/moment/min/moment.min.js"></script>
+<script src="{{ statichost }}/bower_components/bootstrap-sass/assets/javascripts/bootstrap.js"></script>
 <script src="{{ statichost }}/bower_components/fullcalendar/dist/fullcalendar.min.js"></script>
+
+<noscript>Sorry, to view this calendar you must have Javascript support enabled.</noscript>
 
 <div id="calendar"></div>
 
+<div class="xhr-loading hidden">
+	<i class="fa fa-circle-o-notch fa-spin"></i> Loading...
+</div>
+
+<div class="popup-template modal fade" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content"> <!-- only in error cases is this shown -->
+			<div class="modal-body">
+				Sorry, there was a problem loading the event.  Please try again.
+				<button type="button" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script>
-$(document).ready(function() {
 
-	// This detects clicks outside the popup and closes the window
-	$(document).click(function(e) {
-		var box = $("#popup");
-		if (box && box.offset() && (
-					e.pageX < box.offset().left ||
-					e.pageX > box.offset().left+box.outerWidth() ||
-					e.pageY < box.offset().top ||
-					e.pageY > box.offset().top+box.outerHeight()
-				)) {
-			box.detach();
-		}
+// Fetch and show an event card
+function showEvent(evt, domevent) {
+	var id = evt.id;
+	var _timeout;
 
-		return true;
+	startLoading = function startLoading() {
+		// Timeout to avoid flashing the timer
+		_timeout = window.setTimeout(function() {
+			$(".xhr-loading").removeClass("hidden");
+		}, 500);
+	};
+
+	stopLoading = function stopLoading() {
+		window.clearTimeout(_timeout);
+		$(".xhr-loading").addClass("hidden");
+	};
+
+	// Clone our template
+	var newPopup = $('.popup-template').clone();
+	newPopup.removeClass('hidden');
+	newPopup.attr('id', 'popup');	// Consider making this ID unique
+	newPopup.attr('aria-hidden', 'false');
+	$('body').append(newPopup);
+
+	startLoading();
+
+	$("#popup .modal-dialog").load("/event/" + id, function() {
+		// We don't check status because if the content wasn't loaded, the
+		// HTML template already has an error message.  If the content is
+		// loaded, then it's overwritten.
+
+		stopLoading();
+		$("#popup").modal();
+		$("#popup").on('hidden.bs.modal', function() {
+			// Remove from the DOM when done
+			$("#popup").detach();
+		});
 	});
 
-	// Fetch and show an event card
-	function showEvent(event_, ev) {
-		var id = event_.id;
+	return false;
+}
 
-		// Clean up previous boxes
-		$("#popup").detach();
-
-		// Create a new box
-		var html = '<div id="popup"></div>';
-		$('body').append(html);
-
-		// Request the info
-		$("#popup").hide().load("/event/" + id, function() {
-			var info = $("#popup");
-			info.css('top', ev.pageY + "px");
-
-			/* Don't overflow the page */
-			if (ev.pageX + info.outerWidth() > $(window).width())
-				info.css('left', $(window).width() - info.outerWidth() - 10);
-			else
-				info.css('left', ev.pageX + "px");
-
-			/* Don't overflow the heightwise either */
-			if (ev.pageY + info.outerHeight() > $(document).height())
-				info.css('top', $(document).height() - info.outerHeight() - 10);
-			else
-				info.css('top', ev.pageY + "px");
-
-			info.on("click", function (evt) {
-				location.href = $(this).find("a").attr("href");
-			});
-
-			$("#popup .close").click(function() {
-				$("#popup").detach();
-			});
-
-			info.show();
-		});
-
-		return false;
-	}
-
-	// If the URL is just '/events' then we start at today's date
-	var start = moment();
+$(document).ready(function() {
 
 	$('#calendar').fullCalendar({
 		events: '/api/json',
-		defaultDate: start,
+		defaultDate: moment(),
 		fixedWeekCount: false,
 		firstDay: 1,	// Start on Monday
 		timeFormat: 'h(:mm)a',
-
-		header: {
-			left: '',
-			center: 'title',
-			right: 'prev,next today',
-		},
 
 		eventBackgroundColor: "#eee",
 		eventBorderColor: "#ccc",
 		eventTextColor: "black",
 
-		loading: function(isLoading, view) {
-			if (!isLoading) return;
-		},
-		eventClick: showEvent
-	});
-
-	$('.fc-left').html('<img src="/images/miniecho.png" height="30" title="Powered by Echo Manchester"></a> <form method="GET" action="http://echomanchester.net/event/add" target="_blank"><input type="hidden" name="embed"><button class="fc-prev-button fc-button fc-state-default">add an event</a></form>');
+		eventClick: showEvent,
+	})
 
 });
 </script>
