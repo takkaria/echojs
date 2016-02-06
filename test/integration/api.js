@@ -13,7 +13,16 @@ describe('/api', function() {
 	describe('/json', function() {
 		let url = baseUrl + '/api/json';
 
-		xit('should return valid JSON & correct MIME type');
+		it('should return valid JSON & correct MIME type', function(done) {
+			request(url, function(error, response, body) {
+				expect(error).to.equal(null);
+				expect(response.statusCode === 200);
+				expect(response.headers['content-type']).to.contain('application/json');
+				expect(() => JSON.parse(response.body)).to.not.throw();
+				done();
+			});
+		});
+
 		xit('should at the highest level be an array');
 	});
 
