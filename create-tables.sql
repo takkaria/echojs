@@ -45,21 +45,27 @@ INSERT INTO "users" VALUES(1, 'test@example.com','aaa','e3MjCoP7Oui8bQ+BK+2wWIRm
 
 CREATE TABLE posts (
 	id TEXT PRIMARY KEY,
+	feedId INTEGER,
+
 	link TEXT,
 	title TEXT,
 	date DATETIME,
-	feed_id TEXT,
 	hidden INTEGER
 );
 
 CREATE TABLE feeds (
-	id TEXT PRIMARY KEY,
-	site_url TEXT,
+	id INTEGER PRIMARY KEY NOT NULL,
+	feedURL TEXT UNIQUE,
 	title TEXT,
-	errors TEXT
+	siteURL TEXT,
+	errors TEXT,
+
+	createdAt DATETIME,
+	updatedAt DATETIME,
+	lastFetched DATETIME
 );
 
-CREATE VIEW post_info AS SELECT * FROM posts LEFT OUTER JOIN feeds ON posts.feed_id = feeds.id;
+CREATE VIEW post_info AS SELECT * FROM posts LEFT OUTER JOIN feeds ON posts.feedId = feeds.id;
 
 /* Manchester location information */
 INSERT INTO "locations" VALUES(1,'Subrosa','27 Lloyd Street South

@@ -33,8 +33,8 @@ router.get('/', function(req, res, next) {
 		models.Post.findAll({
 			include: [ models.Feed ],
 			where: [ "hidden IS NOT 1 AND date >= date('now', '-3 months') AND ( " +
-			         'SELECT COUNT(p2.feed_id) FROM post_info AS p2 ' +
-			         'WHERE p2.feed_id = post.feed_id AND p2.date > post.date) == 0', [] ],
+			         'SELECT COUNT(p2.feedId) FROM post_info AS p2 ' +
+			         'WHERE p2.feedId = post.feedId AND p2.date > post.date) == 0', [] ],
 			order: 'date DESC'
 		})
 	]).then(function(results) {

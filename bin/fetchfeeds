@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+'use strict';
+
 var dotenv = require('dotenv');
 dotenv.load();
 
@@ -14,14 +16,14 @@ function parse_options() {
 		var arg = process.argv[i];
 
 		// process command from previous
-		if (next == "skip")	
+		if (next == "skip")
 			next = null;
 		else if (next == "ical") {
 			action = { type: "ical", url: arg };
-			next = null;			
+			next = null;
 		} else if (next == "feed") {
-			action = { type: "feed", url: arg };
-			next = null;			
+			action = { type: "feed", id: arg };
+			next = null;
 		}
 
 		// check content of args
@@ -38,7 +40,7 @@ function parse_options() {
 			console.log("args:");
 			console.log(" --debug       Turn debugging output on");
 			console.log(" --ical <url>  Fetch specified ical feed");
-			console.log(" --feed <url>  Fetch specified RSS/Atom feed");
+			console.log(" --feed <id>   Fetch specified RSS/Atom feed");
 			console.log(" --help        Display this message");
 			process.exit();
 		}
@@ -47,16 +49,10 @@ function parse_options() {
 
 parse_options();
 
-var fetch = require('../fetch')
+var fetch = require('../lib/fetch')
 var Feed = require('../models').Feed
 
 // ============================================================ //
-
-function feedError(error) {
-	Feed.find({ where: { id: this.id } }).then(function (feed) {
-		feed.updateAttributes({ errors: error.message });
-	});
-}
 
 function standByYouTransform(data) {
 	// Get original URL
@@ -111,25 +107,17 @@ function eventError(error, list) {
 	console.log("Error: " + error.message);
 	if (list) {
 		console.log(list);
-	}	
+	}
 }
 
 if (action.type == "ical") {
 	fetch.ical({ url: action.url, error: eventError });
 } else if (action.type == "feed") {
-	fetch.feed({ url: action.url, error: console.log });
+	Feed.findById(action.id)
+		.then(feed => fetch.feed(feed));
 } else {
-	Feed.findAll().then(function (feeds) {
-		feeds.forEach(function(feed) {
-			feed.errors = null;
-			feed.save().then(function() {
-				fetch.feed({
-					url: feed.id,
-					error: feedError.bind(feed),
-				});
-			})
-		});
-	});
+	Feed.findAll()
+		.then(feeds => feeds.forEach(fetch.feed));
 
 	calendars.forEach(function(data) {
 		fetch.ical({

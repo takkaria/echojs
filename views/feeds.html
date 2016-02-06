@@ -39,9 +39,9 @@
 			<div class="feedlist">
 				{% for feed in feeds %}
 				<div class="feed {% if feed.errors %}feed-error{% endif %}">
-					<h4><a href="{{ feed.site_url }}">{{ feed.title }}</a></h4>
+					<h4><a href="{{ feed.siteURL }}">{{ feed.title }}</a></h4>
 
-					<p>URL: {{ feed.id }}</p>
+					<p>URL: {{ feed.feedURL }}</p>
 					{% if feed.errors %}
 						<p>Error: <b>{{ feed.errors }}</b></p>
 					{% endif %}

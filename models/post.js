@@ -13,7 +13,6 @@ module.exports = function(db) {
 		hidden: { type: sequelize.INTEGER }
 	}, {
 		timestamps: false,
-		createdAt: false,
-		underscored: true
+		createdAt: false
 	});
 };

@@ -36,10 +36,10 @@ function getFeedMeta(url) {
 				resolve(feed.toString());
 			});
 	})
-	.then(function(feed_url) {
+	.then(function(feedURL) {
 		var feedparser = new FeedParser();
 
-		request(feed_url)
+		request(feedURL)
 			.on('response', function (res) {
 				if (res.statusCode != 200)
 					throw new Error('Bad status code: ' + res.statusCode);
@@ -64,8 +64,8 @@ router.post('/add', ensure.editorOrAdmin, function(req, res) {
 	getFeedMeta(url)
 		.then(function(meta) {
 			models.Feed.build({
-					id: meta.xmlurl,
-					site_url: meta.link,
+					feedURL: meta.xmlurl,
+					siteURL: meta.link,
 					title: meta.title,
 				})
 				.save()
@@ -100,8 +100,8 @@ router.post('/edit', ensure.editorOrAdmin, function(req, res) {
 
 		// Update title, site URL, feed URL
 		result.title = b.title;
-		result.site_url = b.site_url;
-		result.id = b.feed_url;
+		result.siteURL = b.siteURL;
+		result.feedURL = b.feedURL;
 
 		result.save()
 			.then(function() {
@@ -121,21 +121,16 @@ router.post('/edit', ensure.editorOrAdmin, function(req, res) {
 router.post('/delete', ensure.editorOrAdmin, function(req, res) {
 	var b = req.body;
 
-	function onerror(errors) {
+	models.Feed.findById(b.id).then(function(feed) {
+		return models.Post.destroy({ where: { feedId: b.id }}).then(function() {
+			return feed.destroy();
+		}).then(function() {
+			req.flash('success', "Feed %s deleted.", feed.title);
+			res.redirect('/admin/feeds');
+		})
+	}).catch(function(errors) {
 		req.flash("danger", errors);
 		res.redirect("/admin/feeds");
-	}
-
-	models.Feed.findById(b.id).then(function(feed) {
-		models.Post.destroy({ where: { feed_id: b.id }}).then(function() {
-
-			feed.destroy()
-				.then(function() {
-					req.flash('success', "Feed %s deleted.", feed.title);
-					res.redirect('/admin/feeds');
-				}).catch(onerror);
-
-		}).catch(onerror);
 	});
 });
 

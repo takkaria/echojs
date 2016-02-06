@@ -24,8 +24,8 @@
 		{{ form.inputHidden({ field: "id", fill: feed.id }) }}
 
 		{{ form.inputText({ label: "Feed name:", field: "title", fill: feed.title }) }}
-		{{ form.inputText({ label: "Feed URL:", field: "feed_url", fill: feed.id }) }}
-		{{ form.inputText({ label: "Site URL:", field: "site_url", fill: feed.site_url }) }}
+		{{ form.inputText({ label: "Feed URL:", field: "feedURL", fill: feed.feedURL }) }}
+		{{ form.inputText({ label: "Site URL:", field: "siteURL", fill: feed.siteURL }) }}
 
 		{% block button %}{{ form.inputSubmit("Save changes") }}{% endblock %}
 	</form>
