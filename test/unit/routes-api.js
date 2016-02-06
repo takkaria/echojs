@@ -6,8 +6,8 @@ var chai = require('chai');
 var expect = chai.expect;
 chai.use(require('chai-as-promised'));
 
-var api = rewire('../routes/api.js');
-var Event = require('../models').Event;
+var api = rewire('routes/api.js');
+var Event = require('models').Event;
 
 describe('routes/api.js', function() {
 

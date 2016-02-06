@@ -4,8 +4,8 @@ var chai = require('chai');
 var expect = chai.expect;
 chai.use(require('chai-as-promised'));
 
-var Event = require('../models').Event;
-var mailer = require('../lib/mailer');
+var Event = require('models').Event;
+var mailer = require('lib/mailer');
 
 describe('mailer', function() {
 	describe('.sendMail', function() {

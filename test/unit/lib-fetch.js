@@ -1,6 +1,6 @@
 var expect = require('chai').expect;
-var fetch = require('../fetch');
-var models = require('../models');
+var fetch = require('lib/fetch');
+var models = require('models');
 var Event = models.Event;
 
 // Hideous monkey patching

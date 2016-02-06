@@ -2,7 +2,7 @@ var chai = require('chai');
 var expect = chai.expect;
 chai.use(require('chai-as-promised'));
 
-var User = require('../models').User;
+var User = require('models').User;
 
 describe('User', function() {
 	describe('.resetPassword', function() {

@@ -2,7 +2,7 @@ var chai = require('chai');
 var expect = chai.expect;
 chai.use(require('chai-as-promised'));
 
-var Event = require('../models').Event;
+var Event = require('models').Event;
 var moment = require('moment');
 
 var utils = require('./_utils');
