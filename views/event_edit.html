@@ -63,11 +63,11 @@
 
 	{{ form.checkErrors("locationEmpty") }}
 
-	{{ form.inputText({ 
+	{{ form.inputText({
 		label: "What group or organisation is putting on the event?",
-		field: "host", 
-		fill: event_.host, 
-		icon: "fa-group" }) 
+		field: "host",
+		fill: event_.host,
+		icon: "fa-group" })
 	}}
 
 	<div class="form-group">
@@ -91,6 +91,7 @@
 {% endblock %}
 
 {% block script %}
+<script src="{{ statichost }}/bower_components/moment/min/moment.min.js"></script>
 <script src="{{ statichost }}/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script src="{{ statichost }}/bower_components/typeahead.js/dist/typeahead.bundle.min.js"></script>
 <script src="{{ statichost }}/bower_components/Countable/Countable.js"></script>

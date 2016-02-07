@@ -3,6 +3,8 @@
 export NODE_PATH=.:$NODE_PATH
 export PORT=5000
 
+pkill node
+
 echo "=========================================="
 echo "Integration Tests"
 echo "=========================================="

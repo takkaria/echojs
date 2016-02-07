@@ -15,7 +15,7 @@ describe('Given I visit /event/add', function() {
 	})
 
 	it("the page should load fine", function() {
-		browser.statusCode.should.equal(200);
+		expect(browser.status).to.equal(200);
 	});
 
 	xit('submitted events should have a slug including their id')
