@@ -4,15 +4,14 @@ export NODE_PATH=.:$NODE_PATH
 export PORT=5000
 
 pkill node
+set -e
 
 echo "=========================================="
 echo "Integration Tests"
 echo "=========================================="
 
-set -e
-
-bin/www >/tmp/echojs.log &
-sleep 1
+bin/www 2&>/tmp/echojs.log &
+sleep 2
 
 if [ $# -gt 0 ]; then
 	mocha $@
@@ -23,5 +22,5 @@ fi
 pkill node
 
 echo "Server log:"
-cat /tmp/echojs.log
+cat -n /tmp/echojs.log
 rm /tmp/echojs.log
