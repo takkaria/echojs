@@ -23,7 +23,13 @@ describe('/api', function() {
 			});
 		});
 
-		xit('should at the highest level be an array');
+		it('should at the highest level be an array', function(done) {
+			request(url, function(error, response, body) {
+				let resp = JSON.parse(response.body);
+				expect(typeof resp === 'array');
+				done();
+			});
+		});
 	});
 
 	describe('/ical', function() {
