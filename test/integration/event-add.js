@@ -1,12 +1,15 @@
 'use strict';
 
 var chai = require('chai');
+var Browser = require('zombie');
+var moment = require('moment');
+
 var expect = chai.expect;
 chai.use(require('chai-as-promised'));
 
-var Browser = require('zombie');
+const baseUrl = 'http://localhost:' + process.env.PORT;
 var browser = new Browser({
-	site: 'http://localhost:' + process.env.PORT
+	site: baseUrl
 });
 
 describe('Given I visit /event/add', function() {
@@ -14,9 +17,49 @@ describe('Given I visit /event/add', function() {
 		browser.visit('/event/add', done);
 	})
 
-	it("the page should load fine", function() {
-		expect(browser.status).to.equal(200);
+	it('the page should load fine', function() {
+		browser.assert.status(200);
 	});
 
-	xit('submitted events should have a slug including their id')
+	describe('given incomplete form data', function() {
+		let formTitle = 'testing event';
+		let formLocation = 'testing venue';
+
+		before(function() {
+			browser
+				.fill('title', formTitle)
+				.fill('location_text', formLocation);
+			browser.querySelector('form').submit();
+			return browser.wait();
+		});
+
+		it('should return to event add URL', function() {
+			browser.assert.url('/event/add');
+		});
+
+		it('should preserve the input data', function() {
+			browser.assert.attribute('#title', 'value', formTitle);
+			browser.assert.attribute('#location_text', 'value', formLocation);
+		});
+	});
+
+	describe('given complete & valid form data', function() {
+		before(function() {
+			browser
+				.fill('title', 'testing')
+				.fill('startdt', moment().add(1, 'day').format("YYYY-MM-DD HH:mm"))
+				.fill('location_text', 'testing')
+				.fill('host', 'testing')
+				.fill('blurb', 'testing')
+				.fill('email', 'test@example.com');
+			browser.querySelector('form').submit();
+			return browser.wait();
+		});
+
+		it('should return to the home page', function() {
+			browser.assert.url('/');
+		});
+
+		xit('should produce an event with a slug that includes their ID');
+	});
 });
