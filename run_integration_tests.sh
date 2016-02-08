@@ -2,7 +2,7 @@
 
 export NODE_PATH=.:$NODE_PATH
 export PORT=5000
-export MOCHA_OPTS="--timeout 5000"
+export MOCHA_OPTS="--timeout 7000"
 
 pkill node
 set -e

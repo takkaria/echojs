@@ -24,19 +24,16 @@ describe('Given I visit /event/add', function() {
 
 	describe('submitting incomplete form data', function() {
 		before(function(done) {
-			browser.visit('/event/add');
-			browser.wait(function() {
-				// Don't provide a title
-				browser
-					.fill('startdt', 'testing')
-					.fill('enddt', 'testing')
-					.fill('location_text', 'testing')
-					.fill('host', 'testing')
-					.fill('blurb', 'testing')
-					.fill('email', 'test@example.com');
-				browser.querySelector('form').submit();
-				browser.wait(done);
-			});
+			// Don't provide a title
+			browser
+				.fill('startdt', 'testing')
+				.fill('enddt', 'testing')
+				.fill('location_text', 'testing')
+				.fill('host', 'testing')
+				.fill('blurb', 'testing')
+				.fill('email', 'test@example.com');
+			browser.querySelector('form').submit();
+			browser.wait(done);
 		});
 
 		it('should return to event add URL', function() {
@@ -98,7 +95,7 @@ describe('Given I visit /event/add', function() {
 	});
 
 	describe('submitting complete & valid event data', function() {
-		before(function(done) {
+		before(function() {
 			browser
 				.fill('title', 'testing')
 				.fill('startdt', moment().add(1, 'day').format("YYYY/MM/DD HH:mm"))
@@ -108,7 +105,7 @@ describe('Given I visit /event/add', function() {
 				.fill('url', 'http://www.legit.com/')
 				.fill('email', 'test@example.com');
 			browser.querySelector('form').submit();
-			browser.wait(done);
+			return browser.wait();
 		});
 
 		it('should return to the home page, noting success', function() {
