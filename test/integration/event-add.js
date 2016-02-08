@@ -105,6 +105,7 @@ describe('Given I visit /event/add', function() {
 				.fill('location_text', 'testing')
 				.fill('host', 'testing')
 				.fill('blurb', 'testing')
+				.fill('url', 'http://www.legit.com/')
 				.fill('email', 'test@example.com');
 			browser.querySelector('form').submit();
 			browser.wait(done);
