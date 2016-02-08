@@ -70,6 +70,8 @@ function parseDateTime(str, allday) {
 // This code is shared with routes/admin/event.js
 // Should have an Event.buildFromData(). XXX
 router.post('/add', function(req, res) {
+	let nullifyEmptyString = (str) => { str === '' ? null : str };
+
 	let input = req.body;
 	let data = {
 		title: input.title,
@@ -79,6 +81,7 @@ router.post('/add', function(req, res) {
 		blurb: input.blurb,
 		location_text: input.location_text,
 		host: input.host,
+		url: nullifyEmptyString(input.url),
 		type: '',
 		email: input.email,
 		state: defaultState(req)

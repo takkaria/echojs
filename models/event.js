@@ -36,6 +36,12 @@ module.exports = function(db) {
 		},
 		url: {
 			type: sequelize.TEXT,
+			allowNull: true,
+			validate: {
+				isUrl: {
+					msg: 'Please enter a valid URL'
+				}
+			}
 		},
 		host: {
 			type: sequelize.TEXT,

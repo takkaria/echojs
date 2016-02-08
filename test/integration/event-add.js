@@ -75,6 +75,17 @@ describe('Given I visit /event/add', function() {
 		});
 	});
 
+	describe('submitting an invalid URL', function() {
+		it('should show an error', function(done) {
+			browser.fill('url', '<script>this is not valid</strong>££$!£$^**')
+			browser.querySelector('form').submit();
+			browser.wait(function() {
+				browser.assert.text('.text-danger', /URL/i);
+				done();
+			});
+		});
+	});
+
 	describe('submitting an invalid email address', function() {
 		it('should show an error', function(done) {
 			browser.fill('email', 'invalid')
