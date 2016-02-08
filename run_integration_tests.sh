@@ -2,6 +2,7 @@
 
 export NODE_PATH=.:$NODE_PATH
 export PORT=5000
+export MOCHA_OPTS="--timeout 3000"
 
 pkill node
 set -e
@@ -14,13 +15,13 @@ bin/www 2&>/tmp/echojs.log &
 sleep 2
 
 if [ $# -gt 0 ]; then
-	mocha $@
+	mocha $MOCHA_OPTS $@
 else
-	mocha --recursive test/integration
+	mocha $MOCHA_OPTS --recursive test/integration
 fi
 
 pkill node
 
 # echo "Server log:"
 # cat -n /tmp/echojs.log
-# rm /tmp/echojs.log
+# rm /tmp/echojs.log
