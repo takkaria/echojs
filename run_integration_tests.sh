@@ -21,6 +21,6 @@ fi
 
 pkill node
 
-echo "Server log:"
-cat -n /tmp/echojs.log
-rm /tmp/echojs.log
+# echo "Server log:"
+# cat -n /tmp/echojs.log
+# rm /tmp/echojs.log
