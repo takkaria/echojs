@@ -59,11 +59,7 @@ module.exports = function(db) {
 
 		startdt: {
 			type: sequelize.DATE,
-			validate: {
-				notEmpty: {
-					msg: 'Events must have a start date'
-				}
-			},
+			allowNull: false,
 			get: function() {
 				let val = this.getDataValue('startdt');
 				if (val) {
@@ -101,7 +97,7 @@ module.exports = function(db) {
 			type: sequelize.TEXT,
 			validate:  {
 				isEmail: {
-					msg: 'Email addresses must be valid'
+					msg: 'Please provide a valid email address'
 				}
 			}
 		},

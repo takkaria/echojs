@@ -56,13 +56,13 @@ function parseDateTime(str, allday) {
 	// Start/end date parsing could be made better, so that we return the data
 	// the user entered instead of blanks when the dates don't parse. XXX
 
-	if (str) {
+	if (allday) {
 		date = moment(str, 'YYYY/MM/DD', true);
 	} else {
 		date = moment(str, 'YYYY/MM/DD HH:mm', true);
 	}
 
-	return date.isValid() ? date : null;
+	return date.isValid() ? date.toDate() : null;
 }
 
 // POST /event/add
@@ -122,7 +122,20 @@ router.post('/add', function(req, res) {
 
 			return res.redirect('/');
 		}).catch(function(errors) {
-			debug(errors.errors, input);
+			// This is a nasty hack, because we don't seem to be able to
+			// customise the error message for this particular case.
+			//
+			// For some reason other fields when set to { allowNull: false } in
+			// the model don't emit an error in the form '<field> cannot be
+			// null'; instead the error message when they are missing is caused
+			// by the validation options set in the model.  For some reason
+			// startdt behaves differently, perhaps because it's a date type
+			// field.  Investigate more and report upstream.    XXX
+			for (let error of errors.errors) {
+				if (error.message === 'startdt cannot be null')
+					error.message = 'Events must have a start date';
+			}
+
 			res.render('event_add', {
 				event_: input,
 				errors: errors.errors,

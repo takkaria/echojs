@@ -53,7 +53,14 @@ describe('Given I visit /event/add', function() {
 	});
 
 	describe('submitting no start date', function() {
-		it('should show an error')
+		it('should show an error', function(done) {
+			browser.fill('startdt', '')
+			browser.querySelector('form').submit();
+			browser.wait(function() {
+				browser.assert.text('.text-danger', /date/i);
+				done();
+			});
+		});
 	})
 
 	describe('submitting no location', function() {
