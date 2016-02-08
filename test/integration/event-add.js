@@ -101,7 +101,7 @@ describe('Given I visit /event/add', function() {
 
 		it('should return to the home page, noting success', function() {
 			browser.assert.url('/');
-			browser.assert.text('alert', /event submitted/i)
+			browser.assert.text('.alert', /event submitted/i)
 		});
 
 		it('should produce an event with a slug that includes its ID', function(done) {
