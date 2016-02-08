@@ -115,11 +115,11 @@
 	{# opts = { label, field, fill } #}
 
 	<div class="form-group datetime">
-		<label class="title" for="i_{{ opts.field}}">{{ opts.label }}</label>
+		<label class="title" for="{{ opts.field}}">{{ opts.label }}</label>
 
 		<div class='input-group date'>
-			<input class="required form-control" type="text" id="i_{{ opts.field }}"
-				placeholder="click to pick" data-date-format="YYYY/MM/DD hh:mm" id="{{opts.field}}"
+			<input class="required form-control" type="text" id="{{ opts.field }}"
+				placeholder="Click to choose a date" data-date-format="YYYY/MM/DD hh:mm"
 				name="{{opts.field}}" value="{{ opts.fill }}">
 			<span class="input-group-addon"><span class="fa fa-calendar"></span></span>
 		</div>
