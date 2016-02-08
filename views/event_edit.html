@@ -33,14 +33,14 @@
 			{{ form.inputDateTime({
 				label: "Starts:",
 				field: "startdt",
-				fill: event_.startdt.format('YYYY/MM/DD HH:mm') }) }}
+				fill: event_.startdt }) }}
 		</div>
 
 		<div class="col-md-6">
 			{{ form.inputDateTime({
 				label: "Ends:",
 				field: "enddt",
-				fill: event_.enddt.format('YYYY/MM/DD HH:mm') }) }}
+				fill: event_.enddt }) }}
 		</div>
 	</div>
 
@@ -57,7 +57,7 @@
 	{{ form.inputText({
 		label: "Location:",
 		field: "location_text",
-		fill: event_.shortLocation,
+		fill: event_.location.singleLine || event_.location_text,
 		icon: "fa-map-marker" }) }}
 	{{ form.inputHidden({ field: "location_id", fill: event_.location_id }) }}
 
@@ -154,21 +154,29 @@
 		}
 
 		var dtps = [];
-		var icons = {
-			time:     'fa fa-clock-o',
-			date:     'fa fa-calendar',
-			up:       'fa fa-arrow-up',
-			down:     'fa fa-arrow-down',
-			previous: 'fa fa-chevron-left',
-			next:     'fa fa-chevron-right',
-			today:    'fa fa-crosshairs',
-			clear:    'fa fa-chevron-trash-o',
-			close:    'fa fa-remove'
+		var options = {
+			stepping: 5,
+			minDate: moment().startOf('day'),
+			useCurrent: false,
+			sideBySide: true,
+			keepInvalid: true,
+			keyBinds: false,
+			icons: {
+				time:     'fa fa-clock-o',
+				date:     'fa fa-calendar',
+				up:       'fa fa-plus',
+				down:     'fa fa-minus',
+				previous: 'fa fa-chevron-left',
+				next:     'fa fa-chevron-right',
+				today:    'fa fa-crosshairs',
+				clear:    'fa fa-chevron-trash-o',
+				close:    'fa fa-remove'
+			}
 		};
 
 		$('.date').each(function(i, e) {
 			var dtp = $(e).find("input")
-					.datetimepicker({ icons: icons })
+					.datetimepicker(options)
 					.data('DateTimePicker');
 
 			$(e).find("span.input-group-addon").click(function() {

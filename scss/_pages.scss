@@ -100,6 +100,10 @@
 		}
 	}
 
+	.bootstrap-datetimepicker-widget table td.disabled {
+		color: #ccc;
+	}
+
 	// Some styling to get the input element to appear correctly
 	// This bit is just kind of gross but required cos of the way typeahead.js works :(
 	span.twitter-typeahead {

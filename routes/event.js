@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var moment = require('moment');
 var mailer = require('../lib/mailer');
@@ -44,7 +46,7 @@ function defaultState(req) {
 	return 'submitted';
 }
 
-function parseDateTime(data, field) {
+function parseDateTime(str, allday) {
 	var date;
 
 	// 1. We parse with strict mode to prevent blank enddt being taken as "now"
@@ -54,10 +56,10 @@ function parseDateTime(data, field) {
 	// Start/end date parsing could be made better, so that we return the data
 	// the user entered instead of blanks when the dates don't parse. XXX
 
-	if (data.allday) {
-		date = moment(data[field], 'YYYY/MM/DD', true);
+	if (str) {
+		date = moment(str, 'YYYY/MM/DD', true);
 	} else {
-		date = moment(data[field], 'YYYY/MM/DD HH:mm', true);
+		date = moment(str, 'YYYY/MM/DD HH:mm', true);
 	}
 
 	return date.isValid() ? date : null;
@@ -68,37 +70,33 @@ function parseDateTime(data, field) {
 // This code is shared with routes/admin/event.js
 // Should have an Event.buildFromData(). XXX
 router.post('/add', function(req, res) {
-	var data = req.body;
-
-	data.startdt = parseDateTime(data, 'startdt');
-	data.enddt = parseDateTime(data, 'enddt');
+	let input = req.body;
+	let data = {
+		title: input.title,
+		startdt: parseDateTime(input.startdt, input.allday),
+		enddt: parseDateTime(input.enddt, input.allday),
+		allday: input.allday ? true : false,
+		blurb: input.blurb,
+		location_text: input.location_text,
+		host: input.host,
+		type: '',
+		email: input.email,
+		state: defaultState(req)
+	};
 
 	// If the end date and start date are the same and we're doing 'all day',
 	// nuke the end date.
 	if (data.allday && data.startdt.isSame(data.enddt, 'day'))
 		data.enddt = null;
 
-	var evt = models.Event.build({
-		title:         data.title,
-		startdt:       data.startdt,
-		enddt:         data.enddt,
-		allday:        data.allday ? true : false,
-		blurb:         data.blurb,
-		location_text: data.location_text,
-		host:          data.host,
-		type:          '',
-		email:         data.email,
-		state:         defaultState(req)
-	});
-
-	if (data.edit) {
+	if (input.edit) {
 		// Just render the event data back
 		res.render('event_add', {
-			event_: evt,
+			event_: input,
 			user: req.user
 		});
 	} else {
-		evt.save().then(function setID(evt) {
+		models.Event.build(data).save().then(function setID(evt) {
 			// Must be called post-save to get ID property
 			evt.generateSlug();
 			if (data.location_id) {
@@ -124,9 +122,9 @@ router.post('/add', function(req, res) {
 
 			return res.redirect('/');
 		}).catch(function(errors) {
-			debug(errors, evt, data);
+			debug(errors.errors, input);
 			res.render('event_add', {
-				event_: evt,
+				event_: input,
 				errors: errors.errors,
 				user: req.user
 			});

@@ -45,6 +45,7 @@ describe('Given I visit /event/add', function() {
 			browser
 				.fill('title', 'testing')
 				.fill('startdt', 'testing')
+				.fill('enddt', 'testing')
 				.fill('location_text', 'testing')
 				.fill('host', 'testing')
 				.fill('blurb', 'testing')
@@ -60,9 +61,10 @@ describe('Given I visit /event/add', function() {
 		it('should preserve the input data', function() {
 			browser.assert.attribute('#title', 'value', 'testing');
 			browser.assert.attribute('#startdt', 'value', 'testing');
+			browser.assert.attribute('#enddt', 'value', 'testing');
 			browser.assert.attribute('#location_text', 'value', 'testing');
 			browser.assert.attribute('#host', 'value', 'testing');
-			browser.assert.attribute('#blurb', 'value', 'testing');
+			browser.assert.text('#blurb', 'testing');
 			browser.assert.attribute('#email', 'value', 'invalid');
 		});
 	});
