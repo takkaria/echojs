@@ -4,6 +4,9 @@ node_js:
   - "4"
   - "5"
 
+before_script:
+  - npm run deploy
+
 env:
   - CXX=g++-4.8
 
