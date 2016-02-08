@@ -1,7 +1,6 @@
 'use strict';
 
 var sequelize = require('sequelize');
-var url = require('url');
 var moment = require('moment');
 var slug = require('slug');
 var textToHTML = require('../lib/texttohtml');
@@ -37,21 +36,6 @@ module.exports = function(db) {
 		},
 		url: {
 			type: sequelize.TEXT,
-			get: function() {
-				var urlValue = this.getDataValue('url');
-				if (urlValue) {
-					var urlObj = url.parse(urlValue);
-					if (urlObj.hostname) {
-						urlObj.hostNoWww = urlObj.hostname.replace(/^www\./, '');
-					}
-
-					urlObj.toString = function() {
-						return urlValue;
-					};
-
-					return urlObj;
-				}
-			}
 		},
 		host: {
 			type: sequelize.TEXT,

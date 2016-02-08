@@ -11,7 +11,6 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var swig = require('swig');
-var markedSwig = require('swig-marked');
 var paginate = require('express-paginate');
 var moment = require('moment');
 var passport = require('passport');
@@ -61,6 +60,10 @@ app.set('view engine', 'html');
 if (app.get('env') === 'development')
 	swig.setDefaults({ cache: false });
 
+var applyFilters = require('./lib/swig-filters');
+applyFilters(swig);
+
+var markedSwig = require('swig-marked');
 markedSwig.useFilter(swig);
 markedSwig.useTag(swig);
 

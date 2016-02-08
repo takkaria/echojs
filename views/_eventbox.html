@@ -52,10 +52,10 @@
 			{% if !opts.linkBox %}
 			<small>
 				{% if event_.url %}
-					{% if event_.url.hostNoWww == "facebook.com" %}
+					{% if (event_.url | hostname) == "facebook.com" %}
 						<i class="fa fa-fw fa-facebook"></i> <a href="{{ event_.url.href }}" target="_blank">Facebook event</a>
 					{% else %}
-						<i class="fa fa-fw fa-external-link"></i> <a href="{{ event_.url.href }}" target="_blank">More info at {{ event_.url.hostNoWww }}</a>
+						<i class="fa fa-fw fa-external-link"></i> <a href="{{ event_.url.href }}" target="_blank">More info at {{ event_.url | hostname }}</a>p
 					{% endif %}<br>
 				{% endif %}
 				<a href="{{ evt.absoluteURL }}"><i class="fa fa-fw fa-chain"></i> Link to this event</a></a>

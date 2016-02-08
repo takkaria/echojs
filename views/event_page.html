@@ -95,10 +95,10 @@
 
 {% if event_.url %}
 <p>
-  {% if event_.url.hostNoWww == "facebook.com" %}
+  {% if (event_.url | hostname) == "facebook.com" %}
     <i class="fa fa-fw fa-facebook"></i> <a href="{{ event_.url.href }}" target="_blank">Facebook event</a>
   {% else %}
-    <i class="fa fa-fw fa-external-link"></i> <a href="{{ event_.url.href }}" target="_blank">{{ event_.url.hostNoWww }}</a>
+    <i class="fa fa-fw fa-external-link"></i> <a href="{{ event_.url.href }}" target="_blank">{{ event_.url | hostname }}</a>
   {% endif %}
 </p>
 {% endif %}
