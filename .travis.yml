@@ -4,8 +4,6 @@ node_js:
   - "4"
   - "5"
 
-script: npm run coverage
-
 env:
   - CXX=g++-4.8
 
