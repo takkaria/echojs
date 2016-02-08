@@ -115,7 +115,7 @@ router.post('/add', function(req, res) {
 				return res.redirect(evt.absoluteURL);
 			}
 
-			req.flash('success', "Event successfully added; you'll get an e-mail when a moderator has looked at it");
+			req.flash('success', "<b>Event submitted.</b> Please wait until our moderators check it.");
 
 			mailer.sendEventSubmittedMail(evt);
 			mailer.sendAdminsEventNotifyMail(models, evt);

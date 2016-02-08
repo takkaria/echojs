@@ -28,25 +28,25 @@
 {% block content %}
 <div class="container">
 	<div class="row">
-
 		<div class="leftcontent" class="eventlist">
+			{{ checkMessages() }}
 
 			<h2>Upcoming events</h2>
 
-<!--			<h3 class="eventlist-date">This week <small>(Fri 6 Nov - Sun 8 Nov)</small></h3> -->
+			<!-- <h3 class="eventlist-date">This week <small>(Fri 6 Nov - Sun 8 Nov)</small></h3> -->
 
-{% if events.ordered.length == 0 %}
-			<div class="no-events">
-				<p>We don't have any future events right now!
+			{% if events.ordered.length == 0 %}
+				<div class="no-events">
+					<p>We don't have any future events right now!
 
-				<p><a class="btn btn-primary" href="/event/add"><i class="fa fa-plus"></i> Add your event</a>
+					<p><a class="btn btn-primary" href="/event/add"><i class="fa fa-plus"></i> Add your event</a>
 
-			</div>
-{% else %}
-			{% include "_eventlist.html" %}
+				</div>
+			{% else %}
+				{% include "_eventlist.html" %}
 
-			<p class="see-more"><a href="/events">See more events <i class="fa fa-angle-right"></i></a></p>
-{% endif %}
+				<p class="see-more"><a href="/events">See more events <i class="fa fa-angle-right"></i></a></p>
+			{% endif %}
 
 		</div> <!-- leftcontent -->
 
