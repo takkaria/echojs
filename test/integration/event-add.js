@@ -22,13 +22,10 @@ describe('Given I visit /event/add', function() {
 	});
 
 	describe('given incomplete form data', function() {
-		let formTitle = 'testing event';
-		let formLocation = 'testing venue';
-
 		before(function() {
 			browser
-				.fill('title', formTitle)
-				.fill('location_text', formLocation);
+				.fill('title', 'testing')
+				.fill('location_text', 'testing');
 			browser.querySelector('form').submit();
 			return browser.wait();
 		});
@@ -38,8 +35,35 @@ describe('Given I visit /event/add', function() {
 		});
 
 		it('should preserve the input data', function() {
-			browser.assert.attribute('#title', 'value', formTitle);
-			browser.assert.attribute('#location_text', 'value', formLocation);
+			browser.assert.attribute('#title', 'value', 'testing');
+			browser.assert.attribute('#location_text', 'value', 'testing');
+		});
+	});
+
+	describe('given invalid form data', function() {
+		before(function() {
+			browser
+				.fill('title', 'testing')
+				.fill('startdt', 'testing')
+				.fill('location_text', 'testing')
+				.fill('host', 'testing')
+				.fill('blurb', 'testing')
+				.fill('email', 'invalid');
+			browser.querySelector('form').submit();
+			return browser.wait();
+		});
+
+		it('should return to event add URL', function() {
+			browser.assert.url('/event/add');
+		});
+
+		it('should preserve the input data', function() {
+			browser.assert.attribute('#title', 'value', 'testing');
+			browser.assert.attribute('#startdt', 'value', 'testing');
+			browser.assert.attribute('#location_text', 'value', 'testing');
+			browser.assert.attribute('#host', 'value', 'testing');
+			browser.assert.attribute('#blurb', 'value', 'testing');
+			browser.assert.attribute('#email', 'value', 'invalid');
 		});
 	});
 
@@ -47,7 +71,7 @@ describe('Given I visit /event/add', function() {
 		before(function() {
 			browser
 				.fill('title', 'testing')
-				.fill('startdt', moment().add(1, 'day').format("YYYY-MM-DD HH:mm"))
+				.fill('startdt', moment().add(1, 'day').format("YYYY/MM/DD HH:mm"))
 				.fill('location_text', 'testing')
 				.fill('host', 'testing')
 				.fill('blurb', 'testing')
