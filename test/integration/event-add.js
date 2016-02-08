@@ -3,6 +3,7 @@
 var chai = require('chai');
 var Browser = require('zombie');
 var moment = require('moment');
+var models = require('models');
 
 var expect = chai.expect;
 chai.use(require('chai-as-promised'));
@@ -102,6 +103,16 @@ describe('Given I visit /event/add', function() {
 			browser.assert.url('/');
 		});
 
-		it('should produce an event with a slug that includes its ID');
+		it('should produce an event with a slug that includes its ID', function(done) {
+			models.Event.findOne({
+				where: {
+					title: 'testing'
+				},
+				order: 'id DESC'
+			}).then(function(evt) {
+				expect(evt.slug).to.contain(evt.id);
+				done();
+			});
+		});
 	});
 });
