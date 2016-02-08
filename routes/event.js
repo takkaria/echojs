@@ -122,7 +122,7 @@ router.post('/add', function(req, res) {
 			mailer.sendEventSubmittedMail(evt);
 			mailer.sendAdminsEventNotifyMail(models, evt);
 
-			return res.redirect('/events');
+			return res.redirect('/');
 		}).catch(function(errors) {
 			debug(errors, evt, data);
 			res.render('event_add', {
