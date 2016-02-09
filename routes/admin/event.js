@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var models = require('../../models');
@@ -66,7 +68,7 @@ router.post('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
 });
 
 router.get('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
-	var next = req.query.next ? req.query.next : '';
+	var next = req.query.next || '';
 	res.render('event_reject', {
 		event_: req.event_,
 		user: req.user,
@@ -75,15 +77,14 @@ router.get('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 });
 
 router.post('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
-	var event_ = req.event_,
-		next_ = req.body.next_;
-	var msg = req.body.reason;
-
-	var sendEmail = req.body.email ? true : false;
+	let event_ = req.event_;
+	let next = req.body.next;
+	let msg = req.body.reason;
+	let sendEmail = req.body.email ? true : false;
 
 	if (sendEmail && !msg) {
 		return res.render('event_reject', {
-			event_: req.event_,
+			event_: event_,
 			user: req.user,
 			data: req.body,
 			errors: [ {
@@ -93,20 +94,18 @@ router.post('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 		});
 	}
 
-	event_.set('state', 'hidden');
+	event_.state = 'hidden';
 	event_.save({ validate: false }).then(function() {
 		if (sendEmail)
 			mailer.sendEventRejectedMail(event_, msg);
 
-		req.flash('warning', 'Event <a href="%s">%s</a> hidden%s. <a href="/admin/event/%s/approve">Show event instead?</a>',
+		req.flash('warning',
+				'<b>Event <a href="%s">%s</a> hidden</b>%s. <a href="/admin/event/%s/approve">Show event instead?</a>',
 				event_.absoluteURL, event_.id,
 				!sendEmail ? " (no email sent)": "",
 				event_.id);
-		res.redirect(next_ ? next_ : event_.absoluteURL);
-	})
-	.catch(function(errors){
-		debug(errors);
-	});
+		res.redirect(next || '/admin/event/' + event_.id);
+	}).catch(debug);
 });
 
 router.get('/:event_id/edit', ensure.editorOrAdmin, function(req, res) {

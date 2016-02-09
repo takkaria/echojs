@@ -24,11 +24,14 @@
 
 {% if event_.email %}
 
+	{{ form.inputHidden({
+		field: "next",
+		fill: next }) }}
+
 	{{ form.inputCheckbox({
 		label: "Send a notification email",
 		field: "email",
-		checked: !event_.isImported() || data.email
-	}) }}
+		checked: !event_.isImported() || data.email }) }}
 
 	<div class="form-group">
 		<label for="predefined">Use a predefined reason (will overwrite text below)</label>
@@ -88,7 +91,7 @@ $(function() {
 
 	// Allow user to select reasons
 	$("select")
-		.on("change", function(evt) {
+		.on("change", function(event_) {
 			var which = $(this).val();
 			$("textarea").val($("pre.reason:eq(" + which + ")").text());
 		})
@@ -96,8 +99,8 @@ $(function() {
 
 	// Disable form inputs when not sending email
 	$("#email")
-		.on("change", function(evt) {
-			var sendEmail = $(evt.target).prop("checked");
+		.on("change", function(event_) {
+			var sendEmail = $(event_.target).prop("checked");
 			$("#predefined, #reason").prop("disabled", !sendEmail);
 		})
 		.trigger("change");
