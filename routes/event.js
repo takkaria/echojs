@@ -6,6 +6,7 @@ var mailer = require('../lib/mailer');
 var debug = require('debug')('echo:event');
 var router = express.Router();
 var models = require('../models');
+var Sequelize = models.db;
 
 router.param('id', function(req, res, next, id) {
 	models.Event.findOne({
@@ -23,7 +24,10 @@ router.param('id', function(req, res, next, id) {
 router.param('slug', function(req, res, next, slug) {
 	models.Event.find({
 		include: [ models.Location ],
-		where: { slug: slug }
+		where: {
+			slug: slug,
+			state: 'approved'
+		}
 	}).then(function(event_) {
 		req.event_ = event_;
 		next(!event_ ? new Error('No such event') : null);
@@ -163,41 +167,49 @@ router.get('/:id', function(req, res) {
 	res.redirect(req.event_.absoluteURL);
 });
 
-function findOtherEventsByLocation(event_, cb) {
-	var params = [];
+function findOtherEventsByLocation(event_) {
+	let where = {
+		id: { $ne: event_.id },
+		state: 'approved',
+		$or: {
+			startdt: { $gte: Sequelize.fn('date', 'now', 'start of day') },
+			enddt: { $gte: Sequelize.fn('date', 'now') }
+		}
+	};
+
 	if (event_.location_id)
-		params.push({ location_id: event_.location_id });
+		where.location_id = event_.location_id;
 	else if (event_.location_text)
-		params.push({ location_text: event_.location_text });
+		where.location_text = event_.location_text;
 	else
 		return Promise.resolve(null);
 
 	return models.Event.findAll({
-		where: [
-			{ id: { $ne: event_.id } },
-			{ $or: params },
-			[ "(startdt >= date('now', 'start of day') OR date('now') <= enddt)", [] ]
-		],
+		where: where,
 		order: 'startdt'
 	});
 }
 
-function findOtherEventsByHost(event_, cb) {
+function findOtherEventsByHost(event_) {
 	if (!event_.host)
 		return Promise.resolve(null);
 
 	return models.Event.findAll({
-		where: [
-			{ id: { $ne: event_.id } },
-			{ host: event_.host },
-			[ "(startdt >= date('now', 'start of day') OR date('now') <= enddt)", [] ]
-		],
+		where: {
+			id: { $ne: event_.id },
+			host: event_.host,
+			state: 'approved',
+			$or: {
+				startdt: { $gte: Sequelize.fn('date', 'now', 'start of day') },
+				enddt: { $gte: Sequelize.fn('date', 'now') }
+			}
+		},
 		order: 'startdt'
 	});
 }
 
 /* GET event by slug */
-router.get('/:year/:month/:slug', function(req, res) {
+router.get('/:year/:month/:slug', function(req, res, next) {
 	var event_ = req.event_;
 
 	Promise.all([
@@ -213,7 +225,7 @@ router.get('/:year/:month/:slug', function(req, res) {
 			otherEventsLocation: evtsThisLocation,
 			otherEventsHost: evtsThisHost
 		});
-	});
+	}).catch(next);
 });
 
 module.exports = router;
