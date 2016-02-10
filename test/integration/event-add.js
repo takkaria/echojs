@@ -59,6 +59,19 @@ describe('Given I visit /event/add', function() {
 				done();
 			});
 		});
+	});
+
+	describe('submitting an all-day start date', function() {
+		it('should not produce a date-related error', function(done) {
+			browser
+				.fill('startdt', moment().add(1, 'day').format("YYYY/MM/DD"))
+				.check('allday');
+			browser.querySelector('form').submit();
+			browser.wait(function() {
+				browser.assert.text('.text-danger', /^((?!date).)*$/);
+				done();
+			});
+		});
 	})
 
 	describe('submitting no location', function() {

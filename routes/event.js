@@ -76,7 +76,8 @@ function parseDateTime(str, allday) {
 		date = moment(str, 'YYYY/MM/DD HH:mm', true);
 	}
 
-	return date.isValid() ? date.toDate() : null;
+	if (date.isValid())
+		return date;
 }
 
 function buildEventFromReq(req) {
