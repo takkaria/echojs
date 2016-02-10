@@ -11,7 +11,12 @@ echo "=========================================="
 echo "Integration Tests"
 echo "=========================================="
 
-DEBUG=echo:* bin/www 2&>/tmp/echojs.log &
+if [ "$TRAVIS" = "true" ]; then
+	DEBUG=echo:* bin/www &
+else
+	DEBUG=echo:* bin/www 2&>/tmp/echojs.log &
+fi
+
 sleep 2
 
 if [ $# -gt 0 ]; then

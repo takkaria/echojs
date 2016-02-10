@@ -10,19 +10,20 @@ CREATE TABLE locations (
 CREATE TABLE events (
 	id INTEGER PRIMARY KEY,
 	slug TEXT,
+	type TEXT,
 
-	/* Event data */
 	title TEXT,
 	startdt DATETIME,
 	enddt DATETIME,
+	allday BOOLEAN,
+
 	location_text TEXT,
 	location_id INTEGER,	/* Indexes into locations */
+
 	blurb TEXT,
 	url TEXT,
-	type TEXT,		/* ATM this can only be "film" */
 	host TEXT,
 
-	/* State crap */
 	state TEXT,		/* "submitted", "approved" */
 	email TEXT,		/* Delete after submitted? */
 	key TEXT,			/* key needed for validation */ /* XXX remove */

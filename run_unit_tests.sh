@@ -9,5 +9,5 @@ echo "=========================================="
 if [ $# -gt 0 ]; then
 	mocha $MOCHA_OPTS $@
 else
-	mocha $MOCHA_OPTS --recursive test/integration
+	mocha $MOCHA_OPTS --recursive test/unit
 fi

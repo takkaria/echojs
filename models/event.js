@@ -189,9 +189,13 @@ module.exports = function(db) {
 				let self = this;
 
 				return self.findAll(options).then(function(events) {
+					if (events.length == 0) {
+						return;
+					}
+
 					// Find the latest date in our dataset
 					let max = self.getLatestDate(events).startOf('day');
-					if (events == [] || !max.isValid()) {
+					if (!max.isValid()) {
 						return;
 					}
 
