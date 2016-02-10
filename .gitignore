@@ -1,5 +1,11 @@
-node_modules
-bower_components
+node_modules/
+bower_components/
+sessions/
+.sass-cache/
+coverage/
+logs/
 db.sqlite
-.sass-cache
-/coverage
+.DS_STORE
+.env
+public/stylesheets/*.map
+
