@@ -117,16 +117,18 @@ module.exports = function(db) {
 				return textToHTML(this.blurb, opts);
 			},
 
-			shortBlurb: function(readMore) {
+			shortBlurb: function(readMore, length) {
 				if (readMore === undefined)
 					readMore = true;
+				if (length === undefined)
+					length = 140;
 
 				// Copy blurb so we don't alter the event object itself
 				var altered = this.blurb.slice(0);
 
 				// FIXME: This could be done with more finesse
-				if (altered.length >= 140) {
-					altered = altered.substr(0, 139) + (readMore ? '… <i>(read more)</i>' : '...');
+				if (altered.length >= length) {
+					altered = altered.substr(0, length-1) + (readMore ? '… <i>(read more)</i>' : '...');
 				}
 
 				// Split up any long strings of characters without a space
