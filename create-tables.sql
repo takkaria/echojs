@@ -41,7 +41,7 @@ CREATE TABLE users (
 );
 
 /* user test@example.com, password test */
-INSERT INTO "users" VALUES(1, 'test@example.com','aaa','e3MjCoP7Oui8bQ+BK+2wWIRmq/OApZ8nXNuv6Kt6qiw=',NULL,NULL,'admin');
+INSERT INTO "users" VALUES(1, 'test@example.com',NULL,'','aaa','e3MjCoP7Oui8bQ+BK+2wWIRmq/OApZ8nXNuv6Kt6qiw=',NULL,'admin');
 
 CREATE TABLE posts (
 	id TEXT PRIMARY KEY,
