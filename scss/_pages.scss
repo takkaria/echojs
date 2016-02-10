@@ -36,13 +36,13 @@
 
 	border-radius: 40px;
 	background-color: rgba(255, 255, 255, 0.75);
-	box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, 0.75);
+	box-shadow: 0 0 5px 5px rgba(255, 255, 255, 0.75);
 }
 
 .event_calendar {
 	.modal-dialog {
 		max-width: 750px;
-		a { background-color: white; }
+		a { background-color: #fff; }
 
 		.close { padding: 15px 0 5px 0; }
 	}
@@ -50,39 +50,39 @@
 	// Screen centring solution
 	// thanks http://stackoverflow.com/questions/18422223/bootstrap-3-modal-vertical-position-center
 	@media only screen and (min-width: 768px) {
-	  .modal {
-	    text-align: center;
-	  }
-	  .modal:before {
-	    display: inline-block;
-	    vertical-align: middle;
-	    content: " ";
-	    height: 80%;
-	  }
-	  .modal-dialog {
-	    display: inline-block;
-	    text-align: left;
-	    vertical-align: middle;
-	  }
-	  .modal.fade .modal-dialog {
-	    -webkit-transform: scale(0.9);
-	    -moz-transform: scale(0.9);
-	    -ms-transform: scale(0.9);
-	    transform: scale(0.9);
-	    opacity: 0;
-	    -webkit-transition: all 0.3s ease;
-	    -moz-transition: all 0.3s ease;
-	    transition: all 0.3s ease;
-	  }
-	  .modal.fade.in .modal-dialog {
-	    -webkit-transform: scale(1);
-	    -moz-transform: scale(1);
-	    -ms-transform: scale(1);
-	    transform: scale(1);
-	    //-webkit-transform: translate3d(0, -300px, 0);
-	    //transform: translate3d(0, -300px, 0);
-	    opacity: 1;
-	  }
+		.modal {
+			text-align: center;
+		}
+		.modal:before {
+			content: " ";
+			display: inline-block;
+			height: 80%;
+			vertical-align: middle;
+		}
+		.modal-dialog {
+			display: inline-block;
+			text-align: left;
+			vertical-align: middle;
+		}
+		.modal.fade .modal-dialog {
+			-webkit-transform: scale(0.9);
+			-moz-transform: scale(0.9);
+			-ms-transform: scale(0.9);
+			transform: scale(0.9);
+			opacity: 0;
+			-webkit-transition: all 0.3s ease;
+			-moz-transition: all 0.3s ease;
+			transition: all 0.3s ease;
+		}
+		.modal.fade.in .modal-dialog {
+			-webkit-transform: scale(1);
+			-moz-transform: scale(1);
+			-ms-transform: scale(1);
+			transform: scale(1);
+			//-webkit-transform: translate3d(0, -300px, 0);
+			//transform: translate3d(0, -300px, 0);
+			opacity: 1;
+		}
 	}
 }
 
@@ -117,7 +117,7 @@
 	}
 
 	.tt-dropdown-menu {
-		background-color: white; border: 1px solid #aaa; width: 500px;
+		background-color: #fff; border: 1px solid #aaa; width: 500px;
 		p { margin: 0; padding: 10px; }
 	}
 
@@ -180,7 +180,7 @@
 
 	// Only do two-column layout on bigger screens
 	@media (min-width: $screen-md-min) {
-		.feedlist { /* Masonry container */
+		.feedlist { // Masonry container
 			-moz-column-count: 2;
 			-moz-column-gap: 1em;
 			-webkit-column-count: 2;
@@ -197,7 +197,7 @@
 
 		padding: 0 10px;
 		border-radius: 4px;
-	    border: 1px solid $brand-primary;
+			border: 1px solid $brand-primary;
 	}
 
 	.feed-error {
