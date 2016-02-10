@@ -20,7 +20,7 @@ module.exports = function(db) {
 			}
 		},
 		location_text: {
-			type: sequelize.TEXT,
+			type: sequelize.TEXT
 		},
 		blurb: {
 			type: sequelize.TEXT,
@@ -44,7 +44,7 @@ module.exports = function(db) {
 			}
 		},
 		host: {
-			type: sequelize.TEXT,
+			type: sequelize.TEXT
 		},
 
 		startdt: {
@@ -92,7 +92,7 @@ module.exports = function(db) {
 			}
 		},
 		key: { type: sequelize.TEXT },
-		importid: { type: sequelize.TEXT },
+		importid: { type: sequelize.TEXT }
 	}, {
 		timestamps: false,
 		createdAt: false,
@@ -189,7 +189,7 @@ module.exports = function(db) {
 				let self = this;
 
 				return self.findAll(options).then(function(events) {
-					if (events.length == 0) {
+					if (events.length === 0) {
 						return;
 					}
 

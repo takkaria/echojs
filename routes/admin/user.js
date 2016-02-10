@@ -26,7 +26,7 @@ router.use(ensure.admin);
 
 router.get('/', function(req, res) {
 	models.User.findAll({
-		limit: 20,
+		limit: 20
 	}).then(function(users) {
 		res.render('users', {
 			user: req.user,
