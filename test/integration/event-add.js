@@ -125,4 +125,6 @@ describe('Given I visit /event/add', function() {
 			});
 		});
 	});
+
+	it('should handle location data correctly');
 });
