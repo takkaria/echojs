@@ -1,5 +1,5 @@
 var express = require('express');
-var mailer = require('../lib/mailer');
+var notify = require('../lib/notify');
 var debug = require('debug')('echo:user');
 var passport = require('passport');
 var router = express.Router();
@@ -88,12 +88,13 @@ router.get('/password/reset', function(req, res) {
 
 router.post('/password/reset', function(req, res, next) {
 	models.User
-		.find({ where: { email: req.body.email } })
+		.findOne({ where: { email: req.body.email } })
 		.then(function(user) {
 			if (user) {
-				user.resetPassword().
-					save().
-					then(mailer.sendPasswordResetMail);
+				user
+					.resetPassword()
+					.save()
+					.then(notify.passwordReset);
 			}
 
 			res.redirect('/user/password/reset/done');

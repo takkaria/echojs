@@ -2,7 +2,7 @@
 
 var express = require('express');
 var moment = require('moment');
-var mailer = require('../lib/mailer');
+var notify = require('../lib/notify');
 var debug = require('debug')('echo:event');
 var router = express.Router();
 var models = require('../models');
@@ -136,8 +136,7 @@ router.post('/add', function(req, res) {
 
 			req.flash('success', "<b>Event submitted.</b> Please wait until our moderators check it.");
 
-			mailer.sendEventSubmittedMail(evt);
-			mailer.sendAdminsEventNotifyMail(models, evt);
+			notify.eventSubmitted(evt);
 
 			return res.redirect('/');
 		}).catch(function(errors) {

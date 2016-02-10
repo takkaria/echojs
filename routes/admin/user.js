@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 var models = require('../../models');
 var debug = require('debug')('echo:admin');
-var mailer = require('../../lib/mailer');
+var notify = require('../../lib/notify');
 var ensure = require('../../lib/ensure');
 var Promise = require('promise');
 
@@ -65,7 +65,7 @@ router.post('/add', ensure.admin, function(req, res) {
 		}).then(function(user) {
 			req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> added',
 								user.id, user.id);
-			mailer.sendNewUserMail(user);
+			notify.newUser(user);
 			return res.redirect('/admin/user');
 		});
 });
@@ -102,7 +102,7 @@ router.post('/:user_id/edit', ensure.admin, function(req, res) {
 	promise.then(function() {
 		return u.save();
 	}).then(function(u_) {
-		req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> saved', 
+		req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> saved',
 							u_.id, u_.id);
 		res.redirect('/admin/user');
 	}).catch(function(errors) {

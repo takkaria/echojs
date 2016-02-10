@@ -5,7 +5,7 @@ var router = express.Router();
 var models = require('../../models');
 var moment = require('moment');
 var debug = require('debug')('echo:admin');
-var mailer = require('../../lib/mailer');
+var notify = require('../../lib/notify');
 var ensure = require("../../lib/ensure");
 
 router.param('event_id', function(req, res, next, event_id) {
@@ -35,7 +35,7 @@ function approveEvent(req, res, event_, next_) {
 				'Event <a href="%s">%s</a> approved. <a href="/admin/event/%s/reject">Hide event instead?</a>',
 				event_.absoluteURL, event_.id, event_.id);
 		if (!event_.isImported()) {
-			mailer.sendEventApprovedMail(event_);
+			notify.eventApproved(event_);
 		}
 
 		res.redirect(next_ ? next_ : event_.absoluteURL);
@@ -97,7 +97,7 @@ router.post('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 	event_.state = 'hidden';
 	event_.save({ validate: false }).then(function() {
 		if (sendEmail)
-			mailer.sendEventRejectedMail(event_, msg);
+			notify.eventRejected(event_, msg);
 
 		req.flash('warning',
 				'<b>Event <a href="%s">%s</a> hidden</b>%s. <a href="/admin/event/%s/approve">Show event instead?</a>',

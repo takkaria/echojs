@@ -69,6 +69,10 @@ var markedSwig = require('swig-marked');
 markedSwig.useFilter(swig);
 markedSwig.useTag(swig);
 
+// Notifications
+require('./lib/notify-email')
+
+// HTTP protocol setup
 app.use(compression());
 app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(morgan('dev'));
