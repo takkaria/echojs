@@ -16,8 +16,14 @@ router.param('id', function(req, res, next, id) {
 			state: 'approved'
 		}
 	}).then(function(event_) {
-		req.event_ = event_;
-		next(!event_ ? new Error('No such event') : null);
+		if (event_) {
+			req.event_ = event_;
+			next();
+		} else {
+			let err = new Error();
+			err.status = 404;
+			next(err);
+		}
 	});
 });
 
@@ -29,8 +35,14 @@ router.param('slug', function(req, res, next, slug) {
 			state: 'approved'
 		}
 	}).then(function(event_) {
-		req.event_ = event_;
-		next(!event_ ? new Error('No such event') : null);
+		if (event_) {
+			req.event_ = event_;
+			next();
+		} else {
+			let err = new Error();
+			err.status = 404;
+			next(err);
+		}
 	});
 });
 

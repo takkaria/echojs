@@ -1,3 +1,5 @@
+'use strict';
+
 require('dotenv').load();
 
 var express = require('express');
@@ -104,22 +106,15 @@ app.use('/icalendar', function(req, res) {
 	res.redirect(301, '/api/ical');
 });
 
-// ERROR HANDLERS
-
-// Express error handlers
-
-// catch 404 and to next error handler
-// XXX we could make this a nicer 404 page
-app.use(function(req, res, next) {
-	logger.log('warn', '404 %s', req.url);
-
-	res.render('error', {
-		message: 'Page not found',
-	});
-});
-
+// Error handler
 app.use(function(err, req, res, next) {
-	var status = (err.status || 500);
+	let status = err.status || 500;
+	res.status(status);
+
+	if (status == 404) {
+		logger.log('warn', '404 %s', req.url);
+		return res.render('404');
+	}
 
 	logger.log('error', '%s %s', status, req.url, err);
 
@@ -128,7 +123,6 @@ app.use(function(err, req, res, next) {
 		return next(err);
 	}
 
-	res.status(status);
 
 	// Only show stackstrace in dev environment
 	res.render('error', {

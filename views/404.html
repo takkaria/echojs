@@ -1,0 +1,30 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Error{% endblock %}
+
+{% block header %}
+<ol class="breadcrumb">
+	<li><a href="/">Echo</a></li>
+	<li>Error</li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<style>
+	.content { text-align: center; font-size: 150%; font-family: Raleway; }
+	.content h1 { font-size: 200%; font-weight: normal; }
+	.content p, .content h1 { margin-bottom: 5%; margin-top: 5%; }
+	footer { display: none; }
+</style>
+
+<div class="container">
+	<div class="row">
+		<div class="fullwidth content">
+			<h1>404 Page Not Found</h1>
+			<p><b>Sorry, we can't find that page.</b></p>
+			<p>Maybe go back to our <a href="/">home page</a> or view the <a href="/events/">event calendar</a>?</p>
+		</div>
+	</div>
+</div>
+{% endblock %}
