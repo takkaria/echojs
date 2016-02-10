@@ -133,8 +133,8 @@ module.exports = function(db) {
 				return altered.replace(/([\S]{40})/g, '$1&shy;');
 			},
 
-			generateSlug: function() {
-				if (!this.getDataValue('slug')) {
+			generateSlug: function(force) {
+				if (force || !this.getDataValue('slug')) {
 					var text = slug(this.getDataValue('title')) + '-' + this.id;
 					this.setDataValue('slug', text.toLowerCase());
 				}

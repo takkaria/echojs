@@ -79,14 +79,10 @@ function parseDateTime(str, allday) {
 	return date.isValid() ? date.toDate() : null;
 }
 
-// POST /event/add
-//
-// This code is shared with routes/admin/event.js
-// Should have an Event.buildFromData(). XXX
-router.post('/add', function(req, res) {
-	let nullifyEmptyString = (str) => (str === '' ? null : str);
+function buildEventFromReq(req) {
+	const nullifyEmptyString = (str) => (str === '' ? null : str);
 
-	let input = req.body;
+	const input = req.body;
 	let data = {
 		title: input.title,
 		startdt: parseDateTime(input.startdt, input.allday),
@@ -106,27 +102,74 @@ router.post('/add', function(req, res) {
 	if (data.allday && data.startdt.isSame(data.enddt, 'day'))
 		data.enddt = null;
 
+	return data;
+}
+
+function fixErrors(errors) {
+	// This is a nasty hack, because we can't customise the error message
+	// for this particular case.
+	//
+	// Other fields when set to { allowNull: false } in
+	// the model don't emit an error in the form '<field> cannot be
+	// null'; instead the error message when they are missing is caused
+	// by the validation options set in the model.  For some reason
+	// startdt behaves differently, perhaps because it's a date type
+	// field.  Investigate more and report upstream.    XXX
+	for (let error of errors) {
+		if (error.message === 'startdt cannot be null')
+			error.message = 'Events must have a start date';
+	}
+
+	return errors;
+}
+
+// POST /event/add
+//
+// This code is shared with routes/admin/event.js
+// Should have an Event.buildFromData(). XXX
+router.post('/add', function(req, res, next) {
+	const input = req.body;
+
+	// Just render the input back if the edit bit is set
 	if (input.edit) {
-		// Just render the event data back
-		res.render('event_add', {
+		return res.render('event_add', {
 			event_: input,
 			user: req.user
 		});
-	} else {
-		models.Event.build(data).save().then(function setID(evt) {
-			// Must be called post-save to get ID property
-			evt.generateSlug();
+	}
+
+	let data = buildEventFromReq(req);
+	let evt = models.Event.build(data);
+
+	evt.validate().then(function(errors) {
+		if (errors) {
+			return res.render('event_add', {
+				event_: input,
+				errors: fixErrors(errors.errors),
+				user: req.user
+			});
+		}
+
+		return evt.save().then(function fixLocationInfo(evt) {
 			if (data.location_id) {
-				evt.setLocation(data.location_id);
+				// Sequelize handles this with a separate UPDATE statement
+				return evt
+					.setLocation(data.location_id)
+					.then(function(evt) {
+						// If we have a valid location ID, erase the text
+						if (evt.location_id) {
+							evt.location_text = null;
+						}
+						return evt;
+					});
+			} else {
+				return evt;
 			}
-
-			// If we have an ID that works, erase the text
-			if (evt.location_id) {
-				evt.location_text = null;
-			}
-
+		}).then(function addSlug(evt) {
+			evt.generateSlug();
+			// Save the slug and/or any removed location textual description
 			return evt.save();
-		}).then(function notify(evt) {
+		}).then(function(evt) {
 			if (evt.state === 'approved') {
 				req.flash('success', 'Event added and approved.');
 				return res.redirect(evt.absoluteURL);
@@ -134,31 +177,9 @@ router.post('/add', function(req, res) {
 
 			req.flash('success', "<b>Event submitted.</b> Please wait until our moderators check it.");
 
-			notify.eventSubmitted(evt);
-
 			return res.redirect('/');
-		}).catch(function(errors) {
-			// This is a nasty hack, because we don't seem to be able to
-			// customise the error message for this particular case.
-			//
-			// For some reason other fields when set to { allowNull: false } in
-			// the model don't emit an error in the form '<field> cannot be
-			// null'; instead the error message when they are missing is caused
-			// by the validation options set in the model.  For some reason
-			// startdt behaves differently, perhaps because it's a date type
-			// field.  Investigate more and report upstream.    XXX
-			for (let error of errors.errors) {
-				if (error.message === 'startdt cannot be null')
-					error.message = 'Events must have a start date';
-			}
-
-			res.render('event_add', {
-				event_: input,
-				errors: errors.errors,
-				user: req.user
-			});
 		});
-	}
+	}).catch(next);
 });
 
 /* GET event by ID */
