@@ -1,3 +1,5 @@
+'use strict';
+
 var express = require('express');
 var router = express.Router();
 var models = require('../../models');
@@ -23,13 +25,15 @@ router.get('/', ensure.editorOrAdmin, function(req, res) {
 });
 
 function getFeedMeta(url) {
+	let data = {};
+
 	return new Promise(function(resolve, reject) {
 		request(url)
 			.on('error', function(err) {
 				reject(err);
 			})
 			.on('end', function() {
-				reject(new Error("No feed found."));
+				reject(new Error('No feed found.'));
 			})
 			.pipe(discover(url))
 			.on('data', function(feed) {
@@ -37,7 +41,8 @@ function getFeedMeta(url) {
 			});
 	})
 	.then(function(feedURL) {
-		var feedparser = new FeedParser();
+		data.feedURL = feedURL;
+		let feedparser = new FeedParser();
 
 		request(feedURL)
 			.on('response', function (res) {
@@ -49,7 +54,9 @@ function getFeedMeta(url) {
 		return new Promise(function(resolve, reject) {
 			feedparser
 				.on('meta', function(meta) {
-					resolve(meta);
+					data.siteURL = meta.link;
+					data.title = meta.title;
+					resolve(data);
 				})
 				.on('end', function() {
 					reject(new Error('No metadata found.'));
@@ -61,25 +68,18 @@ function getFeedMeta(url) {
 router.post('/add', ensure.editorOrAdmin, function(req, res) {
 	var url = req.body.url;
 
-	getFeedMeta(url)
-		.then(function(meta) {
-			models.Feed.build({
-					feedURL: meta.xmlurl,
-					siteURL: meta.link,
-					title: meta.title,
-				})
-				.save()
-				.then(function () {
-					req.flash("success", "Feed '%s' created", meta.title);
-					res.redirect("/admin/feeds");
-				});
-		})
-		.catch(function(err) {
-			debug(err);
-			req.flash("warning", err.message);
-			res.redirect("/admin/feeds");
-		});
-
+	getFeedMeta(url).then(function(data) {
+		let feed = models.Feed.build(data);
+		return feed.save();
+	}).then(function(feed) {
+		debug(feed);
+		req.flash('success', 'Feed created.');
+		res.redirect('/admin/feeds/edit?id=' + feed.id);
+	}).catch(function(err) {
+		debug(err);
+		req.flash("warning", err.message);
+		res.redirect("/admin/feeds");
+	});
 });
 
 router.get('/edit', ensure.editorOrAdmin, function(req, res) {
