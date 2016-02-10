@@ -9,7 +9,7 @@
   <li><a href="/">Echo</a></li>
   <li><a href="/admin">Admin</a></li>
   <li><a href="/admin/user">User</a></li>
-	<li>{{ user_obj.id }}</a></li>
+	<li>{{ userObj.id }}</a></li>
 	<li>Edit</li>
 </ol>
 {% endblock %}
@@ -21,15 +21,15 @@
 <p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
 {% endif %}
 
-<form method="POST" action="{% block form_action %}/admin/user/{{ user_obj.id }}/edit{% endblock %}">
-	{{ form.inputText({ label: "E-mail address:", field: "email", fill: user_obj.email }) }}
+<form method="POST" action="{% block form_action %}/admin/user/{{ userObj.id }}/edit{% endblock %}">
+	{{ form.inputText({ label: "E-mail address:", field: "email", fill: userObj.email }) }}
 	{{ form.inputPassword({ label: "Password:", field: "password" }) }}
 
 	<div class="form-group">
 		<div class="checkbox">
 			<label for="notify">
 				<input type="checkbox" name="notify" id="notify"
-					{% if user_obj.notify %}checked="checked"{% endif %}> Notify?
+					{% if userObj.notify %}checked="checked"{% endif %}> Notify?
 			</label>
 		</div>
 	</div>
@@ -39,13 +39,13 @@
 		<div class="radio">
 			<label for="rights_editor">
 				<input type="radio" name="rights" id="rights_editor" value="editor"
-					{% if user_obj.rights == 'editor' %}checked="checked"{% endif %}> Editor
+					{% if userObj.rights == 'editor' %}checked="checked"{% endif %}> Editor
 			</label>
 		</div>
 		<div class="radio">
 			<label for="rights_admin">
 				<input type="radio" name="rights" id="rights_admin" value="admin"
-					{% if user_obj.rights == 'admin' %}checked="checked"{% endif %}> Admin
+					{% if userObj.rights == 'admin' %}checked="checked"{% endif %}> Admin
 			</label>
 		</div>
 		{{ form.checkErrors("rights") }}

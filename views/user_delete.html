@@ -7,13 +7,13 @@
 <ol class="breadcrumb">
   <li><a href="/">Echo</a></li>
   <li><a href="/admin">User</a></li>
-	<li>{{ user_obj.id }}</li>
+	<li>{{ userObj.id }}</li>
 	<li>Delete?</li>
 </ol>
 {% endblock %}
 
 {% block leftcontent %}
-<form method="POST" action="/admin/user/{{ user_obj.id }}/delete">
+<form method="POST" action="/admin/user/{{ userObj.id }}/delete">
 	<div class="form-group">
 		<label>Are you sure?</label>
 		<button class="btn btn-success" type="submit">Yes</button>

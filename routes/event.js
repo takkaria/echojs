@@ -20,9 +20,8 @@ router.param('id', function(req, res, next, id) {
 			req.event_ = event_;
 			next();
 		} else {
-			let err = new Error();
-			err.status = 404;
-			next(err);
+			res.status(404);
+			res.render('404', { thing: 'event' });
 		}
 	});
 });
@@ -39,9 +38,8 @@ router.param('slug', function(req, res, next, slug) {
 			req.event_ = event_;
 			next();
 		} else {
-			let err = new Error();
-			err.status = 404;
-			next(err);
+			res.status(404);
+			res.render('404', { thing: 'event' });
 		}
 	});
 });
