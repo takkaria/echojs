@@ -4,3 +4,27 @@
 	text-transform: uppercase;
 	letter-spacing: 1px;
 }
+
+form {
+	// We are overriding Bootstrap here, to remove the margin on top
+	.help-block {
+		margin-top: 0;
+	}
+
+	.text-danger {
+		margin-top: 5px;
+	}
+
+	.text-danger {
+		margin-bottom: 0;
+	}
+
+	#location_id + .text-danger {
+		margin-top: -10px;
+		margin-bottom: 15px;
+	}
+
+	.help-block {
+		margin-bottom: $line-height-computed / 2;
+	}
+}
