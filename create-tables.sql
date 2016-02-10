@@ -31,12 +31,12 @@ CREATE TABLE events (
 
 CREATE TABLE users (
 	id INTEGER PRIMARY KEY NOT NULL,
-	email TEXT UNIQUE,
+	email TEXT,
+	twitter TEXT,
+	notify TEXT,
 	salt TEXT,
 	digest TEXT,
-
 	pwreset TEXT,
-	notify BOOLEAN,
 	rights TEXT		/* "admin", "editor" */
 );
 

@@ -25,14 +25,11 @@
 	{{ form.inputText({ label: "E-mail address:", field: "email", fill: userObj.email }) }}
 	{{ form.inputPassword({ label: "Password:", field: "password" }) }}
 
-	<div class="form-group">
-		<div class="checkbox">
-			<label for="notify">
-				<input type="checkbox" name="notify" id="notify"
-					{% if userObj.notify %}checked="checked"{% endif %}> Notify?
-			</label>
-		</div>
-	</div>
+	{{ form.inputText({
+		label: "Notify options:",
+		field: "notify",
+		fill: userObj.notify,
+		helpText: 'Comma-separated, can be "email"' }) }}
 
 	<div class="form-group">
 		<label>Rights:</label>

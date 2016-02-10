@@ -71,6 +71,7 @@ markedSwig.useTag(swig);
 
 // Notifications
 require('./lib/notify-email')
+require('./lib/notify-twitter')
 
 // HTTP protocol setup
 app.use(compression());

@@ -2,11 +2,11 @@
 
 var express = require('express');
 var router = express.Router();
-var models = require('../../models');
 var debug = require('debug')('echo:admin');
+
+var models = require('../../models');
 var notify = require('../../lib/notify');
 var ensure = require('../../lib/ensure');
-var Promise = require('promise');
 
 router.param('user_id', function(req, res, next, user_id) {
 	models.User.find({
@@ -87,28 +87,24 @@ router.get('/:user_id/edit', function(req, res) {
 });
 
 router.post('/:user_id/edit', function(req, res) {
-	var b = req.body,
-		u = req.userObj;
+	let u = req.userObj;
+	let promise;
 
 	u.set({
-		email: b.email,
-		notify: (b.notify === 'on') ? 1 : 0,
-		rights: b.rights
+		email: req.body.email,
+		notify: req.body.notify,
+		rights: req.body.rights
 	});
 
-	debug(u.changed());
-	debug(b, u);
-
-	var promise;
-
-	if ((b.password !== '') && (typeof(b.password) !== 'undefined')) {
-		promise = u.setPassword(b.password);
-		debug('password changed');
-	} else {
-		promise = new Promise();
+	if ((req.body.password !== '') && (typeof req.body.password !== 'undefined')) {
+		logger.info('Password changed for %s', u.email);
+		promise = u.setPassword(req.body.password);
 	}
 
-	promise.then(function() {
+	if (!promise)
+		promise = Promise.resolve(u);
+
+	promise.then(function(u) {
 		return u.save();
 	}).then(function(u_) {
 		req.flash('success', 'User <a href="/admin/user/%s/edit">%s</a> saved',
