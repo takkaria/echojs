@@ -9,6 +9,9 @@ A NodeJS-based news &amp; events aggregator.
 
 To get started:
 
+	$ git clone https://github.com/takkaria/echojs.git
+	$ cd echojs
+
 	$ bin/initdb         # Create the database
 	$ npm run deploy     # Fetch dependencies, build CSS
 	$ npm start          # Run the server
