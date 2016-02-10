@@ -11,7 +11,7 @@ echo "=========================================="
 echo "Integration Tests"
 echo "=========================================="
 
-bin/www 2&>/tmp/echojs.log &
+DEBUG=echo:* bin/www 2&>/tmp/echojs.log &
 sleep 2
 
 if [ $# -gt 0 ]; then
