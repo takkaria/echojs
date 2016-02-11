@@ -45,6 +45,18 @@
 		.close { padding: 15px 0 5px 0; }
 	}
 
+	.fc-event {
+		padding: 3px 4px;
+		border-radius: 0;
+		cursor: pointer;
+	}
+
+	.fc-day-grid-event > .fc-content {
+		white-space: normal;
+	}
+
+	th { background-color: #eee; }
+
 	// Screen centring solution
 	// thanks http://stackoverflow.com/questions/18422223/bootstrap-3-modal-vertical-position-center
 	@media only screen and (min-width: 768px) {
