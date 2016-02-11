@@ -215,6 +215,7 @@ module.exports = function(db) {
 					// Group events into either indexByDate or the ongoing pile
 					let ongoing = [];
 					let one_day_past = self._getCurrentTime().subtract(1, 'days');
+					let tomorrow = self._getCurrentTime().add(1, 'days').startOf('day').subtract(1, 'second');
 
 					for (let i = 0, len = events.length; i < len; i++) {
 						let evt = events[i];
@@ -224,15 +225,13 @@ module.exports = function(db) {
 								evt.startdt.isAfter(one_day_past)) {
 							indexByDate[evt.startdt.format('YYYY-MM-DD')].events.push(evt);
 
-						// Add long multi-day events to the 'ongoing' pile
-						} else if (evt.length('days') > 7) {
-							ongoing.push(evt);
+						// Long multi-day events in the future occur once
+						} else if (evt.startdt.isAfter(tomorrow)) {
+							indexByDate[evt.startdt.format('YYYY-MM-DD')].events.push(evt);
 
-						// Short multi-day events get repeated
+						// Currently happening multi-day events go into 'ongoing'
 						} else {
-							for (let d = evt.startdt; d.isBefore(evt.enddt); d.add(1, 'days')) {
-								indexByDate[d.format('YYYY-MM-DD')].events.push(evt);
-							}
+							ongoing.push(evt);
 						}
 					}
 
@@ -241,12 +240,6 @@ module.exports = function(db) {
 						let chunk = indexByDate[key];
 
 						if (chunk.events.length > 0) {
-							// Add a 'short date' to the display
-							// XXX This should be in the display layer!
-							if (chunk.date.diff(self._getCurrentTime(), 'days') < 7) {
-								chunk.shortDate = chunk.date.calendar();
-							}
-
 							ordered.push(chunk);
 						}
 					}
