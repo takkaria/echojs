@@ -2,6 +2,8 @@
 
 // index.html
 .index {
+//	background-color: #E6E6E6;
+
 	.see-more {
 		font-size: 110%;
 		text-align: right;
@@ -17,15 +19,11 @@
 	.no-events {
 		@extend .text-center;
 		padding: 2em;
-		border: 3px dotted $brand-primary-l15;
+		border: 3px dotted lighten($brand-primary, 15%);
 	}
 }
 
 // events.html
-.event_calendar #calendar {
-	margin-top: 20px;
-}
-
 .xhr-loading {
 	font-size: 30px;
 	padding: 10px;
@@ -127,8 +125,13 @@
 
 // event_page.html
 .event {
-	.button-list .btn {
-		margin-right: 0.5em;
+	.breadcrumb { margin-bottom: $line-height-computed / 2; }
+
+	.button-list {
+		margin-bottom: $line-height-computed/2;
+		.btn {
+			margin-right: 0.5em;
+		}
 	}
 
 	.header-title {
@@ -152,7 +155,25 @@
 }
 
 // login.html
-#loginbox { margin-top: 2em; margin-bottom: 6em; }
+.login {
+	background-color: #eee;
+	footer { display: none; }
+
+	#loginbox {
+		margin: 0 1em;
+		@include make-sm-column(6);
+
+		// Small devices (tablets, 768px and up)
+		@media (min-width: $screen-sm-min) {
+			@include make-sm-column-offset(3);
+			margin-top: 2em;
+		}
+
+		padding: 1.5em 2em;
+		box-shadow: 0 1px 1px 0 gray;
+		background-color: #fff;
+	}
+}
 
 // locations.html
 .locations {

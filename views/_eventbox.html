@@ -18,14 +18,19 @@
 		">
 
 		<div class="date">
-			{{ evt.startdt.calendar() }}
-			{% if !evt.allday %}{{ evt.startdt.format("HH:mm") }}{% endif %}
+			{% if !evt.isMultiDay() %}
+				{% if evt.allday %}
+					All day
+				{% else %}
+					{{ evt.startdt.format("HH:mm") }}
+				{% endif %}
+			{% endif %}
 
 			{% if evt.enddt %}
 				{% if !evt.isMultiDay() && !evt.allday %}
 					&ndash; {{ evt.enddt.format("HH:mm") }}
 				{% else %}
-					&ndash;<br>
+					until<br>
 
 					{% if evt.isMultiDay() %}
 						{{ evt.enddt.calendar() }}
@@ -35,30 +40,30 @@
 						{{ evt.enddt.format("HH:mm") }}
 					{% endif %}
 				{% endif %}
-		  {% endif %}
-
+			{% endif %}
 		</div>
 
 		<div class="main">
 			<h4>{{ evt.title }}</h4>
 
-			{% if evt.host %}<p class="host"><i class="fa fa-fw fa-group"></i> Hosted by {{ evt.host }}</p>{% endif %}
-			<p class="location"><i class="fa fa-fw fa-map-marker"></i> {{ evt.shortLocation }}</p>
-
 			<div class="blurb">
 				{{ evt.blurbAsHTML({ link: !opts.linkBox }) }}
 			</div>
 
+			{% if evt.host %}<p class="host">Hosted by <b>{{ evt.host }}</b></p>{% endif %}
+			<p class="location">{{ evt.shortLocation }}</p>
+
 			{% if !opts.linkBox %}
-			<small>
 				{% if event_.url %}
+					<p class="outerurl">
 					{% if (event_.url | hostname) == "facebook.com" %}
 						<i class="fa fa-fw fa-facebook"></i> <a href="{{ event_.url.href }}" target="_blank">Facebook event</a>
 					{% else %}
-						<i class="fa fa-fw fa-external-link"></i> <a href="{{ event_.url.href }}" target="_blank">More info at {{ event_.url | hostname }}</a>p
-					{% endif %}<br>
+						<i class="fa fa-fw fa-external-link"></i> <a href="{{ event_.url.href }}" target="_blank">More info at {{ event_.url | hostname }}</a>
+					{% endif %}
+					</p>
 				{% endif %}
-				<a href="{{ evt.absoluteURL }}"><i class="fa fa-fw fa-chain"></i> Link to this event</a></a>
+				<p class="perma"><a href="{{ evt.absoluteURL }}"><i class="fa fa-fw fa-chain"></i> Link to this event</a></p>
 			</small>
 			{% endif %}
 		</div>

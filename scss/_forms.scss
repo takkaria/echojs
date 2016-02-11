@@ -5,6 +5,13 @@
 	letter-spacing: 1px;
 }
 
+.btn-outline {
+	background-color: white;
+	color: black;
+	border: 2px solid $brand-primary;
+	font-weight: normal;
+}
+
 form {
 	// We are overriding Bootstrap here, to remove the margin on top
 	.help-block {

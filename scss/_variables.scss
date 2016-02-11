@@ -3,13 +3,23 @@
 
 // Colours
 $brand-primary:     #8fbc8f;
-$brand-primary-l15: lighten($brand-primary, 15%);
-$brand-primary-d15: darken($brand-primary, 15%);
 $brand-accent:      #e6781c;
-$link-color:        #2869B6;
+
+$gray-dark:         #39393A;
+$body-bg:			#fff;
+
+$brand-success:         #5cb85c !default;
+$brand-info:            #5bc0de !default;
+$brand-warning:         #f0ad4e !default;
+$brand-danger:          #d9534f !default;
+
+$link-color:            darken(#48ACF0, 15%);
+$link-hover-color:      darken($link-color, 15%);
+$link-hover-decoration: none;
+
 
 // Typography
-$line-height-base:        1.45;
+$line-height-base:        1.4;
 
 $font-family-sans-serif:  Helvetica, Arial, sans-serif;
 $font-family-serif:       Raleway, $font-family-sans-serif;
@@ -32,7 +42,7 @@ $border-radius-large:     0px !default;
 $border-radius-small:     2px !default;
 
 // Buttons
-$btn-primary-bg:                $brand-primary-d15;
+$btn-primary-bg:                darken($brand-primary, 15%);
 
 // Breadcrumbs
 $breadcrumb-padding-horizontal: 0px;
@@ -73,7 +83,7 @@ $alert-danger-border:         transparent;
 
 // Jumbotron
 $jumbotron-padding:             5px;
-$jumbotron-bg:                  $brand-primary-l15;
+$jumbotron-bg:                  lighten($brand-primary, 15%);
 $jumbotron-font-size:           $font-size-base;
 
 // Breadcrumbs

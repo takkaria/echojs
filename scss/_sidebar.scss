@@ -1,18 +1,13 @@
 $sidebar-bg-color: transparent;
-$sidebar-box-color: #eee;
-$sidebar-box-hover-color: #ccc;
+$sidebar-box-bg-color: #eee;
+$sidebar-box-hover-color: #ddd;
 $sidebar-box-radius: 4px;
-
-// $sidebar-bg-color: #ddd;
-// $sidebar-box-color: white;
-// $sidebar-box-hover-color: #ccc;
-// $sidebar-box-radius: 6px;
 
 %sidebar-box {
 	padding: 10px;
 	border-radius: $sidebar-box-radius;
 	margin-bottom: 0.5em;
-	background-color: $sidebar-box-color;
+	background-color: $sidebar-box-bg-color;
 }
 
 .sidebar {
@@ -25,7 +20,6 @@ $sidebar-box-radius: 4px;
 		ul { @include list-unstyled; }
 		li { margin-bottom: 6px; }
 		a { padding: 4px 5px 4px 0; }
-		a:hover { background-color: $sidebar-box-hover-color; }
 		a:hover { text-decoration: none; }
 	}
 
@@ -33,8 +27,13 @@ $sidebar-box-radius: 4px;
 		@include list-unstyled;
 		li { @extend %sidebar-box; }
 		li:hover { background-color: $sidebar-box-hover-color; }
-		a { color: $text-color; }
-		.title { color: $link-color; }
-		a:hover { text-decoration: none; }
+		a {
+			color: $text-color;
+			.title { color: $link-color; }
+		}
+		a:hover {
+			text-decoration: none;
+			.title { color: $link-hover-color; }
+		}
 	}
 }

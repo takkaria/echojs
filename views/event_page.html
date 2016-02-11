@@ -25,35 +25,6 @@
   <li><a href="/events/{{ event_.startdt.format("YYYY/MMM") | lower }}">{{ event_.startdt.format("MMMM YYYY") }}</a></li>
 </ol>
 
-{% if user.rights === 'admin' or user.rights === 'editor' %}
-  <div class="button-list">
-
-    <span class="btn btn-xs btn-outline">status&nbsp;{{ event_.state }}</span>
-
-    <a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-primary">edit</a>
-
-    {% if event_.state == "submitted" %}
-      <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
-        approve
-      </a>
-      <a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-danger">
-        reject
-      </a>
-    {% elif event_.state== "approved" %}
-      <a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-danger">
-       reject
-      </a>
-    {% endif %}
-
-    {% if event_.state == "hidden" %}
-      <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
-        approve
-      </a>
-    {% endif %}
-
-  </div>
-{% endif %}
-
 <h2 class="header-title">{{ event_.title }}</h2>
 
 <h4 class="header-date">
@@ -81,6 +52,36 @@
   {% endif %}
 </h4>
 
+
+{% if user.rights === 'admin' or user.rights === 'editor' %}
+  <div class="button-list">
+
+    <span class="btn btn-xs btn-outline">{{ event_.state }}</span>
+
+    <a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-primary">edit</a>
+
+    {% if event_.state == "submitted" %}
+      <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
+        approve
+      </a>
+      <a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-danger">
+        reject
+      </a>
+    {% elif event_.state== "approved" %}
+      <a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-danger">
+       reject
+      </a>
+    {% endif %}
+
+    {% if event_.state == "hidden" %}
+      <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
+        approve
+      </a>
+    {% endif %}
+
+  </div>
+{% endif %}
+
 {% endblock %}
 
 {% block leftcontent %}
@@ -105,7 +106,10 @@
 
 <h3 class="header-box">Location</h3>
 {% if event_.location %}
-  <p><i class="fa fa-fw fa-map-marker"></i> <a href="/location/{{ event_.location.id }}">{{ event_.shortLocation }}</a></p>
+  <p>
+    <b>{{ event_.location.name }}</b><br>
+    {{ event_.location.address | replace('\n', ', ') }}
+  </p>
   <div id="map-canvas"></div>
 {% else %}
   <p><i class="fa fa-fw fa-map-marker"></i> {{ event_.shortLocation }}</p>
@@ -152,18 +156,28 @@
     }
     var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-    var infowindow = new google.maps.InfoWindow({
-        content: "<div style='width: 200px;'><b>{{ event_.location.name }}</b><br>{{ event_.location.addressAsHTML() }}</div>",
-        maxWidth: 500
-    });
-
     var marker = new google.maps.Marker({
         position: myLatlng,
         map: map,
         title: 'Hello World!'
     });
 
+    var infowindow = new google.maps.InfoWindow({
+        content: "<div style='width: 200px;'><b>{{ event_.location.name }}</b><br>{{ event_.location.addressAsHTML() }}</div>",
+        maxWidth: 500
+    });
+
     infowindow.open(map, marker);
+
+    var gotoMapButton = document.createElement("div");
+    gotoMapButton.setAttribute("style", "margin: 5px; border: 1px solid; padding: 5px 12px; font: 12px Roboto, Arial, sans-serif; color: #000; background-color: #fff; cursor: pointer;");
+    gotoMapButton.innerHTML = "Open in Google Maps";
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(gotoMapButton);
+
+    google.maps.event.addDomListener(gotoMapButton, "click", function() {
+        var url = 'https://www.google.com/maps?q=' + encodeURIComponent(marker.getPosition().toUrlValue());
+        window.open(url);
+    });
   }
 
   google.maps.event.addDomListener(window, 'load', initialize);
