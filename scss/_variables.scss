@@ -8,15 +8,14 @@ $brand-accent:      #e6781c;
 $gray-dark:         #39393A;
 $body-bg:			#fff;
 
-$brand-success:         #5cb85c !default;
-$brand-info:            #5bc0de !default;
-$brand-warning:         #f0ad4e !default;
-$brand-danger:          #d9534f !default;
-
 $link-color:            darken(#48ACF0, 15%);
 $link-hover-color:      darken($link-color, 15%);
 $link-hover-decoration: none;
 
+$brand-success:         darken($brand-primary, 15%);
+$brand-info:            $link-color;
+$brand-warning:         $brand-accent;
+$brand-danger:          #de3217;
 
 // Typography
 $line-height-base:        1.4;
@@ -65,19 +64,19 @@ $navbar-default-link-disabled-color:  #ccc !default;
 $navbar-default-link-disabled-bg:     transparent !default;
 
 // Alerts
-$alert-success-bg:            #3c763d;
+$alert-success-bg:            $brand-success;
 $alert-success-text:          white;
 $alert-success-border:        transparent;
 
-$alert-info-bg:               #31708f;
+$alert-info-bg:               $brand-info;
 $alert-info-text:             white;
 $alert-info-border:           transparent;
 
-$alert-warning-bg:            #c3a91f;
+$alert-warning-bg:            $brand-warning;
 $alert-warning-text:          white;
 $alert-warning-border:        transparent;
 
-$alert-danger-bg:             #a94442;
+$alert-danger-bg:             $brand-danger;
 $alert-danger-text:           white;
 $alert-danger-border:         transparent;
 

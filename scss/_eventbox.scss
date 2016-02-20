@@ -15,12 +15,11 @@
 }
 
 .eventlist-date {
-	margin: 2rem 0 0 0;
+	margin: 2rem 0 1rem 0;
 	padding: 6px 16px;
 	background-color: $brand-accent;
 	color: #fff;
 	font-weight: normal;
-
 	font-size: 130%;
 }
 
@@ -36,6 +35,7 @@
 	.date { @extend .col-md-2; }
 	.main { @extend .col-md-10; }
 
+	border-top: 1px solid #E0E0E0;
 	box-shadow: 0 1px 1px 0 lighten(#000, 50%);
 
 	// Presentation
