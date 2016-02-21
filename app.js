@@ -59,7 +59,7 @@ app.engine('html', swig.renderFile);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
-if (process.env.env === 'development')
+if (process.env.NODE_ENV === 'development')
 	swig.setDefaults({ cache: false });
 
 var applyFilters = require('./lib/swig-filters');
@@ -120,7 +120,7 @@ app.use(function(req, res, next) {
 
 // Error handler
 app.use(function(err, req, res, next) {
-	let developmentEnv = (process.env.env === 'development');
+	let developmentEnv = (process.env.NODE_ENV === 'development');
 
 	if (!res.headersSent) {
 		res.status(500);
