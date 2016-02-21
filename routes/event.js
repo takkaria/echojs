@@ -171,6 +171,8 @@ router.post('/add', function(req, res, next) {
 			// Save the slug and/or any removed location textual description
 			return evt.save();
 		}).then(function(evt) {
+			notify.eventSubmitted(evt);
+
 			if (evt.state === 'approved') {
 				req.flash('success', 'Event added and approved.');
 				return res.redirect(evt.absoluteURL);
