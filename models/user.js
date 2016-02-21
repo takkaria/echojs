@@ -34,7 +34,8 @@ module.exports = function(db) {
 		digest: { type: sequelize.TEXT },
 
 		pwreset: { type: sequelize.TEXT },
-		notify: { type: sequelize.BOOLEAN },
+		twitter: { type: sequelize.TEXT },
+		notify: { type: sequelize.TEXT },
 		rights: {
 			type: sequelize.ENUM,
 			values: [ 'admin', 'editor' ],
