@@ -1,5 +1,6 @@
 node_modules/
 bower_components/
+public/stylesheets/*.css
 sessions/
 .sass-cache/
 coverage/
