@@ -41,6 +41,12 @@
 
 .event_calendar {
 	.modal-dialog {
+		background: hsla(0,0%,91%,1);
+		padding: 0px 10px;
+		border-radius: 4px;
+
+		.eventlist-date { margin-top: 1rem; }
+
 		max-width: 750px;
 		a { background-color: #fff; }
 
@@ -48,7 +54,10 @@
 			opacity: 0.8;
 			text-shadow: none;
 			color: black;
-			padding: 24px 10px;
+			margin-top: 1rem;
+
+			height: ceil(($font-size-base * 1.4)) + 12px;
+			padding: 0 10px;
 
 			@include transition(color 0.3s ease);
 

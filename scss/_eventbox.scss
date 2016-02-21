@@ -20,7 +20,7 @@
 	background-color: $brand-accent;
 	color: #fff;
 	font-weight: normal;
-	font-size: 130%;
+	font-size: ceil(($font-size-base * 1.4));	// ~20px
 }
 
 .ongoing .eventbox {
