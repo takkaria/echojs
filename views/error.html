@@ -21,9 +21,10 @@
 <div class="container">
 	<div class="row">
 		<div class="fullwidth content">
-			<h1>{{ error.status }} Server Error: {{ message }}</h1>
+			<h1>500 Server Error</h1>
 
 			{% if error %}
+				<p>Message: {{ error.message }}</p>
 				<pre>{{ error.stack }}</pre>
 			{% endif %}
 

@@ -59,7 +59,7 @@ app.engine('html', swig.renderFile);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 
-if (app.get('env') === 'development')
+if (process.env.env === 'development')
 	swig.setDefaults({ cache: false });
 
 var applyFilters = require('./lib/swig-filters');
@@ -120,28 +120,24 @@ app.use(function(req, res, next) {
 
 // Error handler
 app.use(function(err, req, res, next) {
-	let status = err.status || 500;
-	res.status(status);
+	let developmentEnv = (process.env.env === 'development');
 
-	if (status == 404) {
-		logger.log('warn', '404 %s', req.url);
-		return res.render('404');
+	if (!res.headersSent) {
+		res.status(500);
 	}
 
-	logger.log('error', '%s %s', status, req.url, err);
-
-	if (res.headersSent) {
-		logger.log('error', '%s %s Headers sent but error found -- oops', status, req.url);
-		return next(err);
-	}
-
+	logger.log('error', '%s %s', req.url, err.message, err);
 
 	// Only show stackstrace in dev environment
-	res.render('error', {
-		message: err.message,
-		error: (app.get('env') === 'development') ? err : {}
-	});
+	if (developmentEnv) {
+		res.render('error', {
+			error: err
+		});
+	} else {
+		res.render('error')
+	}
 });
+
 
 passport.use(new LocalStrategy({
 		usernameField: 'email',
