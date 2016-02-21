@@ -9,13 +9,28 @@
 </ol>
 {% endblock %}
 
-{% block leftcontent %}
+{% block content %}
+<style>
+	.content { text-align: center; font-size: 150%; font-family: Raleway; }
+	.content h1 { font-size: 200%; font-weight: normal; }
+	.content p, .content h1 { margin-bottom: 5%; margin-top: 5%; }
+	footer { display: none; }
+	pre { text-align: left; }
+</style>
 
-<h1>{{ message }}</h1>
+<div class="container">
+	<div class="row">
+		<div class="fullwidth content">
+			<h1>{{ error.status }} Server Error: {{ message }}</h1>
 
-{% if error %}
-	<h2>{{ error.status }}</h2>
-	<pre>{{ error.stack }}</pre>
-{% endif %}
+			{% if error %}
+				<pre>{{ error.stack }}</pre>
+			{% endif %}
 
+			<p><b>Sorry, we've had a problem loading this page.  Please try again or report it to <a href="mailto:support@echomanchester.net">support@echomanchester.net</a>.</b></p>
+			<p>Maybe go back to our <a href="/">home page</a> or view the <a href="/events/">event calendar</a>?</p>
+		</div>
+	</div>
+</div>
 {% endblock %}
+

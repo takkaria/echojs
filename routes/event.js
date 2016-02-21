@@ -185,7 +185,6 @@ router.post('/add', function(req, res, next) {
 
 /* GET event by ID */
 router.get('/:id', function(req, res) {
-
 	// Serve XHR requests an event card
 	if (req.xhr) {
 		return res.render('event_xhr', {

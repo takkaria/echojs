@@ -111,6 +111,13 @@ app.use('/icalendar', function(req, res) {
 	res.redirect(301, '/api/ical');
 });
 
+app.use(function(req, res, next) {
+	res.status(404);
+
+	logger.log('warn', '404 %s', req.url);
+	return res.render('404');
+});
+
 // Error handler
 app.use(function(err, req, res, next) {
 	let status = err.status || 500;
