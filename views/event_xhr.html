@@ -1,2 +1,9 @@
 {% import "_eventbox.html" as eventbox %}
-{{ eventbox.eventbox(event_, { close: true, longblurb: true, linkBox: false }) }}
+
+<div>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
+
+	<h3 class="eventlist-date">{{ event_.startdt.format("dddd, Do MMMM YYYY") }}</h3>
+
+	{{ eventbox.eventbox(event_, { close: false, longblurb: true, linkBox: false }) }}
+</div>

@@ -42,7 +42,16 @@
 		max-width: 750px;
 		a { background-color: #fff; }
 
-		.close { padding: 15px 0 5px 0; }
+		.close {
+			opacity: 0.8;
+			text-shadow: none;
+			color: black;
+			padding: 24px 10px;
+
+			@include transition(color 0.3s ease);
+
+			&:hover { color: #fff; }
+		}
 	}
 
 	.fc-event {
@@ -75,22 +84,12 @@
 			vertical-align: middle;
 		}
 		.modal.fade .modal-dialog {
-			-webkit-transform: scale(0.9);
-			-moz-transform: scale(0.9);
-			-ms-transform: scale(0.9);
-			transform: scale(0.9);
+			@include scale(0.9);
+			@include transition(all 0.3s ease);
 			opacity: 0;
-			-webkit-transition: all 0.3s ease;
-			-moz-transition: all 0.3s ease;
-			transition: all 0.3s ease;
 		}
 		.modal.fade.in .modal-dialog {
-			-webkit-transform: scale(1);
-			-moz-transform: scale(1);
-			-ms-transform: scale(1);
-			transform: scale(1);
-			//-webkit-transform: translate3d(0, -300px, 0);
-			//transform: translate3d(0, -300px, 0);
+			@include scale(1);
 			opacity: 1;
 		}
 	}
