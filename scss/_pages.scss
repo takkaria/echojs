@@ -4,9 +4,11 @@
 .index {
 //	background-color: #E6E6E6;
 
-	.see-more {
-		font-size: 110%;
-		text-align: right;
+	.button-list {
+		a {
+			margin-top: $line-height-computed / 4;
+			margin-bottom: $line-height-computed / 4;
+		}
 	}
 
 	.leftcontent {
