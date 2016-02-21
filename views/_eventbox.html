@@ -1,77 +1,70 @@
 {% macro eventbox(evt, opts) %}
-	{# opts = { close (boolean), linkBox (boolean), longblurb (boolean) } #}
+	{# opts = { fullDate = true|false } #}
 
-	{% if opts.close %}
-	<div class="fullwidth">
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div>
-	</div>
-	{% endif %}
-
-	{% if opts.linkBox %}
-		<a href="{{ evt.absoluteURL }}"
-	{% else %}
-		<div
-	{% endif %}
-		class="eventbox
-			{% if !opts.longblurb %}eventbox-shortblurb{% endif %}
-			{% if opts.linkBox %}eventbox-link{% endif %}
-		">
-
+	<div class="eventbox">
 		<div class="date">
-			{% if !evt.isMultiDay() %}
-				{% if evt.allday %}
-					All day
-				{% else %}
-					{{ evt.startdt.format("HH:mm") }}
+			<p>
+				{% if opts.fullDate %}
+					{{ evt.startdt.format("ddd D MMM") }}
 				{% endif %}
-			{% endif %}
 
-			{% if evt.enddt %}
-				{% if !evt.isMultiDay() && !evt.allday %}
-					&ndash; {{ evt.enddt.format("HH:mm") }}
-				{% else %}
-					until<br>
-
-					{% if evt.isMultiDay() %}
-						{{ evt.enddt.calendar() }}
+				{# if !evt.isMultiDay() #}
+					{% if evt.allday %}
+						All day
+					{% else %}
+						{{ evt.startdt.format("HH:mm") }}
 					{% endif %}
+				{# endif #}
 
-					{% if !evt.allday %}
-						{{ evt.enddt.format("HH:mm") }}
+				{% if evt.enddt %}
+					{% if !evt.isMultiDay() && !evt.allday %}
+						&ndash; {{ evt.enddt.format("HH:mm") }}
+					{% else %}
+						until<br>
+
+						{% if evt.isMultiDay() %}
+							{{ evt.enddt.calendar() }}
+						{% endif %}
+
+						{% if !evt.allday %}
+							{{ evt.enddt.format("HH:mm") }}
+						{% endif %}
 					{% endif %}
 				{% endif %}
+			</p>
+
+			{% if user.rights === 'admin' or user.rights === 'editor' %}
+			<p class="button-list">
+				<a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-default">edit</a>
+				<a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-default">reject</a>
+			</p>
 			{% endif %}
 		</div>
 
 		<div class="main">
-			<h4>{{ evt.title }}</h4>
+			<a href="{{ evt.absoluteURL }}"><h4>{{ evt.title }}</h4></a>
 
 			<div class="blurb">
-				{{ evt.blurbAsHTML({ link: !opts.linkBox }) }}
+				{{ evt.blurbAsHTML() }}
 			</div>
 
-			{% if evt.host %}<p class="host">Hosted by <b>{{ evt.host }}</b></p>{% endif %}
-			<p class="location">{{ evt.shortLocation }}</p>
+			<ul class="meta">
 
-			{% if !opts.linkBox %}
-				{% if event_.url %}
-					<p class="outerurl">
-					{% if (event_.url | hostname) == "facebook.com" %}
-						<i class="fa fa-fw fa-facebook"></i> <a href="{{ event_.url.href }}" target="_blank">Facebook event</a>
-					{% else %}
-						<i class="fa fa-fw fa-external-link"></i> <a href="{{ event_.url.href }}" target="_blank">More info at {{ event_.url | hostname }}</a>
-					{% endif %}
-					</p>
-				{% endif %}
-				<p class="perma"><a href="{{ evt.absoluteURL }}"><i class="fa fa-fw fa-chain"></i> Link to this event</a></p>
-			</small>
+			{% if evt.host %}
+				<li><i class="fa fa-fw fa-group"></i> Hosted by <b>{{ evt.host }}</b></li>
 			{% endif %}
+				<li><i class="fa fa-fw fa-map-marker"></i> {{ evt.shortLocation }}</li>
+			{% if event_.url %}
+				<li>
+				{% if (event_.url | hostname) == "facebook.com" %}
+					<i class="fa fa-fw fa-facebook"></i> <a href="{{ event_.url.href }}" target="_blank">Facebook event</a>
+				{% else %}
+					<i class="fa fa-fw fa-external-link"></i> More info at <a href="{{ event_.url.href }}" target="_blank">{{ event_.url | hostname }}</a>
+				{% endif %}
+				</li>
+			{% endif %}
+				<li><i class="fa fa-fw fa-chain"></i> <a href="{{ evt.absoluteURL }}">Link to this event</a></li>
+			</ul>
 		</div>
-
-	{% if opts.linkBox %}
-		</a>
-	{% else %}
-		</div>
-	{% endif %}
-
+	</div>
 {% endmacro %}

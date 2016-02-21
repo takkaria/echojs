@@ -12,6 +12,12 @@
 	font-weight: normal;
 }
 
+.btn-default {
+	background-color: $gray-lighter;
+	color: #000;
+	border: 1px solid $gray-light;
+}
+
 form {
 	// We are overriding Bootstrap here, to remove the margin on top
 	.help-block {

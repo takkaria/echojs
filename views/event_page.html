@@ -56,7 +56,7 @@
 {% if user.rights === 'admin' or user.rights === 'editor' %}
   <div class="button-list">
 
-    <span class="btn btn-xs btn-outline">{{ event_.state }}</span>
+    <span class="btn btn-xs btn-default">{{ event_.state }}</span>
 
     <a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-primary">edit</a>
 

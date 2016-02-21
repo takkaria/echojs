@@ -35,32 +35,41 @@
 	.date { @extend .col-md-2; }
 	.main { @extend .col-md-10; }
 
-	border-top: 1px solid #E0E0E0;
-	box-shadow: 0 1px 1px 0 lighten(#000, 50%);
-
 	// Presentation
 	padding: 1rem 0;
 	margin: 0 0 1rem 0;
+	border-top: 1px solid #E0E0E0;
+	box-shadow: 0 1px 1px 0 lighten(#000, 50%);
 
-	background-color: white;
-	color: black; // does bootstrap have a thing for this
+	background-color: #fff;
+	color: #000; // does bootstrap have a thing for this
+
+	.button-list a { display: block; margin-bottom: 6px; }
+
+	br { display: none; }
 
 	h4 {
 		font-size: 120%;
 		margin-top: 0;
 	}
 
-	.blurb { margin-bottom: $line-height-computed; }
-	.location, .host, .outerurl, .perma {
-		@extend .singleline;
+	.meta {
 		font-size: 14px;
 		color: $gray;
+		padding-left: 0;
+		margin-left: 0;
+	}
+
+	li {
+		@extend .singleline;
 		margin-bottom: 3px;
 	}
 
 	// Medium devices (desktops, 992px and up)
 	@media (min-width: $screen-md-min) {
 		padding: 16px 10px;
+
+		br { display: block; }
 
 		h4 {
 			font-size: 130%;
@@ -84,16 +93,6 @@
 
 	@include transition(background-color ease-in-out .2s,
 						box-shadow ease-in-out .2s);
-}
-
-.eventbox-shortblurb {
-	.blurb {
-		& > * { display: none; }
-		& > *:first-child {
-			display: block;
-			&:after { content: " ... (click for more)"; font-style: italic; };
-		}
-	}
 }
 
 // Small devices (tablets, 768px and up)
