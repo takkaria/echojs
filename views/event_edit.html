@@ -194,6 +194,11 @@
 			dtps.push(dtp);
 		});
 
+		$('#enddt').on('dp.show', function() {
+			// Edit the end date default to be the start date + 1 hour
+			dtps[1].defaultDate(dtps[0].date().clone().add(1, 'hour'));
+		});
+
 		$('#allday').change(function(e) {
 			dtps.forEach(function(el, i, a) {
 				if (typeof el === 'undefined') {
@@ -209,7 +214,7 @@
 		}).trigger('change');
 
 		Countable.live($('#blurb')[0], function(counter) {
-				$('#wordcount').text(counter.words);
+			$('#wordcount').text(counter.words);
 		});
 	});
 </script>
