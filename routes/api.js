@@ -18,12 +18,12 @@ function parseOpts(req) {
 
 	let start = moment(req.query.start, dateFormat);
 	if (!start.isValid()) {
-		start.set(new Date());
+		start = moment();
 	}
 
 	let end = moment(req.query.end, dateFormat);
 	if (!end.isValid()) {
-		end.set(new Date()).add(3, 'months');
+		end = moment().add(3, 'months');
 	}
 
 	return {
