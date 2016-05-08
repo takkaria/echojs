@@ -176,15 +176,9 @@ module.exports = function(db) {
 			// Iterate through all the start & end dates in the events array and
 			// find the latest one.
 			getLatestDate: function getLatestDate(events) {
-				return events.reduce(function(prev, evt) {
-					if (evt.startdt.isAfter(prev))
-						prev = evt.startdt;
-
-					if (evt.enddt && evt.enddt.isAfter(prev))
-						prev = evt.enddt;
-
-					return prev;
-				});
+				return events
+						.map(evt => evt.enddt ? evt.enddt : evt.startdt)
+						.reduce((prev, date) => date.isAfter(prev) ? date : prev);
 			},
 
 			groupByDays: function(options) {
