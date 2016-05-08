@@ -1,9 +1,12 @@
 'use strict';
 
-var chai = require('chai');
-var request = require('request');
+const chai = require('chai');
+const request = require('request');
+const moment = require('moment');
 
-var expect = chai.expect;
+const Event = require('../../models').Event;
+
+const expect = chai.expect;
 chai.use(require('chai-as-promised'));
 
 let baseUrl = 'http://localhost:' + process.env.PORT;
@@ -44,6 +47,24 @@ describe('/api', function() {
 				done();
 			});
 		});
+
+		it('should have event entries', function(done) {
+			let data = {
+				title: 'A testing event',
+				startdt: moment().add(1, 'day').startOf('day'),
+				blurb: 'Testing',
+				state: 'approved'
+			};
+
+			Event.build(data).save().then(function() {
+				request(url, function(error, response, body) {
+					expect(error).to.equal(null);
+					expect(response.statusCode == 200);
+					expect(body).to.contain('A testing event');
+					done();
+				});
+			});
+		})
 	})
 
 	describe('the API generally', function() {
