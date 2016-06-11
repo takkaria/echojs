@@ -67,14 +67,16 @@
 					<li><i class="fa fa-fw fa-envelope"></i> Or sign up to our email newsletter:
 				</ul>
 
-				<form class="form-inline" action="https://docs.google.com/forms/d/114oUUpYGh0vox28-_wuEh7asoXyHa9zr8yb2B_zqJLE/formResponse" method="POST" target="_new">
+				<form class="form-inline" action="https://lists.riseup.net/www" method="post" target="_new">
 					<div class="form-group">
-						<input class="form-control" type="email" name="entry.557563294" placeholder="Enter email address" style="width: 15em;">
+						<input class="form-control" type="email" name="email" placeholder="Enter email address" style="width: 15em;">
 					</div>
-					<button class="btn btn-primary" type="submit">Go</button>
+					<input type="hidden" name="list" value="echomanchester" />
+					<input type="hidden" name="action" value="subrequest" />
+					<input type="hidden" name="via_subrequest" value="1" />
+					<button class="btn btn-primary" name="action_subrequest" type="submit">Go</button>
 				</form>
 			</div>
-
 
 			<h2 class="sidebar-header">News</h2>
 
