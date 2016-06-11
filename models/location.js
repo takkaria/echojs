@@ -1,5 +1,8 @@
-var sequelize = require('sequelize');
-var marked = require('marked');
+'use strict';
+
+const sequelize = require('sequelize');
+const Remarkable = require('remarkable');
+const markdown = new Remarkable();
 
 module.exports = function(db) {
 	return db.define('location', {
@@ -45,7 +48,7 @@ module.exports = function(db) {
 
 			descriptionAsHTML: function() {
 				var d = this.getDataValue('description');
-				return d ? marked(d) : null;
+				return d ? markdown(d) : null;
 			},
 		},
 		getterMethods: {

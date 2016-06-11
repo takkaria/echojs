@@ -65,9 +65,9 @@ if (process.env.NODE_ENV === 'development')
 var applyFilters = require('./lib/swig-filters');
 applyFilters(swig);
 
-var markedSwig = require('swig-marked');
-markedSwig.useFilter(swig);
-markedSwig.useTag(swig);
+var remarkableSwig = require('swig-remarkable');
+remarkableSwig.useFilter(swig);
+remarkableSwig.useTag(swig);
 
 // Notifications
 require('./lib/notify-email')
