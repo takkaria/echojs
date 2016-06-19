@@ -95,127 +95,38 @@
 <script src="{{ statichost }}/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 <script src="{{ statichost }}/bower_components/typeahead.js/dist/typeahead.bundle.min.js"></script>
 <script src="{{ statichost }}/bower_components/Countable/Countable.js"></script>
+<script src="{{ statichost }}/js/inputs.js"></script>
 <script>
 
-	$(function() {
-		moment.locale('en', {
-			week: {
-				dow: 1, // Monday is the first day of the week.
-				doy: 4  // The week that contains Jan 4th is the first week of the year.
-			}
-		});
-
-		var locations = new Bloodhound({
-			datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-			queryTokenizer: Bloodhound.tokenizers.whitespace,
-			limit: 4,
-			prefetch: {
-				url: '/api/json/locations',
-			}
-		});
-
-		// kicks off the loading/processing of the 'prefetch' list
-		locations.initialize();
-
-		$('#location_text').typeahead({
-			hint: true,
-			highlight: true,
-			minLength: 1
-		}, {
-			name: 'locations',
-			displayKey: 'name',
-			// `ttAdapter` wraps the suggestion engine in an adapter that
-			// is compatible with the typeahead jQuery plugin
-			source: locations.ttAdapter(),
-			templates: {
-				'suggestion': function(suggestion) {
-					return '<p>' + suggestion.name + '<br><small>' + suggestion.address + '</small></p>';
-				}
-			}
-		});
-
-		// Set up event handlers to select a location ID & to deselect it
-		function select(evt, suggestion) {
-			$("#location_text").addClass("tt-selected");
-			$("#location_id").val(suggestion.id);
+$(function() {
+	moment.locale('en', {
+		week: {
+			dow: 1, // Monday is the first day of the week.
+			doy: 4  // The week that contains Jan 4th is the first week of the year.
 		}
-
-		function deselect(evt) {
-			$("#location_text").removeClass("tt-selected");
-			$("#location_id").val("");
-		}
-
-		$('#location_text')
-			.on("typeahead:selected", select)
-			.on("typeahead:autocompleted", select)
-			.on("keydown", function(evt) {
-				// Backspace or Delete
-				if (evt.charCode == 0 &&
-					(evt.keyCode == 8 || evt.keyCode == 46)) deselect(evt);
-			})
-			.on("keypress", deselect);
-
-		// Work out if we already have an ID provided and update text field accordingly
-		if ($("#location_id").val() > 0) {
-			$("#location_text").addClass("tt-selected");
-		}
-
-		var dtps = [];
-		var options = {
-			stepping: 5,
-			minDate: moment().startOf('day'),
-			useCurrent: false,
-			sideBySide: true,
-			keepInvalid: true,
-			keyBinds: false,
-			icons: {
-				time:     'fa fa-clock-o',
-				date:     'fa fa-calendar',
-				up:       'fa fa-plus',
-				down:     'fa fa-minus',
-				previous: 'fa fa-chevron-left',
-				next:     'fa fa-chevron-right',
-				today:    'fa fa-crosshairs',
-				clear:    'fa fa-chevron-trash-o',
-				close:    'fa fa-remove'
-			}
-		};
-
-		$('.date').each(function(i, e) {
-			var dtp = $(e).find("input")
-					.datetimepicker(options)
-					.data('DateTimePicker');
-
-			$(e).find("span.input-group-addon").click(function() {
-				dtp.show();
-				return false;
-			});
-
-			dtps.push(dtp);
-		});
-
-		$('#enddt').on('dp.show', function() {
-			// Edit the end date default to be the start date + 1 hour
-			dtps[1].defaultDate(dtps[0].date().clone().add(1, 'hour'));
-		});
-
-		$('#allday').change(function(e) {
-			dtps.forEach(function(el, i, a) {
-				if (typeof el === 'undefined') {
-					return false;
-				}
-
-				if ($(e.target).is(':checked')){
-					el.format('YYYY/MM/DD');
-				} else {
-					el.format('YYYY/MM/DD HH:mm');
-				}
-			});
-		}).trigger('change');
-
-		Countable.live($('#blurb')[0], function(counter) {
-			$('#wordcount').text(counter.words);
-		});
 	});
+
+	locationField('#location_text', '#location_id');
+
+	var startDtp = dateTimeField('#startdt');
+	var endDtp = dateTimeField('#enddt');
+
+	$('#enddt').on('dp.show', function() {
+		// Edit the end date default to be the start date + 1 hour
+		endDtp.defaultDate(startDtp.date().clone().add(1, 'hour'));
+	});
+
+	$('#allday').change(function(e) {
+		var allDay = $(e.target).is(':checked');
+		var format = allDay ? 'YYYY/MM/DD' : 'YYYY/MM/DD HH:mm';
+
+		startDtp.format(format);
+		endDtp.format(format);
+	}).trigger('change');
+
+	Countable.live($('#blurb')[0], function(counter) {
+		$('#wordcount').text(counter.words);
+	});
+});
 </script>
 {% endblock %}
