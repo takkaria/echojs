@@ -1,18 +1,18 @@
 {% import "_eventbox.html" as eventbox %}
 
 {# XXX Make these collapsed at some point so they take up less space #}
-{% for event_ in events.ongoing %}
+{% for evt in events.ongoing %}
 <div class="ongoing">
 	<h3 class="eventlist-date">Ongoing</h3>
 
-	{{ eventbox.eventbox(event_, { linkBox: true }) }}
+	{{ eventbox.ongoing(evt) }}
 </div>
 {% endfor %}
 
 {% for chunk in events.ordered %}
 	<h3 class="eventlist-date">{{ chunk.date.format("dddd, Do MMMM YYYY") }}</h3>
 
-	{% for event_ in chunk.events %}
-		{{ eventbox.eventbox(event_, { linkBox: true }) }}
+	{% for evt in chunk.events %}
+		{{ eventbox.eventbox(evt) }}
 	{% endfor %}
 {% endfor %}

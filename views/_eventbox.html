@@ -68,3 +68,26 @@
 		</div>
 	</div>
 {% endmacro %}
+
+
+
+{% macro ongoing(evt, opts) %}
+	{# opts = { fullDate = true|false } #}
+
+	<div class="eventbox ongoing">
+		<div class="main">
+			<a href="{{ evt.absoluteURL }}"><h4>{{ evt.title }}</h4></a>
+
+			{% if user.rights === 'admin' or user.rights === 'editor' %}
+			<p>
+				<a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-default">edit</a>
+				<a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-default">reject</a>
+			</p>
+			{% endif %}
+		</div>
+
+		<div class="date">
+			<p><i>ends<br>{{ evt.enddt.calendar() }}</i></p>
+		</div>
+	</div>
+{% endmacro %}
