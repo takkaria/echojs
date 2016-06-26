@@ -35,8 +35,8 @@
 
 			{% if user.rights === 'admin' or user.rights === 'editor' %}
 			<p class="button-list">
-				<a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-default">edit</a>
-				<a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-default">reject</a>
+				<a href="/admin/event/{{ evt.id }}/edit" class="btn btn-xs btn-default">edit</a>
+				<a href="/admin/event/{{ evt.id }}/reject" class="btn btn-xs btn-default">reject</a>
 			</p>
 			{% endif %}
 		</div>
@@ -54,12 +54,12 @@
 				<li><i class="fa fa-fw fa-group"></i> Hosted by <b>{{ evt.host }}</b></li>
 			{% endif %}
 				<li><i class="fa fa-fw fa-map-marker"></i> {{ evt.shortLocation }}</li>
-			{% if event_.url %}
+			{% if evt.url %}
 				<li>
-				{% if (event_.url | hostname) == "facebook.com" %}
-					<i class="fa fa-fw fa-facebook"></i> <a href="{{ event_.url }}" target="_blank">Facebook event</a>
+				{% if (evt.url | hostname) == "facebook.com" %}
+					<i class="fa fa-fw fa-facebook"></i> <a href="{{ evt.url }}" target="_blank">Facebook event</a>
 				{% else %}
-					<i class="fa fa-fw fa-external-link"></i> More info at <a href="{{ event_.url }}" target="_blank">{{ event_.url | hostname }}</a>
+					<i class="fa fa-fw fa-external-link"></i> More info at <a href="{{ evt.url }}" target="_blank">{{ evt.url | hostname }}</a>
 				{% endif %}
 				</li>
 			{% endif %}
@@ -68,8 +68,6 @@
 		</div>
 	</div>
 {% endmacro %}
-
-
 
 {% macro ongoing(evt, opts) %}
 	{# opts = { fullDate = true|false } #}
@@ -80,8 +78,8 @@
 
 			{% if user.rights === 'admin' or user.rights === 'editor' %}
 			<p>
-				<a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-default">edit</a>
-				<a href="/admin/event/{{ event_.id }}/reject" class="btn btn-xs btn-default">reject</a>
+				<a href="/admin/event/{{ evt.id }}/edit" class="btn btn-xs btn-default">edit</a>
+				<a href="/admin/event/{{ evt.id }}/reject" class="btn btn-xs btn-default">reject</a>
 			</p>
 			{% endif %}
 		</div>
