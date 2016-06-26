@@ -5,21 +5,6 @@ var router = express.Router();
 var models = require('../models');
 var moment = require('moment');
 
-router.get('/newsletter', function(req, res) {
-	models.Event.groupByDays({
-		where: [
-			{ state: 'approved' },
-			[ "(startdt >= date('now', 'start of day') OR date('now') <= enddt)", [] ]
-		],
-		order: 'startdt ASC'
-	}).then(function(evts) {
-		res.render('events_newsletter', {
-			events: evts,
-			user: req.user
-		});
-	});
-});
-
 router.get('/leaflet', function(req, res) {
 	models.Event.findAll({
 		where: [

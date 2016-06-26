@@ -43,11 +43,11 @@ router.get('/json', function(req, res) {
 
 	models.Event.findAll({
 		where: clauses,
-		attributes: [ 'id', 'title', 'startdt', 'enddt' ],
+		attributes: [ 'id', 'title', 'startdt', 'enddt', 'slug' ],
 		order: 'startdt ASC',
 	}).then(function(events) {
 		let data = events.map(e =>
-			({ id: e.id, title: e.title, start: e.startdt, end: e.enddt })
+			({ id: e.id, title: e.title, start: e.startdt, end: e.enddt, url: e.absoluteURL })
 		);
 
 		res.header('Content-Type', 'application/json');

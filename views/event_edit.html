@@ -108,20 +108,17 @@ $(function() {
 
 	locationField('#location_text', '#location_id');
 
-	var startDtp = dateTimeField('#startdt');
-	var endDtp = dateTimeField('#enddt');
+	var dateRange = new DateTimeRange('#startdt', '#enddt');
 
 	$('#enddt').on('dp.show', function() {
 		// Edit the end date default to be the start date + 1 hour
-		endDtp.defaultDate(startDtp.date().clone().add(1, 'hour'));
+		dateRange.endDtp.defaultDate(
+				dateRange.startDtp.date().clone().add(1, 'hour'));
 	});
 
 	$('#allday').change(function(e) {
 		var allDay = $(e.target).is(':checked');
-		var format = allDay ? 'YYYY/MM/DD' : 'YYYY/MM/DD HH:mm';
-
-		startDtp.format(format);
-		endDtp.format(format);
+		dateRange.format(allDay ? 'YYYY/MM/DD' : 'YYYY/MM/DD HH:mm');
 	}).trigger('change');
 
 	Countable.live($('#blurb')[0], function(counter) {

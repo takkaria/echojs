@@ -1,3 +1,30 @@
+
+if (typeof Object.assign != 'function') {
+  Object.assign = function(target) {
+    'use strict';
+    if (target == null) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+
+    target = Object(target);
+    for (var index = 1; index < arguments.length; index++) {
+      var source = arguments[index];
+      if (source != null) {
+        for (var key in source) {
+          if (Object.prototype.hasOwnProperty.call(source, key)) {
+            target[key] = source[key];
+          }
+        }
+      }
+    }
+    return target;
+  };
+}
+
+
+
+
+
 function locationField(textField, idField) {
 	var locations = new Bloodhound({
 		datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
@@ -75,8 +102,9 @@ var dtpOptions = {
 	}
 };
 
-function dateTimeField(id) {
-	var dtp = $(id).datetimepicker(dtpOptions).data('DateTimePicker');
+function dateTimeField(id, userOptions) {
+	var options = Object.assign({}, dtpOptions, userOptions);
+	var dtp = $(id).datetimepicker(options).data('DateTimePicker');
 
 	$(id).parent().find(".input-group-addon").click(function() {
 		dtp.show();
@@ -84,4 +112,23 @@ function dateTimeField(id) {
 	});
 
 	return dtp;
+}
+
+function DateTimeRange(start, end, options) {
+	this.startId = start;
+	this.endId = end;
+	this.startDtp = dateTimeField(start, options);
+	this.endDtp = dateTimeField(end, options);
+}
+
+DateTimeRange.prototype.format = function(fmt) {
+	this.startDtp.format(fmt);
+	this.endDtp.format(fmt);
+}
+
+DateTimeRange.prototype.onchange = function(cb) {
+	$(this.startId).on('input', cb);
+	$(this.startId).on('dp.change', cb);
+	$(this.endId).on('input', cb);
+	$(this.endId).on('dp.change', cb);
 }

@@ -1,0 +1,137 @@
+{% extends "layout.html" %}
+{% import "_formmacros.html" as form %}
+
+{% block title %}Newsletter{% endblock %}
+{% block pageclass %}admin newsletter{% endblock %}
+
+{% block header %}
+<ol class="breadcrumb">
+  <li><a href="/">Echo</a></li>
+  <li><a href="/admin">Admin</a></li>
+</ol>
+{% endblock %}
+
+{% block leftcontent %}
+<h2>Send newsletter</h2>
+
+<form method="post" action="newsletter/send">
+
+{{ form.inputText({
+	label: "Subject",
+	field: "subject",
+	fill: subject,
+	class: "input-lg" }) }}
+
+<div class="row date-input">
+	<div class="col-md-6">
+		{{ form.inputDateTime({
+			label: "Events from:",
+			fill: startdt,
+			field: "startdt" }) }}
+	</div>
+
+	<div class="col-md-6">
+		{{ form.inputDateTime({
+			label: "and until:",
+			fill: enddt,
+			field: "enddt" }) }}
+	</div>
+</div>
+
+<div>
+<b>Events in this period</b>
+<div class="scrollbox" id="event-data"></div>
+</div>
+
+{{ form.textarea({
+	label: "Message body",
+	field: "body",
+	rows: 8,
+	helpText: "This is a Markdown field" }) }}
+
+<div class="text-right">
+	<button formaction="newsletter/preview"
+			formtarget="_blank"
+			class="btn btn-info btn-lg">
+		<i class="fa fa-search"></i> Preview
+	</button>
+	<button class="btn btn-primary btn-lg">
+		<i class="fa fa-send"></i> Send
+	</button>
+</div>
+
+</form>
+
+</table>
+{% endblock %}
+
+{% block script %}
+<script src="/bower_components/moment/min/moment.min.js"></script>
+<script src="{{ statichost }}/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+<script src="{{ statichost }}/js/inputs.js"></script>
+
+<script>
+function fetchEvents(callback) {
+	var start = $('#startdt').val();
+	var end = $('#enddt').val();
+	var query = 'start=' + start + '&end=' + end;
+
+	$.ajax('/api/json?' + query, {
+		dataType: 'json',
+		error: function(jqXHR, textStatus, errorThrown) {
+			var err = new Error(textStatus);
+			err.XHR = jqXHR;
+			err.errorThrown = errorThrown;
+			callback(err);
+		},
+		success: function(data) {
+			callback(null, data);
+		}
+	});
+}
+
+function eventToHTML(evt) {
+	var time = moment(evt.start).format("YYYY-MM-DD HH:mm");
+	return '<p><a href="' + evt.url + '">' + evt.title + '</a> (' + time + ')</p>'
+}
+
+function showEventData(err, data) {
+	var root = $('#event-data');
+	root.html("");
+
+	if (data.length) {
+		for (var i = 0; i < data.length; i++) {
+			var evt = data[i];
+			root.append(eventToHTML(data[i]));
+		}
+	} else {
+		root.append("<p>No events in this period.</p>")
+	}
+}
+
+$(function() {
+	var dateRange = new DateTimeRange('#startdt', '#enddt');
+	dateRange.format('YYYY-MM-DD');
+	dateRange.onchange(function() {
+		fetchEvents(showEventData);
+	});
+
+	fetchEvents(showEventData);
+});
+</script>
+
+<style>
+.scrollbox {
+	max-height: 170px;
+	overflow-y: scroll;
+	margin-bottom: 1em;
+	background-color: #f3f3f3;
+	padding: 10px;
+	border: 1px solid #ccc;
+}
+
+.scrollbox p:last-child {
+	margin-bottom: 0;
+}
+</style>
+{% endblock %}
