@@ -26,11 +26,14 @@ function parseOpts(req) {
 		end = moment().add(3, 'months');
 	}
 
+	// Add one so we use the less-than operator
+	end.add(1, 'day');
+
 	return {
 		state: 'approved',
-		startdt: {
+		'startdt': {
 			$gte: Sequelize.fn('date', start.format(dateFormat), 'localtime'),
-			$lte: Sequelize.fn('date', end.format(dateFormat), 'localtime'),
+			$lt: Sequelize.fn('date', end.format(dateFormat), 'localtime'),
 		}
 	}
 }
