@@ -19,7 +19,7 @@ module.exports = function(db) {
 				isUnique: function(value, next) {
 					var id = this.getDataValue('id');
 
-					exports.User.find({
+					this.find({
 						where: { email: value },
 						attributes: [ 'id' ]
 					}).then(function(user) {
