@@ -17,9 +17,10 @@ module.exports = function(db) {
 			validate:  {
 				isEmail: true,
 				isUnique: function(value, next) {
+					const User = require('../models').User;
 					var id = this.getDataValue('id');
 
-					this.find({
+					User.find({
 						where: { email: value },
 						attributes: [ 'id' ]
 					}).then(function(user) {
