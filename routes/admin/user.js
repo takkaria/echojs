@@ -58,8 +58,8 @@ router.post('/add', function(req, res) {
 				} ]);
 			}
 
-			debug(err, errors);
-			debug(b.password, userObj.digest, userObj.salt);
+			debug(errors);
+			debug(b.password, userObj.digest);
 
 			if (errors.length > 0) {
 				return res.render('user_add', {
