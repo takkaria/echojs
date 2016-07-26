@@ -1,0 +1,48 @@
+.stat-row {
+	@include clearfix;
+
+	.stat {
+		margin-right: 20px;
+		float: left;
+	}
+}
+
+.stat {
+	width: 120px;
+	padding: 10px 5px;
+	font-family: Raleway;
+	text-align: center;
+}
+
+.stat-default {
+	background-color: $gray-light;
+}
+
+.stat-primary {
+	background-color: $brand-primary;
+}
+
+.stat-link:hover .stat-primary {
+	background-color: darken($brand-primary, 10%);
+}
+
+.stat-warning {
+	background-color: $brand-warning;
+}
+
+.stat-link:hover .stat-warning {
+	background-color: darken($brand-warning, 10%);
+}
+
+.stat-num {
+	display: block;
+	color: #fff;
+	font-size: 200%;
+	line-height: 1.5;
+	font-feature-settings: "lnum";
+}
+
+.stat-below, .stat-above {
+	text-transform: uppercase;
+	color: #eee;
+}

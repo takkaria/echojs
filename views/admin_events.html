@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block title %}Administrative dashboard{% endblock %}
+{% block pageclass %}admin{% endblock %}
+
+{% block header %}
+<ol class="breadcrumb">
+	<li><a href="/">Echo</a></li>
+	<li><a href="/admin">Admin</a></li>
+</ol>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row">
+		<div class="fullwidth">
+
+			{{ checkMessages() }}
+
+			<h2>Events awaiting moderation</h2>
+
+			<table class="table">
+				<tr>
+					<th>id</th>
+					<th>event</th>
+					<th>times</th>
+					<th class="blurb">blurb</th>
+					<th>state</th>
+					<th>actions</th>
+				</tr>
+				{% for event in events_ %}
+				<tr>
+					<td><a href="/admin/event/{{ event.id }}">{{ event.id }}</a></td>
+					<td>
+						<p><b>{{ event.title }}</b>
+						<p>host: {{ event.host }}
+						<p>location: {{ event.shortLocation }}
+						<p>url: {{ event.url }}</td>
+					<td class="date">
+						from {{ event.startdt.format("YYYY-MM-DD ha") }}<br>
+						to {% if event.enddt.isValid() %}
+							{{ event.enddt.format("YYYY-MM-DD ha") }}
+						{% else %}
+							<i>(not set)</i>
+						{% endif %}</td>
+					<td class="blurb">{{ event.blurbAsHTML() }}</td>
+					<td>{{ event.state }}</td>
+					<td>
+						<a href="/admin/event/{{ event.id }}/edit" class="btn btn-xs btn-info">
+							edit
+						</a>
+						<a href="/admin/event/{{ event.id }}/approve?instant=yes&amp;next=/admin" class="btn btn-xs btn-success">
+							approve
+						</a>
+						<a href="/admin/event/{{ event.id }}/reject?next=/admin" class="btn btn-xs btn-warning">
+							reject
+						</a>
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+
+			{% include "_paginate.html" %}
+
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -1,5 +1,14 @@
 {% extends "layout.html" %}
 
+{% macro statBox(opts) %}
+	{% if opts.link %}<a class="stat-link" href="{{ opts.link }}">{% endif %}
+	<div class="stat stat-{% if opts.warning %}warning{% else %}primary{% endif %} }}">
+		<div class="stat-num">{{ opts.num }}</div>
+		<div class="stat-below">{{ opts.below }}</div>
+	</div>
+	{% if opts.link %}</a>{% endif %}
+{% endmacro %}
+
 {% block title %}Administrative dashboard{% endblock %}
 {% block pageclass %}admin{% endblock %}
 
@@ -17,55 +26,45 @@
 
 			{{ checkMessages() }}
 
-			<h2>Administration</h2>
-			<p>
-				Welcome to the admin area. Have fun!
-			</p>
+			<h2>Dashboard</h2>
 
-			<h3>Events awaiting moderation</h3>
+			<h3>Events</h3>
 
-			<table class="table">
-				<tr>
-					<th>id</th>
-					<th>event</th>
-					<th>times</th>
-					<th class="blurb">blurb</th>
-					<th>state</th>
-					<th>actions</th>
-				</tr>
-				{% for event in events_ %}
-				<tr>
-					<td><a href="/admin/event/{{ event.id }}">{{ event.id }}</a></td>
-					<td>
-						<p><b>{{ event.title }}</b>
-						<p>host: {{ event.host }}
-						<p>location: {{ event.shortLocation }}
-						<p>url: {{ event.url }}</td>
-					<td class="date">
-						from {{ event.startdt.format("YYYY-MM-DD ha") }}<br>
-						to {% if event.enddt.isValid() %}
-							{{ event.enddt.format("YYYY-MM-DD ha") }}
-						{% else %}
-							<i>(not set)</i>
-						{% endif %}</td>
-					<td class="blurb">{{ event.blurbAsHTML() }}</td>
-					<td>{{ event.state }}</td>
-					<td>
-						<a href="/admin/event/{{ event.id }}/edit" class="btn btn-xs btn-info">
-							edit
-						</a>
-						<a href="/admin/event/{{ event.id }}/approve?instant=yes&amp;next=/admin" class="btn btn-xs btn-success">
-							approve
-						</a>
-						<a href="/admin/event/{{ event.id }}/reject?next=/admin" class="btn btn-xs btn-warning">
-							reject
-						</a>
-					</td>
-				</tr>
-				{% endfor %}
-			</table>
+			<div class="stat-row">
+				{{ statBox({
+					num: stats.events.imported + stats.events.submitted,
+					below: 'to be approved',
+					warning: stats.events.imported + stats.events.submitted,
+					link: '/admin/events'
+				}) }}
 
-			{% include "_paginate.html" %}
+				{{ statBox({
+					num: stats.events.approved,
+					below: 'currently live'
+				}) }}
+
+				{{ statBox({
+					num: stats.eventsComingUp,
+					below: 'in the future',
+					warning: !Math.max(0, stats.eventsComingUp - 7)
+				}) }}
+			</div>
+
+			<h3 class="clear-left">Feeds</h3>
+
+			<div class="stat-row">
+				{{ statBox({
+					num: stats.feeds.total,
+					below: 'in total'
+				}) }}
+
+				{{ statBox({
+					num: stats.feeds.errors,
+					below: 'errors',
+					warning: stats.feeds.errors,
+					link: '/admin/feeds'
+				}) }}
+			</div>
 
 		</div>
 	</div>
