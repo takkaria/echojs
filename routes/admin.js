@@ -35,11 +35,18 @@ function numFeedErrors() {
 	).then(result => result[0][0]);
 }
 
+function numLocations() {
+	return Sequelize.query(
+		'SELECT COUNT(*) AS total FROM locations'
+	).then(result => result[0][0]);
+}
+
 router.get('/', ensure.editorOrAdmin, function(req, res) {
 	all({
 		events: eventsPerState(),
 		eventsComingUp: eventsComingUp(),
-		feeds: numFeedErrors()
+		feeds: numFeedErrors(),
+		locations: numLocations()
 	}).then(stats =>
 		res.render('admin', {
 			user: req.user,

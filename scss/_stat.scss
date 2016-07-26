@@ -8,18 +8,31 @@
 }
 
 .stat {
-	width: 120px;
-	padding: 10px 5px;
-	font-family: Raleway;
+	width: 130px;
+	padding: 10px 10px;
+	font-family: $font-family-serif;
 	text-align: center;
+
+	background-color: $gray-lighter;
 }
 
-.stat-default {
-	background-color: $gray-light;
+.stat-num {
+	display: block;
+	font-size: 200%;
+	line-height: 1.5;
+	font-feature-settings: "lnum";
+}
+
+.stat-below, .stat-above {
+	text-transform: uppercase;
+
+	color: #888;
 }
 
 .stat-primary {
 	background-color: $brand-primary;
+	.stat-num { color: #fff; }
+	.stat-below, .stat-above { color: #eee; }
 }
 
 .stat-link:hover .stat-primary {
@@ -28,21 +41,20 @@
 
 .stat-warning {
 	background-color: $brand-warning;
+	.stat-num { color: #fff; }
+	.stat-below, .stat-above { color: #eee; }
 }
 
 .stat-link:hover .stat-warning {
 	background-color: darken($brand-warning, 10%);
 }
 
-.stat-num {
-	display: block;
-	color: #fff;
-	font-size: 200%;
-	line-height: 1.5;
-	font-feature-settings: "lnum";
+.stat-action {
+	background-color: $brand-info;
+	.stat-num { color: #fff; }
+	.stat-below, .stat-above { color: #eee; }
 }
 
-.stat-below, .stat-above {
-	text-transform: uppercase;
-	color: #eee;
+.stat-link:hover .stat-action {
+	background-color: darken($brand-info, 10%);
 }
