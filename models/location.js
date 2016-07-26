@@ -48,7 +48,7 @@ module.exports = function(db) {
 
 			descriptionAsHTML: function() {
 				var d = this.getDataValue('description');
-				return d ? markdown(d) : null;
+				return d ? markdown.render(d) : null;
 			},
 		},
 		getterMethods: {
