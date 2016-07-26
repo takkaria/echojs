@@ -1,12 +1,13 @@
 'use strict';
 
-var express = require('express');
-var router = express.Router();
-var debug = require('debug')('echo:admin');
+const express = require('express');
+const debug = require('debug')('echo:admin');
+const models = require('../../models');
+const notify = require('../../lib/notify');
+const ensure = require('../../lib/ensure');
+const logger = require('../../lib/logger');
 
-var models = require('../../models');
-var notify = require('../../lib/notify');
-var ensure = require('../../lib/ensure');
+const router = express.Router();
 
 router.param('user_id', function(req, res, next, user_id) {
 	models.User.find({
