@@ -86,9 +86,9 @@ router.post('/:location_id/edit', ensure.editorOrAdmin, function(req, res) {
 		})
 		.save()
 		.then(function(loc) {
-			req.flash('success', 'Location <a href="/admin/location/%s">%s</a> edited',
+			req.flash('success', 'Location <a href="/admin/locations/%s">%s</a> edited',
 					loc.id, loc.name);
-			res.redirect('/admin/location/' + loc.id);
+			res.redirect('/admin/locations/' + loc.id);
 		})
 		.catch(function(errors) {
 			debug(errors);

@@ -9,7 +9,7 @@
   <li><a href="/">Echo</a></li>
   <li><a href="/admin">Admin</a></li>
   <li><a href="/admin/locations">Locations</a></li>
-  <li><a href="/admin/location/{{ loc.id }}">{{ loc.name }}</a></li>
+  <li><a href="/admin/locations/{{ loc.id }}">{{ loc.name }}</a></li>
   <li><a href="/admin/locations/add">Edit Location</a></li>
 </ol>
 {% endblock %}
@@ -20,7 +20,7 @@
 <p class="alert alert-danger"><b>There were problems validating your form.</b>  Please see below for more details.
 {% endif %}
 
-<form method="POST" action="{% block form_action %}/admin/location/{{ loc.id }}/edit{% endblock %}">
+<form method="POST" action="{% block form_action %}/admin/locations/{{ loc.id }}/edit{% endblock %}">
 	{{ form.inputText({ label: "Location name:", field: "name", fill: loc.name }) }}
 	{{ form.textarea({ label: "Address:", field: "address", fill: loc.address, rows: 4 }) }}
 

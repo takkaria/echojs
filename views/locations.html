@@ -29,7 +29,7 @@
 				</thead>
 				{% for loc in locations %}
 				<tr>
-					<th><a href="/admin/location/{{ loc.id }}">{{ loc.id }}</a></th>
+					<th><a href="/admin/locations/{{ loc.id }}">{{ loc.id }}</a></th>
 					<td>
 						<h4>{{ loc.name }}</h4>
 						{{ loc.addressAsHTML() }}
@@ -39,8 +39,8 @@
 						{{ loc.longitude }}, {{ loc.latitude }}
 					</td>
 					<td>
-						<a href="/admin/location/{{ loc.id }}/edit" class="btn btn-xs btn-primary">edit</a>
-						<a href="/admin/location/{{ loc.id }}/delete" class="btn btn-xs btn-warning">delete</a>
+						<a href="/admin/locations/{{ loc.id }}/edit" class="btn btn-xs btn-primary">edit</a>
+						<a href="/admin/locations/{{ loc.id }}/delete" class="btn btn-xs btn-warning">delete</a>
 					</td>
 				</tr>
 				{% endfor %}
