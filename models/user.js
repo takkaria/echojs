@@ -1,7 +1,10 @@
-var sequelize = require('sequelize');
-var crypto = require('crypto');
-var debug = require('debug')('echo:models:user');
-var bcrypt = require('bcrypt');
+'use strict';
+
+const denodeify = require('es6-denodeify')();
+const sequelize = require('sequelize');
+const crypto = require('crypto');
+const debug = require('debug')('echo:models:user');
+const bcrypt = require('bcrypt');
 
 module.exports = function(db) {
 
@@ -47,37 +50,19 @@ module.exports = function(db) {
 		underscored: true,
 		instanceMethods: {
 			setPassword: function(password) {
-				var self = this;
-				return new Promise(function(resolve, reject) {
-					bcrypt.hash(password, process.env.BCRYPT_FACTOR || 10, function(err, hash) {
-						if (err) {
-							reject(err);
-						} else {
-							self.setDataValue('digest', hash);
-							self.setDataValue('salt', 'bcrypt');
-							resolve(self);
-						}
+				const bcryptHash = denodeify(bcrypt.hash);
+
+				return bcryptHash(password, process.env.BCRYPT_FACTOR || 10)
+					.then(hash => {
+						this.setDataValue('digest', hash);
+						this.setDataValue('salt', 'bcrypt');
+						return this;
 					});
-				});
 			},
 
 			checkPassword: function(password) {
-				var self = this;
-				return new Promise(function(resolve, reject) {
-					if (self.salt == 'bcrypt') {
-						bcrypt.compare(password, self.getDataValue('digest'), function(err, res) {
-							debug('Password checked - result ' + res);
-							if (err) reject(err);
-							else resolve(res);
-						});
-					} else {
-						var digest = crypto.createHash('sha256').update(
-							self.salt + password
-						).digest('base64');
-						debug('Old sha256 password checked');
-						resolve(digest === self.getDataValue('digest'));
-					}
-				});
+				const bcryptCheck = denodeify(bcrypt.compare);
+				return bcryptCheck(password, this.getDataValue('digest'));
 			},
 
 			resetPassword: function() {

@@ -42,7 +42,7 @@ CREATE TABLE users (
 );
 
 /* user test@example.com, password test */
-INSERT INTO "users" VALUES(1, 'test@example.com',NULL,'','aaa','e3MjCoP7Oui8bQ+BK+2wWIRmq/OApZ8nXNuv6Kt6qiw=',NULL,'admin');
+INSERT INTO "users" VALUES(1, 'test@example.com',NULL,NULL,'bcrypt','$2a$10$I4273tc9HhI.8o0Pn.Pa8uG/rZNuPRc8RpGyYttNChOIBKHYu4n6i',NULL,'admin');
 
 CREATE TABLE posts (
 	id TEXT PRIMARY KEY,

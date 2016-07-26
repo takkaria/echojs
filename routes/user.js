@@ -1,11 +1,14 @@
-var express = require('express');
-var notify = require('../lib/notify');
-var debug = require('debug')('echo:user');
-var passport = require('passport');
-var router = express.Router();
-var models = require('../models');
-var ensure = require('../lib/ensure');
-var Promise = require('promise');
+'use strict';
+
+const denodeify = require('es6-denodeify')();
+const express = require('express');
+const passport = require('passport');
+const debug = require('debug')('echo:user');
+const notify = require('../lib/notify');
+const models = require('../models');
+const ensure = require('../lib/ensure');
+
+const router = express.Router();
 
 router.get('/login', function(req, res) {
 	res.render('login', { next: req.query.next });
@@ -14,19 +17,10 @@ router.get('/login', function(req, res) {
 router.post('/login', function(req, res, next) {
 	passport.authenticate('local', function(err, user, info) {
 		if (err) { return next(err); }
-
 		if (!user) { return res.render('login'); }
 
-		req.logIn(user, function(err) {
-			if (err) { return next(err); }
-
-			debug(req.body.next);
-			if (req.body.next) {
-				return res.redirect(req.body.next);
-			}
-
-			return res.redirect('/');
-		});
+		req.logIn(user, err =>
+				err ? next(err) : res.redirect(req.body.next || '/'));
 	})(req, res, next);
 });
 
@@ -145,7 +139,7 @@ router.post('/password/reset/:token', function(req, res, next) {
 			user.set('pwreset', null);
 			return user.save();
 		}).then(function(user) {
-			var logIn = Promise.denodeify(req.logIn);
+			var logIn = denodeify(req.logIn);
 			return logIn(user);
 		}).then(function() {
 			req.flash('success', 'Password changed');

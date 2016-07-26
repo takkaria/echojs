@@ -139,30 +139,24 @@ app.use(function(err, req, res, next) {
 });
 
 
-passport.use(new LocalStrategy({
-		usernameField: 'email',
-	},
+passport.use(new LocalStrategy(
+	{ usernameField: 'email' },
 	function(email, password, done) {
-		var user_;
 		models.User.find({
-			where: [
-				{ email: email },
-			]
-		}).then(function(user) {
-			user_ = user;
-
+			where: { email: email }
+		}).then(user => {
 			if (!user) {
 				return done(null, false, { message: 'Incorrect email.' });
 			}
 
-			return user.checkPassword(password);
-		}).then(function(correct) {
-			if (correct === false) {
-				return done(null, false, { message: 'Incorrect password.' });
-			}
+			return user.checkPassword(password).then(correct => {
+				if (correct === false) {
+					return done(null, false, { message: 'Incorrect password.' });
+				}
 
-			return done(null, user_);
-		});
+				return done(null, user);
+			});
+		}).catch(done);
 	}
 ));
 
