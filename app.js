@@ -79,13 +79,15 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+//app.use(cookieParser());
 
 app.use(session({
-	secret: 'half-baked potato claustrophobia',
+	secret: process.env.SECRET || 'half-baked potato claustrophobia',
 	resave: false,
+	httpOnly: true,
 	saveUninitialized: false,
 	store: new FileStore(),
+	maxAge: 604800,
 	proxy: true // if you do SSL outside of node
 }));
 
@@ -171,7 +173,7 @@ passport.deserializeUser(function(email, done) {
 		]
 	}).then(function(user) {
 		done(null, user);
-	});
+	}).catch(done);
 });
 
 module.exports = app;
