@@ -34,7 +34,15 @@
 					<td>
 						<p><b>{{ event.title }}</b>
 						<p>host: {{ event.host }}
-						<p>location: {{ event.shortLocation }}
+						<p>location:
+							{% if event.location %}
+								{{ event.location.name }}
+								<span style="color: green">
+									<i class="fa fa-star"></i>
+								</span>
+							{% else %}
+								{{ event.location_text }}
+							{% endif %}
 						<p>url: {{ event.url }}</td>
 					<td class="date">
 						from {{ event.startdt.format("YYYY-MM-DD ha") }}<br>
