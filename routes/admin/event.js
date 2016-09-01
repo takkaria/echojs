@@ -25,23 +25,47 @@ router.get('/:event_id', ensure.editorOrAdmin, function(req, res) {
 	});
 });
 
-function approveEvent(req, res, event_, next_) {
-	event_.set('state', 'approved');
-	event_.generateSlug();
-	event_.save().then(function(e) {
-		return e.reload();
-	}).then(function() {
-		req.flash('success',
-				'Event <a href="%s">%s</a> approved. <a href="/admin/event/%s/reject">Hide event instead?</a>',
-				event_.absoluteURL, event_.id, event_.id);
-		if (!event_.isImported()) {
-			notify.eventApproved(event_);
-		}
+function showEventWithErrors(req, res, event_, errors) {
+	req.flash('info', "This event couldn't be approved. See below for details.")
+	res.render('event_edit', {
+		event_: event_,
+		errors: errors.errors,
+		user: req.user
+	})
+}
 
-		res.redirect(next_ ? next_ : event_.absoluteURL);
-	}).catch(function(errors){
-		debug(errors);
-	});
+function approveEvent(req, res, event_, next) {
+	event_.validate()
+		.then(function(errors) {
+			if (errors) {
+				showEventWithErrors(req, res, event_, errors);
+				return;
+			}
+
+			event_.set('state', 'approved');
+			event_.generateSlug();
+			event_.save()
+				.then(evt => evt.reload())
+				.then(function(evt) {
+					req.flash('success',
+							'Event <a href="%s">%s</a> approved. <a href="/admin/event/%s/reject">Hide event instead?</a>',
+							evt.absoluteURL,
+							evt.id,
+							evt.id);
+
+					if (!evt.isImported()) {
+						notify.eventApproved(evt);
+					}
+
+					res.redirect(next || evt.absoluteURL);
+				}).catch(function(err) {
+					debug(err);
+					req.flash('danger',
+							'Error approving event: %s',
+							err);
+					res.redirect(next || evt.absoluteURL);
+				})
+		});
 }
 
 router.get('/:event_id/approve', ensure.editorOrAdmin, function(req, res) {
