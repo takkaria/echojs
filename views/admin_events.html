@@ -47,7 +47,9 @@
 					<td class="date">
 						from {{ event.startdt.format("YYYY-MM-DD ha") }}<br>
 						to {% if event.enddt.isValid() %}
-							{{ event.enddt.format("YYYY-MM-DD ha") }}
+							{{ event.enddt.format("YYYY-MM-DD ha") }}<br>
+							<br>
+							duration: {{ event.enddt.from(event.startdt, true) }}
 						{% else %}
 							<i>(not set)</i>
 						{% endif %}</td>
