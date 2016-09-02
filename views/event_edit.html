@@ -22,6 +22,10 @@
 {% endif %}
 
 <form method="POST" action="{% block form_action %}/admin/event/{{ event_.id }}/edit{% endblock %}">
+	{{ form.inputHidden({
+		field: 'next',
+		fill: next }) }}
+
 	{{ form.inputText({
 		label: "Event name:",
 		field: "title",

@@ -56,7 +56,7 @@
 					<td class="blurb">{{ event.blurbAsHTML() }}</td>
 					<td>{{ event.state }}</td>
 					<td>
-						<a href="/admin/event/{{ event.id }}/edit" class="btn btn-xs btn-info">
+						<a href="/admin/event/{{ event.id }}/edit?next=/admin/events" class="btn btn-xs btn-info">
 							edit
 						</a>
 						<a href="/admin/event/{{ event.id }}/approve?instant=yes&amp;next=/admin/events" class="btn btn-xs btn-success">

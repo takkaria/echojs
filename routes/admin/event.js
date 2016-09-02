@@ -135,7 +135,8 @@ router.post('/:event_id/reject', ensure.editorOrAdmin, function(req, res) {
 router.get('/:event_id/edit', ensure.editorOrAdmin, function(req, res) {
 	res.render('event_edit', {
 		user: req.user,
-		event_: req.event_
+		event_: req.event_,
+		next: req.query.next
 	});
 });
 
@@ -184,7 +185,7 @@ router.post('/:event_id/edit', ensure.editorOrAdmin, function(req, res) {
 		.then(function(event_) {
 			req.flash('success', 'Event <a href="/admin/event/%s">%s</a> edited.',
 								event_.id, event_.slug);
-			res.redirect('/admin/event/' + event_.id);
+			res.redirect(b.next || '/admin/event/' + event_.id);
 		})
 		.catch(function(errors) {
 			debug(errors);
