@@ -121,6 +121,13 @@ $(function() {
 		dateRange.format(allDay ? 'YYYY/MM/DD' : 'YYYY/MM/DD HH:mm');
 	}).trigger('change');
 
+	$("#url").change(function(e) {
+		var url = $('#url').val();
+		if (url.match(/^www\./)) {
+			$('#url').val('http://' + url);
+		}
+	});
+
 	Countable.live($('#blurb')[0], function(counter) {
 		$('#wordcount').text(counter.words);
 	});
