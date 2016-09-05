@@ -54,54 +54,7 @@ var Feed = require('../models').Feed
 
 // ============================================================ //
 
-function standByYouTransform(data) {
-	// Get original URL
-	var info = /reproduced.+?following.+?:\s*(http[^\s]+)/.exec(data.description);
-	if (info)
-		data.url = info[1];
-
-	// Strip plethora of links
-	var result = /(.*)(fevent.*)/.exec(data.description);
-	if (result)
-		data.description = result[1];
-
-	// Strip repetition at the beginning of the summary
-	result = new RegExp("^" + data.summary.toUpperCase().trim() + "(.*)").exec(data.description);
-	if (result)
-		data.description = result[1];
-}
-
-function standByYouFilter(data) {
-	if (/Freedom Rebels/.test(data.summary))
-		return true;
-	return false;
-}
-
-// make this into a config file sometime
-var calendars = [
-	{
-		url: 'https://www.google.com/calendar/ical/7etn2k6kvovrugd1hapue7ghrc%40group.calendar.google.com/public/basic.ics',
-		filter: function(data) {
-			day = data.start.getDay(); // 0 = Sunday, 1 = Monday, etc.
-			if (day == 1 || day == 2) return true; // Filter out private events on Monday and Tuesday
-
-			return false;
-		},
-		transform: function(data) {
-			data.location = "SubRosa, 27 Lloyd St South, Moss Side, Manchester";
-		},
-	},
-	{
-		url: 'http://istandbyyou.org.uk/events/' + moment().format("YYYY-MM") +'/?ical=1',
-		filter: standByYouFilter,
-		transform: standByYouTransform,
-	},
-	{
-		url: 'http://istandbyyou.org.uk/events/' + moment().add('1', 'month').format("YYYY-MM") +'/?ical=1',
-		filter: standByYouFilter,
-		transform: standByYouTransform,
-	}
-];
+var calendars = [];
 
 function eventError(error, list) {
 	console.log("Error: " + error.message);
@@ -119,11 +72,7 @@ if (action.type == "ical") {
 	Feed.findAll()
 		.then(feeds => feeds.forEach(fetch.feed));
 
-	calendars.forEach(function(data) {
-		fetch.ical({
-			url: data.url,
-			filter: data.filter,
-			transform: data.transform,
-			error: eventError });
-	})
+	for (let cal of calendars) {
+		fetch.ical(cal, eventError);
+	}
 }
