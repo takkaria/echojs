@@ -24,6 +24,7 @@
     "esnext": true
   },
   "devDependencies": {
+    "array-includes": "^3.0.2",
     "bower": "^1.7.7",
     "chai": "^3.5.0",
     "chai-as-promised": "^5.2.0",
