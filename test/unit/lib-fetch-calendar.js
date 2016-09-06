@@ -98,18 +98,41 @@ describe('fetch-calendar', function() {
 				})
 			})
 
-			it('(served with last-modified) should return caching data', function(done) {
-				let serverRequest = fakeServer('cal001.ics', {
-					'Last-Modified': 'Sun, 04 Sep 2016 22:49:51 GMT'
-				});
-
-				fetchCalendar(CALENDAR_URL, function(err, events, cacheData) {
-					expect(serverRequest.isDone()).to.equal(true);
-					expect(cacheData).to.deep.equal({
-						'last-modified': 'Sun, 04 Sep 2016 22:49:51 GMT'
+			describe('(last-modified)', function(done) {
+				it('should return caching data', function(done) {
+					let serverRequest = fakeServer('cal001.ics', {
+						'Last-Modified': 'Sun, 04 Sep 2016 22:49:51 GMT'
 					});
 
-					done();
+					fetchCalendar(CALENDAR_URL, function(err, events, cacheData) {
+						expect(serverRequest.isDone()).to.equal(true);
+						expect(cacheData).to.deep.equal({
+							'last-modified': 'Sun, 04 Sep 2016 22:49:51 GMT'
+						});
+
+						done();
+					})
+				})
+
+
+				it('... using that data for the next request should use If-Modified-Since', function(done) {
+					const MODIFIED_SINCE = 'Sun, 04 Sep 2016 22:49:51 GMT';
+
+					let cacheData = { 'last-modified': MODIFIED_SINCE }
+					let expectedRequestHeaders = { 'if-modified-since': MODIFIED_SINCE }
+
+					let serverRequest = nock('http://example.net', { reqheaders: expectedRequestHeaders })
+							.get('/ical')
+							.reply(304, null);
+
+					fetchCalendar(CALENDAR_URL, function(err, events, cacheData, newUrl) {
+						if (err) done(err);
+
+						expect(serverRequest.isDone()).to.equal(true);
+						expect(events).to.deep.equal([]);
+
+						done();
+					}, cacheData);
 				})
 			})
 		})
