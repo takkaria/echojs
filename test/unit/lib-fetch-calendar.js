@@ -36,7 +36,7 @@ function allValidKeys(evt) {
 
 // Tests
 describe('fetch-calendar', function() {
-	it('must make an HTTP request', function(done) {
+	it('should make an HTTP request', function(done) {
 		let serverRequest = fakeServer('cal001.ics');
 
 		fetchCalendar(CALENDAR_URL, function() {
@@ -60,18 +60,41 @@ describe('fetch-calendar', function() {
 		})
 
 		describe('and the server replies with caching headers', function() {
-			it('(served with etag) should return caching data', function(done) {
-				let serverRequest = fakeServer('cal001.ics', {
-					'ETag': '"TESTING"',
-				});
 
-				fetchCalendar(CALENDAR_URL, function(err, events, cacheData) {
-					expect(serverRequest.isDone()).to.equal(true);
-					expect(cacheData).to.deep.equal({
-						'etag': '"TESTING"',
+			describe('(etags)', function(done) {
+				it('should return caching data', function(done) {
+					let serverRequest = fakeServer('cal001.ics', {
+						'ETag': '"TESTING"',
 					});
 
-					done();
+					fetchCalendar(CALENDAR_URL, function(err, events, cacheData) {
+						expect(serverRequest.isDone()).to.equal(true);
+						expect(cacheData).to.deep.equal({
+							'etag': '"TESTING"',
+						});
+
+						done();
+					})
+				})
+
+				it('... using that data for the next request should use If-None-Match', function(done) {
+					const ETAG_CONTENTS = '"TESTING"';
+
+					let cacheData = { 'etag': ETAG_CONTENTS }
+					let expectedRequestHeaders = { 'if-none-match': ETAG_CONTENTS }
+
+					let serverRequest = nock('http://example.net', { reqheaders: expectedRequestHeaders })
+							.get('/ical')
+							.reply(304, null);
+
+					fetchCalendar(CALENDAR_URL, function(err, events, cacheData, newUrl) {
+						if (err) done(err);
+
+						expect(serverRequest.isDone()).to.equal(true);
+						expect(events).to.deep.equal([]);
+
+						done();
+					}, cacheData);
 				})
 			})
 
