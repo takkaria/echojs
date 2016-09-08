@@ -1,10 +1,12 @@
 'use strict';
 
 const expect = require('chai').expect;
-const fetchNewsfeed = require('../../lib/fetch-newsfeed');
-
+const feedGenerator = require('feed');
+const moment = require('moment');
 const nock = require('nock');
 nock.disableNetConnect();
+
+const fetchNewsfeed = require('../../lib/fetch-newsfeed');
 
 // Constants
 const FEED_URL = 'http://example.net/feed';
@@ -57,6 +59,38 @@ describe('fetch-newsfeed', function() {
 				expect(Array.isArray(posts)).to.equal(true);
 				expect(posts.length).to.equal(3);
 				expect(allValidKeys(posts[0])).to.equal(true);
+
+				done();
+			})
+		})
+	})
+
+	describe('when fetching a feed with an upcoming event in', function() {
+		it('should return an array with one event', function(done) {
+			let futureDate = moment().add(1, 'month').format('Do MMMM');
+
+			let feed = new feedGenerator({
+				title: 'Test',
+				description: 'Just a test feed',
+				link: FEED_URL
+			});
+
+			feed.addItem({
+				title: 'test',
+				link: FEED_URL,
+				date: new Date(),
+				description: 'There is something happening ' + futureDate + ' at 11:30am',
+			})
+
+			let serverRequest = nock('http://example.net')
+					.get('/feed')
+					.reply(200, feed.render('rss-2.0'));
+
+			fetchNewsfeed(FEED_URL, function(err, posts, events) {
+				expect(err).to.not.exist;
+				expect(serverRequest.isDone()).to.equal(true);
+				expect(Array.isArray(events)).to.equal(true);
+				expect(events.length).to.equal(1);
 
 				done();
 			})
