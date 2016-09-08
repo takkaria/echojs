@@ -18,6 +18,23 @@ function fakeServer(filename, headers) {
 					headers);
 }
 
+const includes = require('array-includes');
+const models = require('../../models');
+const Post = models.Post;
+const POST_KEYS = Object.keys(Post.attributes);
+
+function allValidKeys(evt) {
+	for (let field of Object.keys(evt)) {
+		if (!includes(POST_KEYS, field)) {
+			console.log('Key invalid: "' + field + '"');
+			return false;
+		}
+	}
+
+	return true;
+}
+
+
 // Tests
 describe('fetch-newsfeed', function() {
 	it('should make an HTTP request', function(done) {
@@ -39,8 +56,7 @@ describe('fetch-newsfeed', function() {
 				expect(posts).to.not.equal(null);
 				expect(Array.isArray(posts)).to.equal(true);
 				expect(posts.length).to.equal(3);
-
-				console.log(posts);
+				expect(allValidKeys(posts[0])).to.equal(true);
 
 				done();
 			})
