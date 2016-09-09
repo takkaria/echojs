@@ -9,7 +9,7 @@
     "test": "./run_tests.sh",
     "jshint": "jshint *.js lib/*.js models/*.js routes/*.js test/*.js",
     "jscs": "jscs *.js lib/*.js models/*.js routes/*.js test/*.js",
-    "deploy": "npm install && bower update && npm run sass:minify",
+    "deploy": "npm install && npm update && bower update && npm run sass:minify",
     "sass:basic": "node-sass --include-path bower_components/ scss -o public/stylesheets",
     "sass:watch": "npm run sass:basic -- -w",
     "sass:minify": "npm run sass:basic -- --output-style compressed",
