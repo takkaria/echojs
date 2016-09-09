@@ -66,6 +66,12 @@ CREATE TABLE feeds (
 	updatedAt DATETIME
 );
 
+CREATE TABLE stats (
+	key TEXT PRIMARY KEY NOT NULL,
+	value TEXT
+);
+
+
 CREATE VIEW post_info AS SELECT * FROM posts LEFT OUTER JOIN feeds ON posts.feedId = feeds.id;
 
 /* Manchester location information */

@@ -17,6 +17,7 @@ exports = module.exports = {
 	Post: require('./models/post')(db),
 	Feed: require('./models/feed')(db),
 	Location: require('./models/location')(db),
+	Stats: require('./models/stats')(db)
 };
 
 exports.Location.hasMany(exports.Event);
