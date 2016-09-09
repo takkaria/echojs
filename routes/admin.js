@@ -2,11 +2,13 @@
 
 const express = require('express');
 const all = require('promise-all');
+const moment = require('moment');
 const models = require('../models');
 const ensure = require('../lib/ensure');
 
 const router = express.Router();
 const Sequelize = models.db;
+const stats = models.Stats;
 
 function eventsPerState() {
 	return Sequelize.query(
@@ -41,12 +43,33 @@ function numLocations() {
 	).then(result => result[0][0]);
 }
 
+function lastNewsletterSent() {
+	return stats.getValue('newsletterLastSent').then(val => {
+		if (!val) {
+			return {
+				number: 'never',
+				text: 'sent',
+				warning: true
+			};
+		} else {
+			let lastSent = moment(val)
+			let date = moment().from(lastSent, true).split(' ');
+			return {
+				number: typeof date[0] === 'string' ? 1 : date[0],
+				text: date[1] + ' ago',
+				warning: lastSent.isAfter(moment().add(1, 'month'))
+			};
+		}
+	});
+}
+
 router.get('/', ensure.editorOrAdmin, function(req, res) {
 	all({
 		events: eventsPerState(),
 		eventsComingUp: eventsComingUp(),
 		feeds: numFeedErrors(),
-		locations: numLocations()
+		locations: numLocations(),
+		lastNewsletterSent: lastNewsletterSent()
 	}).then(stats =>
 		res.render('admin', {
 			user: req.user,

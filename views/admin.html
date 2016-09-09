@@ -7,6 +7,7 @@
 		     {% elseif opts.warning !== undefined %}primary
 		     {% else %}action{% endif %}
 		     {% endif %}">
+		<span class="stat-above">{{ opts.above }}</span>
 		<span class="stat-num">{{ opts.num | safe}}</span>
 		<span class="stat-below">{{ opts.below }}</span>
 	</div>
@@ -32,70 +33,84 @@
 
 			<h2>Dashboard</h2>
 
-			<h3>Events</h3>
+			<div class="stat-unit">
+				<h3>Events</h3>
+				<div class="stat-row">
+					{{ dashBox({
+						num: stats.events.imported + stats.events.submitted,
+						below: 'to be approved',
+						warning: stats.events.imported + stats.events.submitted,
+						link: '/admin/events'
+					}) }}
 
-			<div class="stat-row">
-				{{ dashBox({
-					num: stats.events.imported + stats.events.submitted,
-					below: 'to be approved',
-					warning: stats.events.imported + stats.events.submitted,
-					link: '/admin/events'
-				}) }}
+					{{ dashBox({
+						num: stats.events.approved,
+						below: 'currently live'
+					}) }}
 
-				{{ dashBox({
-					num: stats.events.approved,
-					below: 'currently live'
-				}) }}
-
-				{{ dashBox({
-					num: stats.eventsComingUp,
-					below: 'in the future',
-					warning: !Math.max(0, stats.eventsComingUp - 7)
-				}) }}
-
-				{{ dashBox({
-					num: '<i class="fa fa-envelope"></i>',
-					below: 'Send newsletter',
-					link: '/admin/newsletter'
-				}) }}
+					{{ dashBox({
+						num: stats.eventsComingUp,
+						below: 'in the future',
+						warning: !Math.max(0, stats.eventsComingUp - 7)
+					}) }}
+				</div>
 			</div>
 
-			<h3>Feeds</h3>
+			<div class="stat-unit stat-pad-left">
+				<h3>Newsletter</h3>
+				<div class="stat-row">
+					{{ dashBox({
+						above: 'sent',
+						num: stats.lastNewsletterSent.number,
+						below: stats.lastNewsletterSent.text,
+						warning: stats.lastNewsletterSent.warning
+					}) }}
 
-			<div class="stat-row">
-				{{ dashBox({
-					num: stats.feeds.total,
-					below: 'in total'
-				}) }}
-
-				{{ dashBox({
-					num: stats.feeds.errors,
-					below: 'errors',
-					warning: stats.feeds.errors,
-					link: '/admin/feeds'
-				}) }}
-
-				{{ dashBox({
-					num: '<i class="fa fa-feed"></i>',
-					below: 'Add feed',
-					link: '/admin/feeds'
-				}) }}
+					{{ dashBox({
+						num: '<i class="fa fa-envelope"></i>',
+						below: 'Send newsletter',
+						link: '/admin/newsletter'
+					}) }}
+				</div>
 			</div>
 
+			<div class="stat-unit">
+				<h3>Feeds</h3>
+				<div class="stat-row">
+					{{ dashBox({
+						num: stats.feeds.total,
+						below: 'in total'
+					}) }}
 
-			<h3>Locations</h3>
+					{{ dashBox({
+						num: stats.feeds.errors,
+						below: 'errors',
+						warning: stats.feeds.errors,
+						link: '/admin/feeds'
+					}) }}
 
-			<div class="stat-row">
-				{{ dashBox({
-					num: stats.locations.total,
-					below: 'in total'
-				}) }}
+					{{ dashBox({
+						num: '<i class="fa fa-feed"></i>',
+						below: 'Add feed',
+						link: '/admin/feeds'
+					}) }}
+				</div>
+			</div>
 
-				{{ dashBox({
-					num: '<i class="fa fa-map-marker"></i>',
-					below: 'Add new',
-					link: '/admin/locations/add'
-				}) }}
+			<div class="stat-unit stat-pad-left">
+				<h3>Locations</h3>
+				<div class="stat-row">
+					{{ dashBox({
+						num: stats.locations.total,
+						below: 'in total'
+					}) }}
+
+					{{ dashBox({
+						num: '<i class="fa fa-map-marker"></i>',
+						below: 'Add new',
+						link: '/admin/locations/add'
+					}) }}
+				</div>
 			</div>
 
 			<!-- XXX padding -->
