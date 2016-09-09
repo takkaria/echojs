@@ -54,7 +54,7 @@ module.exports = function(db) {
 		getterMethods: {
 			singleLine: function() {
 				return this.name + ', ' + this.address.replace(/([^>\r\n]?)(\r\n|\n\r|\r|\n)/g, '$1, ');
-			},
+			}
 		},
 	});
 };

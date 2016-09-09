@@ -37,7 +37,7 @@ function generateTime(beginning) {
 	}
 }
 
-moment.locale('en-tweet', {
+moment.defineLocale('en-tweet', {
 	calendar: {
 		lastDay:  generateTime('[Yesterday] '),
 		sameDay:  generateTime('[Today] '),
