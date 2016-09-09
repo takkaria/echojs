@@ -6,8 +6,6 @@ var models = require('../../models');
 var debug = require('debug')('echo:admin');
 var ensure = require('../../lib/ensure');
 
-var Promise = require('promise');
-
 var request = require('request');
 var discover = require('feed-discover');
 var FeedParser = require('feedparser');
