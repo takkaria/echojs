@@ -96,4 +96,34 @@ describe('fetch-newsfeed', function() {
 			})
 		})
 	})
+
+	describe('when fetching /redirect and the server replies with a redirect', function() {
+		it('it should return the redirected feed URL as newLocation', function(done) {
+			let serverRequestRedirect = nock('http://example.net/')
+					.get('/redirect')
+					.reply(301, '', { Location: '/feed' });
+			let serverRequestReal = fakeServer('feed001.rss');
+
+			fetchNewsfeed('http://example.net/redirect', function(err, posts, events, cacheData, newLocation) {
+				expect(serverRequestRedirect.isDone()).to.equal(true);
+				expect(serverRequestReal.isDone()).to.equal(true);
+				expect(newLocation).to.equal(FEED_URL);
+
+				done();
+			})
+		})
+
+		it("(and shouldn't return a redirect URL for no redirect)", function(done) {
+			let serverRequest = fakeServer('feed001.rss');
+
+			fetchNewsfeed(FEED_URL, function(err, posts, events, cacheData, newLocation) {
+				expect(serverRequest.isDone()).to.equal(true);
+				expect(newLocation).to.not.exist;
+
+				done();
+			})
+		})
+
+	})
+
 })
