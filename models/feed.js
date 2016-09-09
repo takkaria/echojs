@@ -7,5 +7,6 @@ module.exports = function(db) {
 		siteURL: { type: sequelize.TEXT },
 		title: { type: sequelize.TEXT },
 		errors: { type: sequelize.TEXT },
+		cacheData: { type: sequelize.TEXT }
 	});
 };

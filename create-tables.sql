@@ -60,10 +60,10 @@ CREATE TABLE feeds (
 	title TEXT,
 	siteURL TEXT,
 	errors TEXT,
+	cacheData TEXT,
 
 	createdAt DATETIME,
-	updatedAt DATETIME,
-	lastFetched DATETIME
+	updatedAt DATETIME
 );
 
 CREATE VIEW post_info AS SELECT * FROM posts LEFT OUTER JOIN feeds ON posts.feedId = feeds.id;
