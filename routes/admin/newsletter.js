@@ -9,6 +9,7 @@ const mail = require('../../lib/mail');
 const ensure = require('../../lib/ensure');
 const models = require('../../models');
 const Sequelize = models.db;
+const stats = models.Stats;
 
 function processForm(req, cb) {
 	const dateFormat = 'YYYY-MM-DD';
@@ -61,6 +62,9 @@ router.post('/send', ensure.editorOrAdmin, function(req, res) {
 		})
 
 		res.send('Sent');
+
+		stats.setValue('newsletterLastSent', moment().toISOString());
+		stats.setValue('newsletterLastEvent', data.enddt.toISOString());
 	})
 })
 
