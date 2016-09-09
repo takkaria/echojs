@@ -60,7 +60,7 @@
 
     <a href="/admin/event/{{ event_.id }}/edit" class="btn btn-xs btn-primary">edit</a>
 
-    {% if event_.state == "submitted" %}
+    {% if event_.state == "submitted" || event_.state == "imported" %}
       <a href="/admin/event/{{ event_.id }}/approve" class="btn btn-xs btn-success">
         approve
       </a>
