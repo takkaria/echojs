@@ -5,13 +5,24 @@ const sequelize = require('sequelize');
 class StatsSingleton {
 	constructor(db) {
 		this.db = db.define('stat', {
-			id: { type: sequelize.TEXT, primaryKey: true },
+			key: { type: sequelize.TEXT, primaryKey: true },
 			value: { type: sequelize.TEXT },
+		}, {
+			timestamps: false,
+			createdAt: false
 		});
 	}
 
 	setValue(key, value) {
-		return Promise.resolve();
+		return this.db.findById(key).then(stat => {
+			stat = stat || this.db.build({ key: key })
+			stat.value = JSON.stringify(value);
+			return stat.save();
+		})
+	}
+
+	getValue(key) {
+		return this.db.findById(key).then(stat => JSON.parse(stat.value));
 	}
 }
 

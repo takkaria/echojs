@@ -11,9 +11,20 @@ describe('Stats', function() {
 		expect(stats).to.exist;
 	})
 
-	describe('setValue()', function() {
+	const TESTING_KEY = 'testing';
+	const TESTING_VALUE = 5;
+
+	describe('setting a value', function() {
 		it('should not produce an error', function() {
-			expect(stats.setValue('testing', 5)).to.eventually.be.ok;
-		});
-	});
+			expect(stats.setValue(TESTING_KEY, TESTING_VALUE)).to.eventually.be.ok;
+		})
+	})
+
+	describe('fetching it back', function() {
+		it('should produce the same value', function() {
+			return stats.getValue(TESTING_KEY).then((val) => {
+				expect(val).to.equal(TESTING_VALUE);
+			})
+		})
+	})
 })
