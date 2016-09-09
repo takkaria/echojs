@@ -46,8 +46,16 @@ router.param('slug', function(req, res, next, slug) {
 
 /* GET event add */
 router.get('/add', function(req, res) {
+	if (req.user) {
+		// var is hoisted
+		var fakeEvent = {
+			email: req.user.email
+		};
+	}
+
 	res.render('event_add', {
-		user: req.user
+		user: req.user,
+		event_: fakeEvent
 	});
 });
 
@@ -133,6 +141,10 @@ router.post('/add', function(req, res, next) {
 
 	// Just render the input back if the edit bit is set
 	if (input.edit) {
+		if (!input.email && req.user) {
+			input.email = req.user.email;
+		}
+
 		return res.render('event_add', {
 			event_: input,
 			user: req.user
