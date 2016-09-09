@@ -183,7 +183,10 @@ router.post('/add', function(req, res, next) {
 			// Save the slug and/or any removed location textual description
 			return evt.save();
 		}).then(function(evt) {
-			notify.eventSubmitted(evt);
+			// Don't notify logged in users about their own event
+			if (evt.state !== 'approved') {
+				notify.eventSubmitted(evt);
+			}
 
 			if (evt.state === 'approved') {
 				req.flash('success', 'Event added and approved.');
