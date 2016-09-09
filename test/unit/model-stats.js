@@ -10,4 +10,10 @@ describe('Stats', function() {
 	it('should exist', function() {
 		expect(stats).to.exist;
 	})
+
+	describe('setValue()', function() {
+		it('should not produce an error', function() {
+			expect(stats.setValue('testing', 5)).to.eventually.be.ok;
+		});
+	});
 })

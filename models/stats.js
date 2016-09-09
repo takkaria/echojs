@@ -9,6 +9,10 @@ class StatsSingleton {
 			value: { type: sequelize.TEXT },
 		});
 	}
+
+	setValue(key, value) {
+		return Promise.resolve();
+	}
 }
 
 module.exports = function(db) {
