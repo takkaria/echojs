@@ -47,8 +47,8 @@ function lastNewsletterSent() {
 	return stats.getValue('newsletterLastSent').then(val => {
 		if (!val) {
 			return {
-				number: 'never',
-				text: 'sent',
+				number: 'NEVER',
+				belowText: 'sent',
 				warning: true
 			};
 		} else {
@@ -56,11 +56,14 @@ function lastNewsletterSent() {
 			let date = moment().from(lastSent, true).split(' ');
 			return {
 				number: typeof date[0] === 'string' ? 1 : date[0],
-				text: date[1] + ' ago',
+				aboveText: 'sent',
+				belowText: date[1] + ' ago',
 				warning: lastSent.isAfter(moment().add(1, 'month'))
 			};
 		}
-	});
+	}).catch(err => {
+		console.log(err);
+	})
 }
 
 router.get('/', ensure.editorOrAdmin, function(req, res) {

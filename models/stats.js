@@ -22,7 +22,7 @@ class StatsSingleton {
 	}
 
 	getValue(key) {
-		return this.db.findById(key).then(stat => JSON.parse(stat.value));
+		return this.db.findById(key).then(stat => stat ? JSON.parse(stat.value) : null);
 	}
 }
 

@@ -60,9 +60,9 @@
 				<h3>Newsletter</h3>
 				<div class="stat-row">
 					{{ dashBox({
-						above: 'sent',
+						above: stats.lastNewsletterSent.aboveText,
 						num: stats.lastNewsletterSent.number,
-						below: stats.lastNewsletterSent.text,
+						below: stats.lastNewsletterSent.belowText,
 						warning: stats.lastNewsletterSent.warning
 					}) }}
 
