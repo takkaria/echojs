@@ -46,6 +46,10 @@ router.get('/', function(req, res, next) {
 			posts: posts,
 			user: req.user
 		}, function(err, html) {
+			if (err) {
+				return next(err);
+			}
+
 			if (cache.isCacheFriendly(req)) {
 				debug('saving index page to cache');
 				cache.set('index', html);

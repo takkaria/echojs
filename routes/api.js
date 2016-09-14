@@ -33,12 +33,12 @@ function parseOpts(req) {
 		state: 'approved',
 		'startdt': {
 			$gte: Sequelize.fn('date', start.format(dateFormat), 'localtime'),
-			$lt: Sequelize.fn('date', end.format(dateFormat), 'localtime'),
+			$lt: Sequelize.fn('date', end.format(dateFormat), 'localtime')
 		}
 	}
 }
 
-router.get('/json', function(req, res) {
+router.get('/json', function(req, res, next) {
 	const clauses = parseOpts(req);
 
 	// This particular kind of JSON output is designed to be suitable input
@@ -47,7 +47,7 @@ router.get('/json', function(req, res) {
 	models.Event.findAll({
 		where: clauses,
 		attributes: [ 'id', 'title', 'startdt', 'enddt', 'slug' ],
-		order: 'startdt ASC',
+		order: 'startdt ASC'
 	}).then(function(events) {
 		let data = events.map(e =>
 			({ id: e.id, title: e.title, start: e.startdt, end: e.enddt, url: e.absoluteURL })
@@ -56,11 +56,11 @@ router.get('/json', function(req, res) {
 		res.header('Content-Type', 'application/json');
 		res.send(JSON.stringify(data, ' '));
 	}).catch(function(err) {
-		res.status(500).end();
+		next(err);
 	});
 });
 
-router.get('/json/locations', function(req, res) {
+router.get('/json/locations', function(req, res, next) {
 	models.Location.findAll({
 		attributes: [ 'id', 'name', 'address' ]
 	}).then(function(locations) {
@@ -73,7 +73,7 @@ router.get('/json/locations', function(req, res) {
 
 		res.send(JSON.stringify(locations, null, ' '));
 	}).catch(function(err) {
-		res.status(500).end();
+		next(err);
 	});
 });
 
@@ -100,7 +100,7 @@ function generateCalendar(events) {
 			summary: evt.title,
 			description: evt.blurb,
 			location: evt.location,
-			url: evt.url || undefined,
+			url: evt.url || undefined
 		});
 	}
 
@@ -113,12 +113,12 @@ router.get('/ical', function(req, res) {
 	models.Event.findAll({
 		where: clauses,
 		attributes: [ 'id', 'title', 'startdt', 'enddt', 'location_text', 'blurb', 'url', 'host' ],
-		order: 'startdt ASC',
+		order: 'startdt ASC'
 	}).then(function(events) {
 		let cal = generateCalendar(events);
 		cal.serve(res);
 	}).catch(function(err) {
-		res.status(500).end();
+		next(err);
 	});
 });
 

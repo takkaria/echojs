@@ -32,7 +32,7 @@ function requestEvents(params, cb) {
 
 function generateTime(beginning) {
 	return function() {
-		var time = (this.minutes() == 0) ? 'ha' : 'h:mma';
+		var time = (this.minutes() === 0) ? 'ha' : 'h:mma';
 		return beginning + time;
 	}
 }
@@ -56,7 +56,7 @@ function eventToText(evt) {
 	let fullUrl = 'https://echomanchester.net' + evt.url;
 	let main = date + ': ' + evt.title.trim();
 
-	if (main.substr(0, maxLength) != main)
+	if (main.substr(0, maxLength) !== main)
 		main = main.substr(0, maxLength - 3) + '...';
 
 	return main + ' ' + fullUrl;
@@ -74,6 +74,11 @@ const minutes = 60 * seconds;
 requestEvents(params, (err, evts) => {
 	let num = 0;
 
+	if (err) {
+		console.error(err);
+		return;
+	}
+
 	for (let evt of evts) {
 		let text = eventToText(evt);
 		console.log('Tweet: "' + text + '"');
@@ -86,7 +91,7 @@ requestEvents(params, (err, evts) => {
 				if (err)
 					console.error(err);
 				else
-					console.log("Tweet success: " + resp.text);
+					console.log('Tweet success: ' + resp.text);
 			})
 		}, delay);
 

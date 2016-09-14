@@ -164,7 +164,7 @@ module.exports = function(db) {
 				} else {
 					return this.getDataValue('location_text');
 				}
-			},
+			}
 		},
 		classMethods: {
 			// This probably isn't the best place for this but I'm not sure where is -AS
@@ -233,10 +233,12 @@ module.exports = function(db) {
 
 					let ordered = [];
 					for (let key in indexByDate) {
-						let chunk = indexByDate[key];
+						if (indexByDate.hasOwnProperty(key)) {
+							let chunk = indexByDate[key];
 
-						if (chunk.events.length > 0) {
-							ordered.push(chunk);
+							if (chunk.events.length > 0) {
+								ordered.push(chunk);
+							}
 						}
 					}
 
