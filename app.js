@@ -169,7 +169,7 @@ passport.serializeUser(function(user, done) {
 passport.deserializeUser(function(email, done) {
 	models.User.find({
 		where: [
-			{ email: email },
+			{ email: email }
 		]
 	}).then(function(user) {
 		done(null, user);

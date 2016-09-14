@@ -1,15 +1,15 @@
 
-if (typeof Object.assign != 'function') {
+if (typeof Object.assign !== 'function') {
   Object.assign = function(target) {
     'use strict';
-    if (target == null) {
+    if (target === null || target === undefined) {
       throw new TypeError('Cannot convert undefined or null to object');
     }
 
     target = Object(target);
     for (var index = 1; index < arguments.length; index++) {
       var source = arguments[index];
-      if (source != null) {
+      if (source !== null && source !== undefined) {
         for (var key in source) {
           if (Object.prototype.hasOwnProperty.call(source, key)) {
             target[key] = source[key];
@@ -71,8 +71,8 @@ function locationField(textField, idField) {
 		.on('typeahead:autocompleted', select)
 		.on('keydown', function(evt) {
 			// Backspace or Delete
-			if (evt.charCode == 0 &&
-				(evt.keyCode == 8 || evt.keyCode == 46)) deselect(evt);
+			if (evt.charCode === 0 &&
+				(evt.keyCode === 8 || evt.keyCode === 46)) deselect(evt);
 		})
 		.on('keypress', deselect);
 

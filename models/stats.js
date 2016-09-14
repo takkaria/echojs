@@ -6,7 +6,7 @@ class StatsSingleton {
 	constructor(db) {
 		this.db = db.define('stat', {
 			key: { type: sequelize.TEXT, primaryKey: true },
-			value: { type: sequelize.TEXT },
+			value: { type: sequelize.TEXT }
 		}, {
 			timestamps: false,
 			createdAt: false
