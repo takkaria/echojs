@@ -37,8 +37,7 @@ describe('Event', function() {
 
 	describe('.saveAndGenerateSlug', function() {
 
-		it('should generate a slug', function(done) {
-
+		it('should generate a slug', function() {
 			var data = {
 				title: 'TEST',
 				startdt: new Date(),
@@ -49,18 +48,15 @@ describe('Event', function() {
 			var evt = Event.build(data);
 			expect(evt).to.not.equal(undefined);
 
-			evt.saveAndGenerateSlug().then(function(evt_) {
+			return evt.saveAndGenerateSlug().then(function(evt_) {
 				expect(evt_.id).to.not.equal(null);
 				expect(evt_.slug).to.contain('' + evt_.id);
-				done();
-			}).catch(done);
+			});
 		});
 
-		after(function(done) {
+		after(function() {
 			// Clean up all TEST rows
-			Event.destroy({ where: { title: 'TEST' } }).then(function() {
-				done();
-			});
+			return Event.destroy({ where: { title: 'TEST' } });
 		});
 	});
 

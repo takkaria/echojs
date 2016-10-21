@@ -31,19 +31,17 @@ describe('User', function() {
 			expect(u.setPassword('testing-string')).to.eventually.equal(u);
 		});
 
-		it('should alter digest', function(done) {
+		it('should alter digest', function() {
 			var u = User.build();
-			u.setPassword('testing-string').then(function() {
+			return u.setPassword('testing-string').then(function() {
 				expect(u.digest).to.not.equal(null);
-				done();
 			});
 		});
 
-		it('should use bcrypt', function(done) {
+		it('should use bcrypt', function() {
 			var u = User.build();
-			u.setPassword('testing-string').then(function() {
+			return u.setPassword('testing-string').then(function() {
 				expect(u.digest).to.match(/^\$2/);
-				done();
 			});
 		});
 	});
@@ -54,10 +52,8 @@ describe('User', function() {
 			var pw = 'testing-pw';
 			var u = User.build();
 
-			before(function(done) {
-				u.setPassword(pw).then(function() {
-					done();
-				});
+			before(function() {
+				return u.setPassword(pw);
 			});
 
 			it('should promise-return true for a correct password', function() {
