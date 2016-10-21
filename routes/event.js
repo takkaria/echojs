@@ -183,19 +183,16 @@ router.post('/add', function(req, res, next) {
 			// Save the slug and/or any removed location textual description
 			return evt.save();
 		}).then(function(evt) {
-			// Don't notify logged in users about their own event
-			if (evt.state !== 'approved') {
-				notify.eventSubmitted(evt);
-			}
-
 			if (evt.state === 'approved') {
 				req.flash('success', 'Event added and approved.');
 				return res.redirect(evt.absoluteURL);
+			} else {
+				// Some events require maunal approval
+				notify.eventSubmitted(evt);
+				req.flash('success',
+						"<b>Event submitted.</b> Please wait until our moderators check it.");
+				return res.redirect('/');
 			}
-
-			req.flash('success', "<b>Event submitted.</b> Please wait until our moderators check it.");
-
-			return res.redirect('/');
 		});
 	}).catch(next);
 });
