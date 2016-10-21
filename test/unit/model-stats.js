@@ -15,9 +15,8 @@ describe('Stats', function() {
 	const TESTING_VALUE = 5;
 
 	describe('setting a value', function() {
-		it('should not produce an error', function(done) {
-			expect(stats.setValue(TESTING_KEY, TESTING_VALUE)).to.eventually.be.ok;
-			done();
+		it('should not produce an error', function() {
+			return stats.setValue(TESTING_KEY, TESTING_VALUE);
 		})
 	})
 
