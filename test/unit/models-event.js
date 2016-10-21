@@ -93,11 +93,13 @@ describe('Event', function() {
 			expect(Event.findAll()).to.eventually.equal(testData.events);
 		});
 
-		it('should return an empty array when there are no upcoming events', function() {
+		it('should return an empty object when there are no upcoming events', function() {
 			testData.eventMax = null;
 			testData.events = [];
 
-			expect(Event.groupByDays()).to.eventually.have.length(0);
+			return Event.groupByDays().then((result) => {
+				expect(result).to.deep.equal({});
+			});
 		});
 
 		it('should not crash for multiday events on a different calendar date but less 24 hours in the past', function() {
@@ -112,11 +114,10 @@ describe('Event', function() {
 				})
 			];
 
-			expect(Event.groupByDays()).to.eventually.not.throw();
+			return Event.groupByDays();
 		});
 
 		it('should not crash when the start time of the latest event in the database is before the current time (but not date)', function() {
-
 			testData.currentTime = '2015-11-19T19:31:48.780Z';
 			testData.eventMax = '2015-12-03T19:30:00.000Z';
 			testData.events = [
@@ -127,7 +128,7 @@ describe('Event', function() {
 				})
 			];
 
-			expect(Event.groupByDays()).to.eventually.not.throw();
+			return Event.groupByDays();
 		});
 
 	});

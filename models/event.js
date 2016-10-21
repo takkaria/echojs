@@ -186,7 +186,7 @@ module.exports = function(db) {
 
 				return self.findAll(options).then(function(events) {
 					if (events.length === 0) {
-						return;
+						return {};
 					}
 
 					// Find the latest date in our dataset
@@ -194,7 +194,7 @@ module.exports = function(db) {
 					if (max && max.isValid()) {
 						max.startOf('day');
 					} else {
-						return;
+						return {};
 					}
 
 					// Create an dictionary of date to event list
