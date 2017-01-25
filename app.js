@@ -86,7 +86,9 @@ app.use(session({
 	resave: false,
 	httpOnly: true,
 	saveUninitialized: false,
-	store: new FileStore(),
+	store: new FileStore({
+		retries: 1,
+	}),
 	maxAge: 604800,
 	proxy: true // if you do SSL outside of node
 }));
