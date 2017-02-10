@@ -20,6 +20,18 @@ router.get('/leaflet', function(req, res) {
 	});
 });
 
+function yearCheck(req, res, next) {
+	if (req.params.year && req.params.month) {
+		const year = parseInt(req.params.year, 10);
+		const curYear = new Date().getFullYear();
+		if (year < curYear - 2 || year > curYear + 2) {
+			return res.redirect('/events');
+		}
+	}
+
+	return next();
+}
+
 function renderEvents(req, res) {
 	let startdate;
 
@@ -61,7 +73,7 @@ function renderEvents(req, res) {
 }
 
 /* GET events */
-router.get('/:year/:month', renderEvents);
+router.get('/:year/:month', yearCheck, renderEvents);
 router.get('/', renderEvents);
 
 module.exports = router;
